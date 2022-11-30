@@ -1,8 +1,21 @@
 import apiUrl from '../apiConfig'
 import axios from 'axios'
 
+type User = {
+    user: {
+        sessions: [{
+            session_id: Number,
+            id: String,
+        }]
+        email: String,
 
-export const getAllPayees = async (user) => {
+    },
+    payeeId: String,
+}
+let apiUrl: any
+
+
+export const getAllPayees = async (user: User) => {
     return axios({
         url: `${apiUrl}/api/payee?filters[search]=&orderby=name&sortby=asc`,
         method: 'GET',
@@ -13,7 +26,7 @@ export const getAllPayees = async (user) => {
     })
 }
 
-export const getPayee = async (user, payeeId) => {
+export const getPayee = async (user: User, payeeId: User) => {
     return axios({
         url: `${apiUrl}/api/payee/${payeeId}`,
         method: 'GET',
@@ -24,7 +37,7 @@ export const getPayee = async (user, payeeId) => {
     })
 }
 
-export const updatePayee = async (user, updatedPayee) => {
+export const updatePayee = async (user: User, updatedPayee: any) => {
     return axios({
         url: `${apiUrl}/api/payee/${updatedPayee.uuid}`,
         method: 'PUT',
@@ -35,7 +48,7 @@ export const updatePayee = async (user, updatedPayee) => {
     })
 }
 
-export const deletePayee = async (user, payeeId) => {
+export const deletePayee = async (user: User, payeeId: User) => {
     return axios({
         url: `${apiUrl}/api/payee/${payeeId}`,
         method: 'DELETE',
