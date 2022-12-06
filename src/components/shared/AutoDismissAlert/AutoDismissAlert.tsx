@@ -4,8 +4,16 @@ import Alert from 'react-bootstrap/Alert'
 import './AutoDismissAlert.scss'
 
 
+type MsgAlert = {
+	msgAlert: {
+		id: any,
+		heading: any,
+		variant: any,
+		message: any
+	}
+}
 
-class AutoDismissAlert extends React.Component {
+class AutoDismissAlert extends React.Component<{}, {show: boolean}, MsgAlert["msgAlert"]> {
 	timeoutId: any
 	constructor(props: any) {
 		super(props)
