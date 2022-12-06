@@ -5,7 +5,7 @@ import './AutoDismissAlert.scss'
 
 
 
-class AutoDismissAlert extends React.Component {
+class AutoDismissAlert extends React.Component<{}, {show: boolean}> {
 	timeoutId: any
 	constructor(props: any) {
 		super(props)
