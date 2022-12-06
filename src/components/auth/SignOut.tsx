@@ -15,14 +15,7 @@ type Message = {
 
 }
 interface interfaceComponent {
-    user: {
-        sessions: [{
-            session_id: Number,
-            id: String,
-        }]
-        email: String,
-
-    }
+    user: any
     msgAlert: (message: Message) => void,
     clearUser: () => void
 }
@@ -35,7 +28,6 @@ const SignOut: React.FC<interfaceComponent> = (props) => {
     const navigate = useNavigate()
 
     const onSignOut = () => {
-        console.log('this is user session', user.sessions)
 		signOut(user)
 			.finally(() =>
 				msgAlert({

@@ -24,14 +24,15 @@ type Message = {
 }
 
 interface componentInterface {
-  msgAlert: (arg0: Message) => unknown,
+  msgAlert: (message: Message) => unknown,
+  setUser: () => void,
   heading: any,
   message: any,
   variant: any
   
 }
 
-const App = () => {
+const App: React.FC<componentInterface> = () => {
 
   const [user, setUser] = useState(null)
   const [msgAlerts, setMsgAlerts] = useState([])
@@ -49,7 +50,7 @@ const App = () => {
 		})
 	}
 
-	const msgAlert: React.FC<componentInterface> = ({ heading, message, variant }) => {
+	const msgAlert = ({ heading, message, variant }:any) => {
 		const id = uuid()
 		setMsgAlerts(() => {
 			return (
@@ -65,7 +66,7 @@ const App = () => {
 					<Route path='/' element={<Home msgAlert={msgAlert} user={user} />} />
 					<Route
 						path='/payees'
-						element={<IndexPayees msgAlert={msgAlert} setUser={setUser} user={user} />}
+						element={<IndexPayees   user={user} />}
 					/>
 					<Route
 						path='/payees/:id'

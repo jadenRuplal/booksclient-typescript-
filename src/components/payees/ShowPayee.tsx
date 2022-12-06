@@ -26,11 +26,17 @@ type Message = {
 interface componentInterface {
     user: any,
 	msgAlert: (arg0: Message) => void,
-    updatePayee: () => void
+    updatePayee: () => void,
+    payee: {
+        name: string,
+        uuid: string
+    } | null,
+    
 }
 
+
 const ShowPayee: React.FC<componentInterface> = (props) => {
-    const [payee, setPayee] = useState(null)
+    const [payee, setPayee] = useState<any>(null)
     const [editModalShow, setEditModalShow] = useState(false)
     const [updated, setUpdated] = useState(false)
 
@@ -39,7 +45,7 @@ const ShowPayee: React.FC<componentInterface> = (props) => {
     // useNavigate returns a function
     // we can call that function to redirect the user wherever we want to
 
-    const { user, msgAlert, updatedPayee } = props
+    const { user, msgAlert } = props
     // destructuring to get the id value from our route parameters
 
 
@@ -61,7 +67,7 @@ const ShowPayee: React.FC<componentInterface> = (props) => {
     // 
 console.log('this is payee', payee)
     const deleteThePayee = () => {
-        deletePayee(user, payee.uuid)
+        deletePayee(user, payee?.uuid)
             // on success send a success message
             .then(() => {
                 msgAlert({

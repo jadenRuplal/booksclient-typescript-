@@ -4,14 +4,15 @@ import {
     Container
 } from 'react-bootstrap'
 
+
 interface componentInterface {
     payee: {
-        uuid: String,
-        name: String
+        uuid: string,
+        name: string
     },
     handleChange: () => void,
     handleSubmit: () => void,
-    heading: String
+    heading: string
     
 }
 

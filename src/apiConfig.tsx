@@ -1,4 +1,4 @@
-let apiUrl
+let apiUrl: string
 const apiUrls = {
     // YOU MUST CHANGE PRODUCTION URL WHEN DEPLOYING
 	production: 'http://admin.morganestates.co:8080',

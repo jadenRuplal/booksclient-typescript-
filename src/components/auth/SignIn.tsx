@@ -3,9 +3,11 @@ import { useNavigate, Link } from 'react-router-dom'
 
 import { signIn } from '../../api/auth'
 import messages from '../shared/AutoDismissAlert/messages'
+import {addUser} from '../../features/userSlice'
 
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import { useDispatch } from 'react-redux'
 
 type res = {
 	data: {
@@ -18,9 +20,7 @@ type res = {
 	}
 }
 
-type Event = {
-	event: String
-}
+
 type Message = {
     heading: any,
     message: any,
@@ -28,12 +28,13 @@ type Message = {
 }
 
 interface componentInterface {
-    setUser: (arg0: res) => void,
+    setUser: any,
 	msgAlert: (arg0: Message) => void
 }
 
 
 const SignIn: React.FC<componentInterface> = (props) => {
+	const dispatch = useDispatch()
 	// constructor(props) {
 	// 	super(props)
 
@@ -56,11 +57,15 @@ const SignIn: React.FC<componentInterface> = (props) => {
 		event.preventDefault()
         console.log('the props', props)
 		const { msgAlert, setUser } = props
+		
 
         const credentials = {email, password}
 
 		signIn(credentials)
-			.then((res) => setUser(res.data.data))
+			.then((res) =>  
+			dispatch(addUser({
+				user: res.data.data
+			})))
 			.then(() =>
 				msgAlert({
 					heading: 'Sign In Success',

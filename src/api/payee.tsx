@@ -4,18 +4,19 @@ import axios from 'axios'
 type User = {
     user: {
         sessions: [{
-            session_id: Number,
-            id: String,
+            session_id: number,
+            id: string,
         }]
-        email: String,
+        email: string,
 
     },
-    payeeId: String,
+    payeeId: any,
+    
 }
-let apiUrl: any
+// let apiUrl: any
 
 
-export const getAllPayees = async (user: User) => {
+export const getAllPayees = async (user: User["user"]) => {
     return axios({
         url: `${apiUrl}/api/payee?filters[search]=&orderby=name&sortby=asc`,
         method: 'GET',
@@ -26,7 +27,7 @@ export const getAllPayees = async (user: User) => {
     })
 }
 
-export const getPayee = async (user: User, payeeId: User) => {
+export const getPayee = async (user: User["user"], payeeId: User["payeeId"]) => {
     return axios({
         url: `${apiUrl}/api/payee/${payeeId}`,
         method: 'GET',
@@ -37,7 +38,7 @@ export const getPayee = async (user: User, payeeId: User) => {
     })
 }
 
-export const updatePayee = async (user: User, updatedPayee: any) => {
+export const updatePayee = async (user: User["user"], updatedPayee: any) => {
     return axios({
         url: `${apiUrl}/api/payee/${updatedPayee.uuid}`,
         method: 'PUT',
@@ -48,7 +49,7 @@ export const updatePayee = async (user: User, updatedPayee: any) => {
     })
 }
 
-export const deletePayee = async (user: User, payeeId: User) => {
+export const deletePayee = async (user: User["user"], payeeId: User) => {
     return axios({
         url: `${apiUrl}/api/payee/${payeeId}`,
         method: 'DELETE',

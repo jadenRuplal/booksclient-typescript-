@@ -3,8 +3,11 @@ import Alert from 'react-bootstrap/Alert'
 
 import './AutoDismissAlert.scss'
 
+
+
 class AutoDismissAlert extends React.Component {
-	constructor(props) {
+	timeoutId: any
+	constructor(props: any) {
 		super(props)
 		this.state = {
 			show: true,
@@ -23,8 +26,7 @@ class AutoDismissAlert extends React.Component {
 	handleClose = () => this.setState({ show: false })
 
 	render() {
-		const { variant, heading, message, deleteAlert, id } = this.props
-
+		const { variant, heading, message, deleteAlert, id }:any = this.props
 		// Delete this alert after the fade animation time (300 ms by default)
 		if (!this.state.show) {
 			setTimeout(() => {

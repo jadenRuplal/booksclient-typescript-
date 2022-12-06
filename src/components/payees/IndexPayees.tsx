@@ -12,13 +12,14 @@ interface componentInterface {
   user: any,
   payees: [{
     data: {
+      data: {
       results: [{
         uuid: string,
         name: string,
        }
-      ]
+      ]}
     }
-  }],
+  }] | null,
   payee: {
     name: string,
     uuid: string
@@ -27,7 +28,7 @@ interface componentInterface {
 
 
 const IndexPayees: React.FC<componentInterface> = (props) => {
-    const [payees, setPayees] = useState(null)
+    const [payees, setPayees] = useState<any>(null)
     const [error, setError] = useState(false)
     const [updated, setUpdated] = useState(false)
     const [id, setId] = useState(null)
@@ -39,7 +40,7 @@ const IndexPayees: React.FC<componentInterface> = (props) => {
 
     useEffect( () => {
        const  data: any = getAllPayees(user)
-        setPayees(data)
+        setPayees(data.results)
     }, [])
 
     if (error) {
@@ -77,7 +78,7 @@ const IndexPayees: React.FC<componentInterface> = (props) => {
         </thead>
         <tbody>
             {/* {console.log('payees', payees)} */}
-    {   payees?.data.data.results.map((payee: { uuid: any; name: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | null | undefined }, index: any) => (
+    {    payees?.data.data.results.map((payee: { uuid: any; name: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | null | undefined }, index: any) => (
                    
                    <tr>
                    <Link to={`/payees/${payee.uuid}`}> 
