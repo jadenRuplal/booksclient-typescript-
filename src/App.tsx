@@ -1,7 +1,8 @@
-/ import React, { Component, Fragment } from 'react'
+
 import React, { useState, Fragment } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { v4 as uuid } from 'uuid'
+import { useSelector } from 'react-redux'
 import './index.css'
 
 // import AuthenticatedRoute from './components/shared/AuthenticatedRoute'
@@ -14,6 +15,7 @@ import SignIn from './components/auth/SignIn'
 import SignOut from './components/auth/SignOut'
 import IndexPayees from './components/payees/IndexPayees'
 import ShowPayee from './components/payees/ShowPayee'
+import CreatePayee from './components/payees/CreatePayee'
 // import ChangePassword from './components/auth/ChangePassword'
 
 
@@ -25,17 +27,24 @@ type Message = {
 
 interface componentInterface {
   msgAlert: (message: Message) => unknown,
-  setUser: () => void,
-  heading: any,
-  message: any,
-  variant: any
-  
+  setMsgAlerts: () => any,
+  user: {
+	sessions: [{
+		session_id: number,
+		id: string,
+	}]
+	email: string,
+	
+
+} | null,
 }
 
 const App: React.FC<componentInterface> = () => {
 
-  const [user, setUser] = useState(null)
-  const [msgAlerts, setMsgAlerts] = useState([])
+  const [user, setUser] = useState<componentInterface["user"]>(null)
+  const [msgAlerts, setMsgAlerts] = useState<any>([])
+  const result = useSelector((state) => state);
+ 
 
   console.log('user in app', user)
   console.log('message alerts', msgAlerts)
@@ -44,15 +53,15 @@ const App: React.FC<componentInterface> = () => {
     setUser(null)
   }
 
-	const deleteAlert = (id) => {
-		setMsgAlerts((prevState) => {
-			return (prevState.filter((msg) => msg.id !== id) )
+	const deleteAlert = (id:any) => {
+		setMsgAlerts((prevState:any) => {
+			return (prevState.filter((msg:any)=> msg.id !== id) )
 		})
 	}
 
 	const msgAlert = ({ heading, message, variant }:any) => {
 		const id = uuid()
-		setMsgAlerts(() => {
+		setMsgAlerts(():any => {
 			return (
 				[{ heading, message, variant, id }]
       )
@@ -61,29 +70,48 @@ const App: React.FC<componentInterface> = () => {
 
 		return (
 			<Fragment>
-				<Header user={user} />
+				<Header user={result}  />
 				<Routes>
-					<Route path='/' element={<Home msgAlert={msgAlert} user={user} />} />
+					<Route path='/' element={
+					<RequireAuth result={result}>
+					<Home msgAlert={msgAlert} user={user} />
+					</RequireAuth>} />
 					<Route
 						path='/payees'
-						element={<IndexPayees   user={user} />}
+						element={<IndexPayees   user={user} payees={null} payee={{
+							name: '',
+							uuid: ''
+						}} />}
 					/>
 					<Route
 						path='/payees/:id'
-						element={<ShowPayee msgAlert={msgAlert} setUser={setUser} user={user} />}
+						element={
+							<RequireAuth result={result}>
+						<ShowPayee msgAlert={msgAlert} user={user} updatePayee={function (): void {
+							throw new Error('Function not implemented.')
+						} } payee={null} />
+						</RequireAuth>}
+					/>
+					<Route
+						path='/createPayee'
+						element={
+						<RequireAuth result={result}>
+							<CreatePayee msgAlert={msgAlert} />
+						</RequireAuth>
+						}
 					/>
 					<Route
 						path='/sign-in'
 						element={<SignIn msgAlert={msgAlert} setUser={setUser} />}
 					/>
-          <Route
-            path='/sign-out'
-            element={
-              <RequireAuth user={user}>
-                <SignOut msgAlert={msgAlert} clearUser={clearUser} user={user} />
-              </RequireAuth>
-            }
-          />
+					<Route
+						path='/sign-out'
+						element={
+						<RequireAuth result={result}>
+							<SignOut msgAlert={msgAlert} clearUser={clearUser} user={user}  />
+						</RequireAuth>
+						}
+					/>
           {/* <Route
             path='/change-password'
             element={
@@ -92,7 +120,7 @@ const App: React.FC<componentInterface> = () => {
               </RequireAuth>}
           /> */}
 				</Routes>
-				{msgAlerts.map((msgAlert) => (
+				{/* {msgAlerts.map((msgAlert:any) => (
 					<AutoDismissAlert
 						key={msgAlert.id}
 						heading={msgAlert.heading}
@@ -101,7 +129,7 @@ const App: React.FC<componentInterface> = () => {
 						id={msgAlert.id}
 						deleteAlert={deleteAlert}
 					/>
-				))}
+				))} */}
 			</Fragment>
 		)
 }

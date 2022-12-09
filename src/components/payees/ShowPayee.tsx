@@ -1,17 +1,15 @@
 import { useState, useEffect } from 'react'
-
+import { useSelector } from 'react-redux'
 import { useParams, useNavigate } from 'react-router-dom'
 // useParams will allow us to see our parameters
 // useNavigate will allow us to navigate to a specific page
 
 import { Container, Card, Button } from 'react-bootstrap'
 // import LoadingScreen from '../shared/LoadingScreen'
-import { getPayee, updatePayee, deletePayee } from '../../api/payee'
+import { deletePayee } from '../../api/payee'
 import messages from '../shared/AutoDismissAlert/messages'
-// import EditCarModal from './EditModal'
-import Payeeform from './PayeeForm.js'
 import EditPayeeModal from './EditPayeeModal'
-
+import api from '../../api/payee'
 
 // We need to get the car's id from the parameters
 // Then we need to make a request to the api
@@ -44,24 +42,30 @@ const ShowPayee: React.FC<componentInterface> = (props) => {
     const navigate = useNavigate()
     // useNavigate returns a function
     // we can call that function to redirect the user wherever we want to
-
-    const { user, msgAlert } = props
+    const result:any = useSelector((state) => state);
+    const user = result.user.value[0].user;
+    const {  msgAlert } = props
     // destructuring to get the id value from our route parameters
 
 
 
     useEffect(() => {
-        getPayee(user, id)
-            .then(res => { return setPayee(res.data.data)})
-            .catch(err => {
-                msgAlert({
-                    heading: 'Error getting car',
-                    message: messages.getPayeeFailure,
-                    variant: 'danger'
-                })
-                // navigate('/myCars')
-                //navigate back to the home page if there's an error fetching
-            })
+    //    const getpayee = getPayee(user, id)
+    //         .then(res => { return setPayee(res.data.data)})
+    //         .catch(err => {
+    //             msgAlert({
+    //                 heading: 'Error getting car',
+    //                 message: messages.getPayeeFailure,
+    //                 variant: 'danger'
+    //             })
+    //             // navigate('/myCars')
+    //             //navigate back to the home page if there's an error fetching
+    //         })
+        const getOnePayee = async () => {
+                const response = await api.get(user, `payee/${id}`)
+                setPayee(response.data)
+               }
+               getOnePayee()
     }, [])
 
     // 
@@ -77,7 +81,7 @@ console.log('this is payee', payee)
                 })
             })
             // then navigate to index
-            .then(() => { navigate('/api/payee') })
+            .then(() => { navigate('/payees') })
             // on failure send a failure message
             .catch(err => {
                 msgAlert({
@@ -121,15 +125,16 @@ console.log('this is payee', payee)
 
      
             </Container>
+          { payee &&
             <EditPayeeModal
                 user={user}
                 payee={payee}
                 show={editModalShow}
-                updatePayee={updatePayee}
                 msgAlert={msgAlert}
                 triggerRefresh={() => setUpdated(prev => !prev)}
                 handleClose={() => setEditModalShow(false)}
             />
+          }
         </>
     )
 }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { signIn } from '../../api/auth'
 import messages from '../shared/AutoDismissAlert/messages'
@@ -7,7 +7,7 @@ import {addUser} from '../../features/userSlice'
 
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 type res = {
 	data: {
@@ -66,6 +66,7 @@ const SignIn: React.FC<componentInterface> = (props) => {
 			dispatch(addUser({
 				user: res.data.data
 			})))
+			.then()
 			.then(() =>
 				msgAlert({
 					heading: 'Sign In Success',

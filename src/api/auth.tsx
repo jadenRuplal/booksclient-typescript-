@@ -1,7 +1,28 @@
 import apiUrl from '../apiConfig'
 import axios from 'axios'
 
-export const signUp = (credentials) => {
+
+
+type User = {
+    user: {
+        sessions: [{
+            session_id: number,
+            id: string,
+        }]
+        email: any,
+		
+
+    },
+    
+}
+
+type Passwords = {
+	oldPassword: any,
+	newPassword: any
+	
+}
+
+export const signUp = (credentials: any) => {
 	return axios({
 		method: 'POST',
 		url: apiUrl + '/sign-up',
@@ -15,14 +36,13 @@ export const signUp = (credentials) => {
 	})
 }
 
-export const signIn = (credentials) => {
+export const signIn = (credentials: any) => {
 	return axios({
 		url: apiUrl + '/api/auth/login',
 		method: 'POST',
 		headers: {
 			'api-key': `Ml29vjhslk2873!`,
 		},
-		crossdomain: true,
 		data: {
 				email: credentials.email,
 				password: credentials.password,
@@ -31,7 +51,7 @@ export const signIn = (credentials) => {
 	})
 }
 
-export const signOut = (user) => {
+export const signOut = (user: User["user"]) => {
 	return axios({
 		url: apiUrl + '/api/auth/logout',
 		method: 'POST',
@@ -42,7 +62,7 @@ export const signOut = (user) => {
 	})
 }
 
-export const changePassword = (passwords, user) => {
+export const changePassword = (passwords: Passwords, user: any) => {
 	return axios({
 		url: apiUrl + '/change-password',
 		method: 'PATCH',

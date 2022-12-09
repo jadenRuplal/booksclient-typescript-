@@ -1,9 +1,9 @@
-import { Navigate } from 'react-router-dom'
+import { Navigate } from "react-router-dom";
 
-
-
-
-export default function RequireAuth({ user, children }) {
-
-	return user !== null ? children : <Navigate to='/sign-in' replace />
+export default function RequireAuth({ result, children }) {
+  return (result !== null) | undefined ? (
+    children
+  ) : (
+    <Navigate to="/sign-in" replace />
+  );
 }

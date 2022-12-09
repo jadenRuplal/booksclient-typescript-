@@ -8,7 +8,7 @@ import messages from '../shared/AutoDismissAlert/messages'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 
-const SignUp = (props) => {
+const SignUp = (props:any) => {
 	// constructor(props) {
 	// 	super(props)
 
@@ -24,7 +24,7 @@ const SignUp = (props) => {
 
     const navigate = useNavigate()
 
-	const onSignUp = (event) => {
+	const onSignUp = (event:any) => {
 		event.preventDefault()
 
 		const { msgAlert, setUser } = props

@@ -7,37 +7,15 @@ const linkStyle = {
     textDecoration: 'none'
 }
 
+
 interface componentInterface {
   user: any
     
 }
 
 
-const authenticatedOptions = (
-	<>
-		<Nav.Item>
-			<Link to='payees' style={linkStyle}>
-				Payees
-			</Link>
-		</Nav.Item>
-		<Nav.Item>
-			<Link to='sign-out' style={linkStyle}>
-				Sign Out
-			</Link>
-		</Nav.Item>
-	</>
-)
 
-const unauthenticatedOptions = (
-	<>
-        <Nav.Item>
-		    <Link to='sign-out' style={linkStyle}>Sign out</Link>
-        </Nav.Item>
-        <Nav.Item>
-		    <Link to='sign-in' style={linkStyle}>Sign In</Link>
-        </Nav.Item>
-	</>
-)
+
 
 const alwaysOptions = (
 	<>
@@ -46,10 +24,26 @@ const alwaysOptions = (
 				Home
 			</Link>
 		</Nav.Link>
+		<Nav.Item>
+		    <Link to='sign-out' style={linkStyle}>Sign out</Link>
+        </Nav.Item>
+        <Nav.Item>
+		    <Link to='sign-in' style={linkStyle}>Sign In</Link>
+        </Nav.Item>
+		<Nav.Item>
+			<Link to='payees' style={linkStyle}>
+				Payees
+			</Link>
+		</Nav.Item>
+		<Nav.Item>
+			<Link to='createPayee' style={linkStyle}>
+				create Payee
+			</Link>
+		</Nav.Item>
 	</>
 )
 
-const Header: React.FC <componentInterface> = ({ user }) => (
+const Header: React.FC <componentInterface> = () => (
 	<Navbar bg='primary' variant='dark' expand='md'>
 		<Navbar.Brand>
             <Link to='/' style={linkStyle}>
@@ -59,11 +53,7 @@ const Header: React.FC <componentInterface> = ({ user }) => (
 		<Navbar.Toggle aria-controls='basic-navbar-nav' />
 		<Navbar.Collapse id='basic-navbar-nav'>
 			<Nav className='ml-auto'>
-				{user && (
-					<span className='navbar-text mr-2'>Welcome, {user.email}</span>
-				)}
 				{alwaysOptions}
-				{user ? authenticatedOptions : unauthenticatedOptions}
 			</Nav>
 		</Navbar.Collapse>
 	</Navbar>

@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import PayeeForm from './PayeeForm'
-
+import api from '../../api/payee'
 import { updatePayeeSuccess, updatePayeeFailure } from '../shared/AutoDismissAlert/messages'
 import { useNavigate, Navigate} from 'react-router'
 
 
-const EditPayeeModal = (props) => {
+const EditPayeeModal = (props:any) => {
     const {
         user, show, handleClose,
         updatePayee, msgAlert, triggerRefresh
@@ -17,9 +17,9 @@ const EditPayeeModal = (props) => {
     console.log('payee in edit modal', payee)
     console.log('user in edit modal', user)
 
-    const handleChange = (e) => {
-        setPayee(prevPayee => {
-            let updatedValue = e.target.value
+    const handleChange = (e: { target: { value: string; name: any; type: string } }) => {
+        setPayee((prevPayee: any) => {
+            let updatedValue:any = e.target.value
             const updatedName = e.target.name
 
             // console.log('this is the input type', e.target.type)
@@ -39,12 +39,11 @@ const EditPayeeModal = (props) => {
         })
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e: { preventDefault: () => void }) => {
         // e equals the event
         e.preventDefault()
         console.log("this is user in update", user)
-        console.log("this is payee in update", payee)
-        updatePayee(user, payee)
+        api.put(user, `payee/${payee.uuid}`, payee)
             // if we're successful in the modal, we want the modal to close
             .then(() => handleClose())
             // send a success message to the user

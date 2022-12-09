@@ -10,8 +10,8 @@ interface componentInterface {
         uuid: string,
         name: string
     },
-    handleChange: () => void,
-    handleSubmit: () => void,
+    handleChange: any,
+    handleSubmit: any,
     heading: string
     
 }
