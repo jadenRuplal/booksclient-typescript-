@@ -4,10 +4,9 @@ import { Route, Routes } from 'react-router-dom'
 import { v4 as uuid } from 'uuid'
 import { useSelector } from 'react-redux'
 import './index.css'
-
+import './assets/scss/Theme.scss'
 // import AuthenticatedRoute from './components/shared/AuthenticatedRoute'
 import AutoDismissAlert from './components/shared/AutoDismissAlert/AutoDismissAlert'
-import Header from './components/shared/Header'
 import RequireAuth from './components/shared/RequireAuth'
 import Home from './components/Home'
 // import SignUp from './components/auth/SignUp'
@@ -15,9 +14,20 @@ import SignIn from './components/auth/SignIn'
 import SignOut from './components/auth/SignOut'
 import IndexPayees from './components/payees/IndexPayees'
 import ShowPayee from './components/payees/ShowPayee'
-import CreatePayee from './components/payees/CreatePayee'
-// import ChangePassword from './components/auth/ChangePassword'
-
+import IndexAccounts from './components/accounts/IndexAccounts'
+import LeftSidebar from './sidebar/LeftSidebar'
+const styles:any = {
+	float: 'left',
+	display: 'table-cell',
+	height: '100vh',
+	width: '20vw'
+}
+const stylesRoutes:any = {
+	float: 'left',
+	height: 'auto',
+	width: '70vw',
+	display: 'table-cell'
+}
 
 type Message = {
   heading: any,
@@ -43,8 +53,8 @@ const App: React.FC<componentInterface> = () => {
 
   const [user, setUser] = useState<componentInterface["user"]>(null)
   const [msgAlerts, setMsgAlerts] = useState<any>([])
-  const result = useSelector((state) => state);
- 
+  const result:any = useSelector((state) => state);
+
 
   console.log('user in app', user)
   console.log('message alerts', msgAlerts)
@@ -69,8 +79,12 @@ const App: React.FC<componentInterface> = () => {
 	}
 
 		return (
-			<Fragment>
-				<Header user={result}  />
+			<>
+				<div style={styles}>
+					<h2 style={{position:'fixed'}}>myBooks</h2>
+					<LeftSidebar />
+				</div>
+				<div style={stylesRoutes}>
 				<Routes>
 					<Route path='/' element={
 					<RequireAuth result={result}>
@@ -78,31 +92,27 @@ const App: React.FC<componentInterface> = () => {
 					</RequireAuth>} />
 					<Route
 						path='/payees'
-						element={<IndexPayees   user={user} payees={null} payee={{
+						element={<IndexPayees payees={null} payee={{
 							name: '',
 							uuid: ''
-						}} />}
+						}}/>}
 					/>
 					<Route
 						path='/payees/:id'
 						element={
 							<RequireAuth result={result}>
-						<ShowPayee msgAlert={msgAlert} user={user} updatePayee={function (): void {
+						<ShowPayee msgAlert={msgAlert}  updatePayee={function (): void {
 							throw new Error('Function not implemented.')
 						} } payee={null} />
 						</RequireAuth>}
 					/>
 					<Route
-						path='/createPayee'
-						element={
-						<RequireAuth result={result}>
-							<CreatePayee msgAlert={msgAlert} />
-						</RequireAuth>
-						}
-					/>
-					<Route
-						path='/sign-in'
-						element={<SignIn msgAlert={msgAlert} setUser={setUser} />}
+						path='/accounts'
+						element={<IndexAccounts   accounts={null} account={{
+							name: '',
+							uuid: '',
+							last4: 0
+						}} />}
 					/>
 					<Route
 						path='/sign-out'
@@ -112,14 +122,12 @@ const App: React.FC<componentInterface> = () => {
 						</RequireAuth>
 						}
 					/>
-          {/* <Route
-            path='/change-password'
-            element={
-              <RequireAuth user={user}>
-                <ChangePassword msgAlert={msgAlert} user={user} />
-              </RequireAuth>}
-          /> */}
+					<Route
+						path='/sign-in'
+						element={<SignIn msgAlert={msgAlert} setUser={setUser} />}
+					/>
 				</Routes>
+				</div>
 				{/* {msgAlerts.map((msgAlert:any) => (
 					<AutoDismissAlert
 						key={msgAlert.id}
@@ -130,7 +138,7 @@ const App: React.FC<componentInterface> = () => {
 						deleteAlert={deleteAlert}
 					/>
 				))} */}
-			</Fragment>
+			</>
 		)
 }
 

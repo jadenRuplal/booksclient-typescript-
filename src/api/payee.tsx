@@ -19,18 +19,6 @@ type User = {
 
 
 
-export const updatePayee = async (user: User["user"], updatedPayee: any) => {
-    return axios({
-        url: `${apiUrl}/api/payee/${updatedPayee.uuid}`,
-        method: 'PUT',
-        headers: {
-            sid: `${user.sessions[0].id}`,
-			'api-key': `Ml29vjhslk2873!`,
-		},
-        data:  updatedPayee
-    })
-}
-
 export const deletePayee = async (user: User["user"], payeeId: User) => {
     return axios({
         url: `${apiUrl}/api/payee/${payeeId}`,
@@ -69,7 +57,7 @@ export default {
         })
         return response.data
     },
-    async post (user: User["user"], endpoint: string, data: object = {}) {
+    async post (user: User["user"], endpoint: string, newPayee:any) {
         const response = await axios({
             url: apiUrl + '/api/' + endpoint,
             method: 'post',
@@ -77,7 +65,7 @@ export default {
                 sid: `${user.sessions[0].id}`,
                 'api-key': env.apiKey
             },
-            data: data
+            data: newPayee
         })
         return response.data
     },

@@ -45,7 +45,6 @@ const SignIn: React.FC<componentInterface> = (props) => {
 	// }
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-
     const navigate = useNavigate()
 
 	// handleChange = (event) =>
@@ -66,7 +65,6 @@ const SignIn: React.FC<componentInterface> = (props) => {
 			dispatch(addUser({
 				user: res.data.data
 			})))
-			.then()
 			.then(() =>
 				msgAlert({
 					heading: 'Sign In Success',

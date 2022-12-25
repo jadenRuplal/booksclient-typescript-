@@ -22,7 +22,6 @@ type Message = {
 }
 
 interface componentInterface {
-    user: any,
 	msgAlert: (arg0: Message) => void,
     updatePayee: () => void,
     payee: {
@@ -103,11 +102,7 @@ console.log('this is payee', payee)
                 <Card >
                     <Card.Header >{payee?.name}</Card.Header>
                     <Card.Body >
-                        <Card.Text>
-                        </Card.Text>
-                    </Card.Body>
-                    <Card.Footer>
-                                 <Button onClick={() => setEditModalShow(true)}
+                    <Button onClick={() => setEditModalShow(true)}
                                     className="m-2"
                                     variant="warning"
                                  >
@@ -120,7 +115,9 @@ console.log('this is payee', payee)
                                  >
                                     Delete payee
                                 </Button>
-                    </Card.Footer>
+                        <Card.Text>
+                        </Card.Text>
+                    </Card.Body>
                 </Card>
 
      
