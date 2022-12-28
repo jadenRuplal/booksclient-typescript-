@@ -1,16 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import  { useEffect, useState } from 'react'
 import { Card, Col, Row } from 'react-bootstrap'
 import { useSelector } from 'react-redux';
 import api from '../../api/payee'
-
-// hooks
 import { usePageTitle } from '../../hooks';
-
-// component
 import Table from './Table';
-
-// //dummy data
-// import { records as data, expandableRecords } from './data';
 
 const columns = [
     {
@@ -23,10 +16,8 @@ const columns = [
 
 const AdvancedTable = () => {
     const [payees, setPayees] = useState<any>(null)
-    const [id, setId] = useState(null)
     const result:any = useSelector((state) => state);
       const user = result.user.value[0].user;
-      console.log("user in index payee", user)
       const sizePerPageList = [
         {
             text: '5',
@@ -41,9 +32,6 @@ const AdvancedTable = () => {
             value: 25,
         },
     ]
-    // console.log('this is user index', user)
-
-    //console.log('Props in BidIndex', props)
 
     useEffect( () => {
        const getPayees = async () => {
@@ -53,7 +41,6 @@ const AdvancedTable = () => {
        getPayees()
     }, [])
 
-    // set pagetitle
     usePageTitle({
         title: 'Advanced Tables',
         breadCrumbItems: [
@@ -96,7 +83,3 @@ const AdvancedTable = () => {
 };
 
 export default AdvancedTable;
-// function useSelector(arg0: (state: any) => any): any {
-//     throw new Error('Function not implemented.');
-// }
-

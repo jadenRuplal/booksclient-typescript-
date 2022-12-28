@@ -1,53 +1,42 @@
 import React, { useState } from 'react'
 import { Modal } from 'react-bootstrap'
-import PayeeForm from './PayeeForm'
+import CategoryForm from './CategoryForm'
 import api from '../../api/payee'
 import { updatePayeeSuccess, updatePayeeFailure } from '../shared/AutoDismissAlert/messages'
 
-
-const EditPayeeModal = (props:any) => {
+const CreateCategoryModal = (props:any) => {
     const {
-        user, show, handleClose, msgAlert
+        user, show, handleClose,
     } = props
-    const [payee, setPayee] = useState(props.payee)
+    const [category, setCategory] = useState(props.category)
 
     const handleChange = (e: { target: { value: string; name: any; type: string } }) => {
-        setPayee((prevPayee: any) => {
+        setCategory((prevCategory: any) => {
             let updatedValue:any = e.target.value
             const updatedName = e.target.name
 
+            
+
             if (e.target.type === 'number') {
+                // this is looking at the input type, and changing it from the default, which is a string, into an actual number
                 updatedValue = parseInt(e.target.value)
             }
 
-            const updatedPayee = {
+            const updatedCategory = {
                 [updatedName]: updatedValue
             }
             return {
-                ...prevPayee,
-                ...updatedPayee
+                ...prevCategory,
+                ...updatedCategory
             }
         })
     }
 
     const handleSubmit = (e: { preventDefault: () => void }) => {
+        // e equals the event
         e.preventDefault()
-        api.put(user, `payee/${payee.uuid}`, payee)
-            .then(() => handleClose())
-            .then(() => {
-                msgAlert({
-                    heading: 'Oh Yeah!',
-                    message: updatePayeeSuccess,
-                    variant: 'success'
-                })
-            })
-            .catch(() =>
-                msgAlert({
-                    heading: 'Oh No!',
-                    message: updatePayeeFailure,
-                    variant: 'danger'
-                })
-            )
+        api.post(user, 'category?&with[]=created_by&with[]=updated_by' ,category)
+           handleClose()
     }
 
 
@@ -55,11 +44,11 @@ const EditPayeeModal = (props:any) => {
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton />
             <Modal.Body>
-                <PayeeForm
-                    payee={payee}
+                <CategoryForm
+                    category={category}
                     handleChange={handleChange}
                     handleSubmit={handleSubmit}
-                    heading="Update Payee"
+                    heading="Create Category"
 
                 />
             </Modal.Body>
@@ -67,7 +56,7 @@ const EditPayeeModal = (props:any) => {
     )
 }
 
-export default EditPayeeModal
+export default CreateCategoryModal
 
 
 

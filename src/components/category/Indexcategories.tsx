@@ -6,28 +6,29 @@ import { useSelector } from 'react-redux'
 import api from '../../api/payee'
 import ReactPaginate from 'react-paginate'
 import './pagination.css'
-import CreatePayeeModal from './CreatePayeeModal'
+import CreateCategoryModal from './CreateCategoryModal'
 import React from 'react'
 
 interface componentInterface {
-  payees: [{
+  categories: [{
         uuid: string,
         name: string
   }] | any,
-  payee: {
+  category: {
     name: string,
     uuid: string
   }
 }
 
 
-const IndexPayees: React.FC<componentInterface> = (props) => {
-    const [payees, setPayees] = useState<componentInterface["payees"]>(null)
-    const [payee, setPayee] = useState({
+const IndexCategories: React.FC<componentInterface> = (props) => {
+    const [categories, setCategories] = useState<componentInterface["categories"]>(null)
+    const [category, setCategory] = useState({
       name: '',
       uuid: ''
    })
-    const [search, setSearch ] = useState<any>('')
+    const [search, setSearch ] = useState<any>("")
+    const [type, setType] = useState('')
     const [error, setError] = useState(false)
     const [createModalShow, setCreateModalShow] = useState(false)
     const [pageSelect, setPageSelected] = useState(1)
@@ -38,44 +39,29 @@ const IndexPayees: React.FC<componentInterface> = (props) => {
     const [id, setId] = useState(null)
     const result:any = useSelector((state) => state)
     const user = result.user.value[0].user
-      const handleChange = (e: { target: { value: string; name: any; type: string } }) => {
-        setSearch((prevPayee: any) => {
-            let updatedValue:any = e.target.value
-            const updatedName = e.target.name
-
-            if (e.target.type === 'number') {
-                updatedValue = parseInt(e.target.value)
-            }
-
-            const updatedPayee = {
-                [updatedName]: updatedValue
-            }
-            return {
-                ...prevPayee,
-                ...updatedPayee
-            }
-        })
+    const handleChange = (e:any) => {
+      setSearch(e.target.value)
     }
     const handleSubmit = (e: {
      preventDefault: () => any }) => {
         e.preventDefault()
-        const getPayees = async () => {
-            const response = await api.get(user, `payee?filters[search]=${search.name}&orderby=name&sortby=asc`)
-            setPayees(response.data?.results)
+        const getCategories = async () => {
+            const response = await api.get(user, `category?filters[search]=${search}&filters[category_type.name]=${type}&orderby=name&sortby=asc&with[]=category_type&with[]=parent_category`)
+            setCategories(response.data?.results)
            }
-           getPayees()
+           getCategories()
     }
        
       
 
     useEffect( () => {
-       const getPayees = async () => {
-        const response = await api.get(user, `payee?filters[search]=&orderby=name&sortby=asc&page=${pageSelect}&per_page=${perPage}`)
-        setPayees(response.data?.results)
+       const getCategories = async () => {
+        const response = await api.get(user, `category?filters[search]=&orderby=name&sortby=asc&page=${pageSelect}&per_page=${perPage}&with[]=category_type&with[]=parent_category`)
+        setCategories(response.data?.results)
         setPage(response.data.last_page)
         setCurrentPage(response.data.current_page)
        }
-       getPayees()
+       getCategories()
     }, [perPage, createModalShow, pageSelect])
 
     if (error) {
@@ -85,13 +71,13 @@ const IndexPayees: React.FC<componentInterface> = (props) => {
       const handlePageClick = (event:any) => {
         const pageSelected = event.selected + 1
         setPageSelected(pageSelected)
-        const getPayees = async () => {
-        const response = await api.get(user, `payee?filters[search]=&orderby=name&sortby=asc&page=${pageSelect}&per_page=${perPage}`)
-        setPayees(response.data?.results)
+        const getCategories = async () => {
+        const response = await api.get(user, `category?filters[search]=&orderby=name&sortby=asc&page=${pageSelect}&per_page=${perPage}&with[]=category_type&with[]=parent_category`)
+        setCategories(response.data?.results)
         setPage(response.data.last_page)
         setCurrentPage(response.data.current_page)
        }
-       getPayees()
+       getCategories()
       }
     return (
         <>
@@ -104,13 +90,18 @@ const IndexPayees: React.FC<componentInterface> = (props) => {
                     <Col>
                       <Form.Control
                           placeholder="Search Names"
-                          name="name"
                           id="name"
-                          value={search.name}
+                          value={search}
                           onChange={handleChange}
                       />
                       </Col>
-                      
+                      <Col>
+                      <select className="form-control" id="exampleFormControlSelect1" onChange={e => setType(e.target.value)}>
+                        <option value="">Select a Type</option>
+                        <option value="expense">Expense</option>
+                        <option value="income">Income</option>
+                      </select>
+                      </Col>
                       <Col><Button type="submit" variant='primary'>Submit</Button></Col>
                       <Col><Button onClick={() => setCreateModalShow(true)}
                                     className="m-2"
@@ -125,16 +116,20 @@ const IndexPayees: React.FC<componentInterface> = (props) => {
         <thead>
           <tr>
             <th>Name</th>
+            <th>Type</th>
           </tr>
         </thead>
         <tbody>
-    {    payees?.map((payee:any) => (
+    {    categories?.map((category:any) => (
                    
                    <tr>
                     <td>
-                   <Link to={`/payees/${payee.uuid}`}> 
-                        {payee.name}
+                   <Link to={`/categories/${category.uuid}`}> 
+                        {category.name}
                    </Link>
+                   </td>
+                   <td>
+                    {category.category_type.display_name}
                    </td>
                     </tr> 
                 )
@@ -178,9 +173,9 @@ const IndexPayees: React.FC<componentInterface> = (props) => {
         <option value="100">100</option>
       </select>
      
-      <CreatePayeeModal
+      <CreateCategoryModal
                 user={user}
-                payee={payee}
+                category={category}
                 show={createModalShow}
                 triggerRefresh={() => setUpdated(prev => !prev)}
                 handleClose={() => setCreateModalShow(false)}
@@ -192,4 +187,4 @@ const IndexPayees: React.FC<componentInterface> = (props) => {
 
 
 
-export default IndexPayees
+export default IndexCategories

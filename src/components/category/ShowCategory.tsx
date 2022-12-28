@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { Container, Card, Button } from 'react-bootstrap'
 import { deletePayee } from '../../api/payee'
 import messages from '../shared/AutoDismissAlert/messages'
-import EditAccountModal from './EditAccountModal'
+import EditCategoryModal from './EditCategoryModal'
 import api from '../../api/payee'
 import React from 'react'
 
@@ -16,8 +16,8 @@ type Message = {
 
 interface componentInterface {
 	msgAlert: (arg0: Message) => void,
-    updateAccount: () => void,
-    payee: {
+    updatePayee: () => void,
+    category: {
         name: string,
         uuid: string
     } | null,
@@ -25,10 +25,11 @@ interface componentInterface {
 }
 
 
-const ShowAccount: React.FC<componentInterface> = (props) => {
-    const [account, setAccount] = useState<any>(null)
+const ShowCategory: React.FC<componentInterface> = (props) => {
+    const [category, setCategory] = useState<any>(null)
     const [editModalShow, setEditModalShow] = useState(false)
     const [updated, setUpdated] = useState(false)
+
     const { id } = useParams()
     const navigate = useNavigate()
     const result:any = useSelector((state) => state);
@@ -37,15 +38,16 @@ const ShowAccount: React.FC<componentInterface> = (props) => {
 
 
     useEffect(() => {
-        const getOneAccount = async () => {
-                const response = await api.get(user, `account/${id}`)
-                setAccount(response.data)
+   
+        const getOneCategory = async () => {
+                const response = await api.get(user, `category/${id}`)
+                setCategory(response.data)
                }
-               getOneAccount()
+               getOneCategory()
     }, [])
 
-    const deleteTheAccount = () => {
-        deletePayee(user, `account/${account?.uuid}`)
+    const deleteTheCategory = () => {
+        deletePayee(user, `category/${category?.uuid}`)
             .then(() => {
                 msgAlert({
                     heading: 'Success',
@@ -53,7 +55,7 @@ const ShowAccount: React.FC<componentInterface> = (props) => {
                     variant: 'success'
                 })
             })
-            .then(() => { navigate('/accounts') })
+            .then(() => { navigate('/categories') })
             .catch(err => {
                 msgAlert({
                     heading: 'Error removing ',
@@ -62,25 +64,26 @@ const ShowAccount: React.FC<componentInterface> = (props) => {
                 })
             })
     }
-    
+
+
     return (
         <>
             <Container className="fluid">
                 <Card >
-                    <Card.Header >{account?.name}</Card.Header>
+                    <Card.Header >{category?.name}</Card.Header>
                     <Card.Body >
                     <Button onClick={() => setEditModalShow(true)}
                                     className="m-2"
                                     variant="warning"
                                  >
-                                    Edit Account
+                                    Edit Category
                                 </Button>
 
-                                <Button onClick={() => deleteTheAccount()}
+                                <Button onClick={() => deleteTheCategory()}
                                     className="m-2"
                                     variant="warning"
                                  >
-                                    Delete Account
+                                    Delete Category
                                 </Button>
                         <Card.Text>
                         </Card.Text>
@@ -89,10 +92,10 @@ const ShowAccount: React.FC<componentInterface> = (props) => {
 
      
             </Container>
-          { account &&
-            <EditAccountModal
+          { category &&
+            <EditCategoryModal
                 user={user}
-                account={account}
+                category={category}
                 show={editModalShow}
                 msgAlert={msgAlert}
                 triggerRefresh={() => setUpdated(prev => !prev)}
@@ -105,4 +108,4 @@ const ShowAccount: React.FC<componentInterface> = (props) => {
 
 
 
-export default ShowAccount
+export default ShowCategory

@@ -2,11 +2,8 @@ import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 
 const Home = (props:any) => {
-  // const { msgAlert, user } = props
-  console.log("props in home", props);
-  const result:any = useSelector((state) => state);
-  const user:any = result.user.value[0].user;
-  console.log("this is redux state", user);
+  const result:any = useSelector((state) => state)
+  const user:any = result.user.value[0].user
   
   return (
     <>

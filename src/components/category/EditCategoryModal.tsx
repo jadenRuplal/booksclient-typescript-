@@ -1,39 +1,40 @@
 import React, { useState } from 'react'
 import { Modal } from 'react-bootstrap'
-import AccountForm from './AccountForm'
+import CategoryForm from './CategoryForm'
 import api from '../../api/payee'
 
 
-const CreateAccountModal = (props:any) => {
+const EditCategoryModal = (props:any) => {
     const {
         user, show, handleClose,
     } = props
-    const [account, setAccount] = useState(props.account)
+    const [category, setCategory] = useState(props.categpry)
 
     const handleChange = (e: { target: { value: string; name: any; type: string } }) => {
-        setAccount((prevAccount: any) => {
+        setCategory((prevCategory: any) => {
             let updatedValue:any = e.target.value
             const updatedName = e.target.name
+
 
             if (e.target.type === 'number') {
                 updatedValue = parseInt(e.target.value)
             }
 
-            const updatedAccount = {
+            const updatedCategory = {
                 [updatedName]: updatedValue
             }
             return {
-                ...prevAccount,
-                ...updatedAccount
+                ...prevCategory,
+                ...updatedCategory
             }
         })
     }
 
     const handleSubmit = (e: { preventDefault: () => void }) => {
-        // e equals the event
         e.preventDefault()
-        api.post(user, 'account?with[]=account_type' ,account)
-        handleClose()
+        api.put(user, `category/${category.uuid}?with[]=category_type`, category)
+            .then(() => handleClose())
+            .catch()
     }
 
 
@@ -41,11 +42,11 @@ const CreateAccountModal = (props:any) => {
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton />
             <Modal.Body>
-                <AccountForm
-                    account={account}
+                <CategoryForm
+                    category={category}
                     handleChange={handleChange}
                     handleSubmit={handleSubmit}
-                    heading="Create account"
+                    heading="Update category"
 
                 />
             </Modal.Body>
@@ -53,7 +54,7 @@ const CreateAccountModal = (props:any) => {
     )
 }
 
-export default CreateAccountModal
+export default EditCategoryModal
 
 
 

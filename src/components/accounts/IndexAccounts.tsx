@@ -36,41 +36,36 @@ const IndexAccounts: React.FC<componentInterface> = (props) => {
     const [perPage, setPerPage] = useState<any>(50)
     const [search, setSearch ] = useState<any>('')
     const result:any = useSelector((state) => state);
-      const user = result.user.value[0].user;
-      console.log("user in index account", user)
+    const user = result.user.value[0].user;
+
       
       
       const handleChange = (e: { target: { value: string; name: any; type: string } }) => {
-        setSearch((prevPayee: any) => {
+        setSearch((prevAccount: any) => {
             let updatedValue:any = e.target.value
             const updatedName = e.target.name
 
-            // console.log('this is the input type', e.target.type)
-
             if (e.target.type === 'number') {
-                // this is looking at the input type, and changing it from the default, which is a string, into an actual number
                 updatedValue = parseInt(e.target.value)
             }
 
-            const updatedPayee = {
+            const updatedAccount = {
                 [updatedName]: updatedValue
             }
             return {
-                ...prevPayee,
-                ...updatedPayee
+                ...prevAccount,
+                ...updatedAccount
             }
         })
     }
     const handleSubmit = (e: {
      preventDefault: () => any }) => {
         e.preventDefault()
-        console.log("this is user in Search", search.name)
         const getAccounts = async () => {
             const response = await api.get(user, `account?filters[search]=${search.name}&orderby=name&sortby=asc`)
             setAccounts(response.data?.results)
            }
            getAccounts()
-           console.log(accounts)
     }
        
       
@@ -92,26 +87,14 @@ const IndexAccounts: React.FC<componentInterface> = (props) => {
       const handlePageClick = (event:any) => {
         const pageSelected = event.selected + 1
         setPageSelected(pageSelected)
-        console.log(pageSelected)
-        const getPayees = async () => {
+        const getAccounts = async () => {
         const response = await api.get(user, `account?filters[search]=&orderby=name&sortby=asc&page=${pageSelect}&per_page=${perPage}`)
         setAccounts(response.data?.results)
         setPage(response.data.last_page)
         setCurrentPage(response.data.current_page)
        }
-       getPayees()
+       getAccounts()
       }
-
-
-    // console.log('this is user index', user)
-
-    //console.log('Props in BidIndex', props)
-
-
-    if (error) {
-        return <p>Error!</p>
-    }
-
 
     return (
         <>
@@ -124,7 +107,7 @@ const IndexAccounts: React.FC<componentInterface> = (props) => {
                   <Row>
                     <Col>
                       <Form.Control
-                          placeholder="Search Names Shere"
+                          placeholder="Search Names"
                           name="name"
                           id="name"
                           value={search.name}

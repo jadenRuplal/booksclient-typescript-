@@ -19,9 +19,9 @@ type User = {
 
 
 
-export const deletePayee = async (user: User["user"], payeeId: User) => {
+export const deletePayee = async (user: User["user"], endpoint:string) => {
     return axios({
-        url: `${apiUrl}/api/payee/${payeeId}`,
+        url: `${apiUrl}/api/${endpoint}`,
         method: 'DELETE',
         headers: {
             sid: `${user.sessions[0].id}`,

@@ -15,6 +15,9 @@ import SignOut from './components/auth/SignOut'
 import IndexPayees from './components/payees/IndexPayees'
 import ShowPayee from './components/payees/ShowPayee'
 import IndexAccounts from './components/accounts/IndexAccounts'
+import ShowAccount from './components/accounts/ShowAccount'
+import ShowCategory from './components/category/ShowCategory'
+import IndexCategories from './components/category/Indexcategories'
 import LeftSidebar from './sidebar/LeftSidebar'
 const styles:any = {
 	float: 'left',
@@ -56,10 +59,9 @@ const App: React.FC<componentInterface> = () => {
   const result:any = useSelector((state) => state);
 
 
-  console.log('user in app', user)
-  console.log('message alerts', msgAlerts)
+  
   const clearUser = () => {
-    console.log('clear user ran')
+    
     setUser(null)
   }
 
@@ -113,6 +115,31 @@ const App: React.FC<componentInterface> = () => {
 							uuid: '',
 							last4: 0
 						}} />}
+					/>
+					<Route
+						path='/accounts/:id'
+						element={
+							<RequireAuth result={result}>
+						<ShowAccount msgAlert={msgAlert}  updateAccount={function (): void {
+							throw new Error('Function not implemented.')
+						} } payee={null} />
+						</RequireAuth>}
+					/>
+					<Route
+						path='/categories'
+						element={<IndexCategories categories={null} category={{
+							name: '',
+							uuid: ''
+						}}/>}
+					/>
+					<Route
+						path='/categories/:id'
+						element={
+							<RequireAuth result={result}>
+						<ShowCategory msgAlert={msgAlert}  updatePayee={function (): void {
+							throw new Error('Function not implemented.')
+						} } category={null} />
+						</RequireAuth>}
 					/>
 					<Route
 						path='/sign-out'

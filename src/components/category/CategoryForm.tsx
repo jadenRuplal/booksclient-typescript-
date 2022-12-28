@@ -7,8 +7,8 @@ import {
 
 
 interface componentInterface {
-    account: {
-        last4: number,
+    category: {
+        uuid: string,
         name: string
     },
     handleChange: any,
@@ -17,8 +17,8 @@ interface componentInterface {
     
 }
 
-const AccountForm: React.FC<componentInterface> = (props) => {
-    const { account, handleChange, handleSubmit, heading } = props
+const CategoryForm: React.FC<componentInterface> = (props) => {
+    const { category, handleChange, handleSubmit, heading } = props
 
     return (
         <Container className="justify-content-center">
@@ -29,7 +29,7 @@ const AccountForm: React.FC<componentInterface> = (props) => {
                     placeholder="Change name here"
                     name="name"
                     id="name"
-                    value={account.name}
+                    value={category.name}
                     onChange={handleChange}
                 />
                 <Button type="submit">Submit</Button>
@@ -38,4 +38,4 @@ const AccountForm: React.FC<componentInterface> = (props) => {
     )
 }
 
-export default AccountForm
+export default CategoryForm

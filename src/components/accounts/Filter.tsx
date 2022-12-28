@@ -32,10 +32,7 @@ const Filter: React.FC<componentInterface> = (props) => {
             let updatedValue:any = e.target.value
             const updatedName = e.target.name
 
-            // console.log('this is the input type', e.target.type)
-
             if (e.target.type === 'number') {
-                // this is looking at the input type, and changing it from the default, which is a string, into an actual number
                 updatedValue = parseInt(e.target.value)
             }
 
@@ -51,13 +48,11 @@ const Filter: React.FC<componentInterface> = (props) => {
     const handleSubmit = (e: {
      preventDefault: () => any }) => {
         e.preventDefault()
-        console.log("this is user in Search", search.name)
         const getAccounts = async () => {
             const response = await api.get(user, `accounts?filters[search]=${search.name}&orderby=name&sortby=asc`)
             setAccounts(response.data?.results)
            }
            getAccounts()
-           console.log(accounts)
     }
 
 

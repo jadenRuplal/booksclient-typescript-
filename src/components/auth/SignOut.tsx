@@ -4,6 +4,7 @@ import {Button, ButtonGroup} from 'react-bootstrap'
 
 import { signOut } from '../../api/auth'
 import messages from '../shared/AutoDismissAlert/messages'
+import React from 'react'
 
 
 
@@ -23,7 +24,6 @@ interface interfaceComponent {
 
 const SignOut: React.FC<interfaceComponent> = (props) => {
 	const { msgAlert, clearUser, user } = props
-    console.log(props)
 
     const navigate = useNavigate()
 

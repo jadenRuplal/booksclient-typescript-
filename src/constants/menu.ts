@@ -31,6 +31,14 @@ const MENU_ITEMS: MenuItemTypes[] = [
         badge: { variant: 'success', text: '' },
         url: '/accounts',
     },
+    {
+        key: 'category',
+        label: 'Categories',
+        isTitle: false,
+        icon: 'mdi mdi-view-dashboard-outline',
+        badge: { variant: 'success', text: '' },
+        url: '/categories',
+    },
 
     { key: 'apps', label: 'Apps', isTitle: true },
     {
@@ -1010,57 +1018,57 @@ const HORIZONTAL_MENU_ITEMS: MenuItemTypes[] = [
                     },
                 ],
             },
-            {
-                key: 'extra-pages',
-                label: 'Utility',
-                isTitle: false,
-                icon: 'ri-pages-line',
-                parentKey: 'pages',
-                children: [
-                    {
-                        key: 'page-pricing',
-                        label: 'Pricing',
-                        url: '/pages/pricing',
-                        parentKey: 'extra-pages',
-                    },
-                    {
-                        key: 'page-timeline',
-                        label: 'Timeline',
-                        url: '/pages/timeline',
-                        parentKey: 'extra-pages',
-                    },
-                    {
-                        key: 'page-invoice',
-                        label: 'Invoice',
-                        url: '/pages/invoice',
-                        parentKey: 'extra-pages',
-                    },
-                    {
-                        key: 'page-faq',
-                        label: 'FAQs',
-                        url: '/pages/faq',
-                        parentKey: 'extra-pages',
-                    },
-                    {
-                        key: 'page-gallery',
-                        label: 'Gallery',
-                        url: '/pages/gallery',
-                        parentKey: 'extra-pages',
-                    },
-                    {
-                        key: 'page-maintenance',
-                        label: 'Maintenance',
-                        url: '/maintenance',
-                        parentKey: 'extra-pages',
-                    },
-                    {
-                        key: 'page-coming-soon',
-                        label: 'Coming Soon',
-                        url: '/coming-soon',
-                        parentKey: 'extra-pages',
-                    },
-                ],
-            },
+            // {
+            //     key: 'extra-pages',
+            //     label: 'Utility',
+            //     isTitle: false,
+            //     icon: 'ri-pages-line',
+            //     parentKey: 'pages',
+            //     children: [
+            //         {
+            //             key: 'page-pricing',
+            //             label: 'Pricing',
+            //             url: '/pages/pricing',
+            //             parentKey: 'extra-pages',
+            //         },
+            //         {
+            //             key: 'page-timeline',
+            //             label: 'Timeline',
+            //             url: '/pages/timeline',
+            //             parentKey: 'extra-pages',
+            //         },
+            //         {
+            //             key: 'page-invoice',
+            //             label: 'Invoice',
+            //             url: '/pages/invoice',
+            //             parentKey: 'extra-pages',
+            //         },
+            //         {
+            //             key: 'page-faq',
+            //             label: 'FAQs',
+            //             url: '/pages/faq',
+            //             parentKey: 'extra-pages',
+            //         },
+            //         {
+            //             key: 'page-gallery',
+            //             label: 'Gallery',
+            //             url: '/pages/gallery',
+            //             parentKey: 'extra-pages',
+            //         },
+            //         {
+            //             key: 'page-maintenance',
+            //             label: 'Maintenance',
+            //             url: '/maintenance',
+            //             parentKey: 'extra-pages',
+            //         },
+            //         {
+            //             key: 'page-coming-soon',
+            //             label: 'Coming Soon',
+            //             url: '/coming-soon',
+            //             parentKey: 'extra-pages',
+            //         },
+            //     ],
+            // },
         ],
     },
 ];

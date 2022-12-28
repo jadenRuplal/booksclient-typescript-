@@ -7,18 +7,7 @@ import {addUser} from '../../features/userSlice'
 
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
-import { useDispatch, useSelector } from 'react-redux'
-
-type res = {
-	data: {
-		data: {
-			id: Number,
-			uuid: String,
-			first_name: String,
-			last_name: String,
-		}
-	}
-}
+import { useDispatch } from 'react-redux'
 
 
 type Message = {
@@ -35,26 +24,12 @@ interface componentInterface {
 
 const SignIn: React.FC<componentInterface> = (props) => {
 	const dispatch = useDispatch()
-	// constructor(props) {
-	// 	super(props)
-
-	// 	this.state = {
-	// 		email: '',
-	// 		password: '',
-	// 	}
-	// }
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const navigate = useNavigate()
 
-	// handleChange = (event) =>
-	// 	this.setState({
-	// 		[event.target.name]: event.target.value,
-	// 	})
-
 	const onSignIn = (event: any) => {
 		event.preventDefault()
-        console.log('the props', props)
 		const { msgAlert, setUser } = props
 		
 
@@ -134,30 +109,6 @@ const SignIn: React.FC<componentInterface> = (props) => {
                         Submit
                     </Button>
                 </Form>
-						{/* <form className="margin-bottom-0" onSubmit={onSignIn(cre)}>
-							<div className="form-group m-b-15">
-								<input type="text" className="form-control form-control-lg" placeholder="Email Address" required  />
-							</div>
-							<div className="form-group m-b-15">
-								<input type="password" className="form-control form-control-lg" placeholder="Password" required />
-							</div>
-							<div className="checkbox checkbox-css m-b-30">
-								<input type="checkbox" id="remember_me_checkbox" value="" />
-								<label htmlFor="remember_me_checkbox">
-									Remember Me
-								</label>
-							</div>
-							<div className="login-buttons">
-								<button type="submit" className="btn btn-success btn-block btn-lg">Sign me in</button>
-							</div>
-							<div className="m-t-20 m-b-40 p-b-40 text-inverse">
-								Not a member yet? Click <Link to="/user/register-v3" className="text-success">here</Link> to register.
-							</div>
-							<hr />
-							<p className="text-center text-grey-darker">
-								&copy; Color Admin All Right Reserved 2019
-							</p>
-						</form> */}
 					</div>
 				</div>
 			</div>
