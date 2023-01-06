@@ -2,40 +2,30 @@ import React, { useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import CategoryForm from './CategoryForm'
 import api from '../../api/payee'
-import { updatePayeeSuccess, updatePayeeFailure } from '../shared/AutoDismissAlert/messages'
 
 const CreateCategoryModal = (props:any) => {
     const {
         user, show, handleClose,
     } = props
-    const [category, setCategory] = useState(props.category)
+    const [createCategoryName, setCreateCategory] = useState<any>('')
+    const [selectedOptions, setSelectedOptions] = useState<any>('')
 
-    const handleChange = (e: { target: { value: string; name: any; type: string } }) => {
-        setCategory((prevCategory: any) => {
-            let updatedValue:any = e.target.value
-            const updatedName = e.target.name
+const createObject = {
+    name: `${createCategoryName}`,
+    category_type: `${selectedOptions.label}`
+}
 
-            
-
-            if (e.target.type === 'number') {
-                // this is looking at the input type, and changing it from the default, which is a string, into an actual number
-                updatedValue = parseInt(e.target.value)
-            }
-
-            const updatedCategory = {
-                [updatedName]: updatedValue
-            }
-            return {
-                ...prevCategory,
-                ...updatedCategory
-            }
-        })
+    function handleSelect(data:any) {
+        setSelectedOptions(data);
+      }
+    const handleChange = (e: { target: { value: string; } }) => {
+        setCreateCategory(e.target.value)
     }
 
     const handleSubmit = (e: { preventDefault: () => void }) => {
         // e equals the event
         e.preventDefault()
-        api.post(user, 'category?&with[]=created_by&with[]=updated_by' ,category)
+        api.post(user, 'category?&with[]=created_by&with[]=updated_by' ,createObject)
            handleClose()
     }
 
@@ -45,12 +35,15 @@ const CreateCategoryModal = (props:any) => {
             <Modal.Header closeButton />
             <Modal.Body>
                 <CategoryForm
-                    category={category}
+                    createCategoryName={createCategoryName}
                     handleChange={handleChange}
                     handleSubmit={handleSubmit}
-                    heading="Create Category"
-
-                />
+                    handleSelect={handleSelect}
+                    heading="Create Category" category={{
+                        category_type: undefined,
+                        uuid: '',
+                        name: ''
+                    }} selectedOptions={''} categoryUpdate={''}               />
             </Modal.Body>
         </Modal>
     )

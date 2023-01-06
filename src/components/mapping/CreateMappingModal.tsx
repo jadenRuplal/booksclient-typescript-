@@ -1,19 +1,17 @@
 import React, { useState } from 'react'
 import { Modal } from 'react-bootstrap'
-import AccountForm from './AccountForm'
+import MapForm from './MapForm'
 import api from '../../api/payee'
-import { updatePayeeSuccess, updatePayeeFailure } from '../shared/AutoDismissAlert/messages'
 
 
-const EditAccountModal = (props:any) => {
+const CreateMapModal = (props:any) => {
     const {
-        user, show, handleClose, msgAlert
+        user, show, handleClose,
     } = props
-    const [account, setAccount] = useState(props.account)
-
+    const [map, setMap] = useState(props.map)
 
     const handleChange = (e: { target: { value: string; name: any; type: string } }) => {
-        setAccount((prevAccount: any) => {
+        setMap((prevPayee: any) => {
             let updatedValue:any = e.target.value
             const updatedName = e.target.name
 
@@ -21,20 +19,20 @@ const EditAccountModal = (props:any) => {
                 updatedValue = parseInt(e.target.value)
             }
 
-            const updatedAccount = {
+            const updatedPayee = {
                 [updatedName]: updatedValue
             }
             return {
-                ...prevAccount,
-                ...updatedAccount
+                ...prevPayee,
+                ...updatedPayee
             }
         })
     }
 
     const handleSubmit = (e: { preventDefault: () => void }) => {
         e.preventDefault()
-        api.put(user, `account/${account.uuid}?with[]=account_type`, account)
-            .then(() => handleClose())
+        api.post(user, 'payee?&with[]=created_by&with[]=updated_by' ,map)
+           handleClose()
     }
 
 
@@ -42,11 +40,11 @@ const EditAccountModal = (props:any) => {
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton />
             <Modal.Body>
-                <AccountForm
-                    account={account}
+                <MapForm
+                    map={map}
                     handleChange={handleChange}
                     handleSubmit={handleSubmit}
-                    heading="Update Account"
+                    heading="Create Map"
 
                 />
             </Modal.Body>
@@ -54,7 +52,7 @@ const EditAccountModal = (props:any) => {
     )
 }
 
-export default EditAccountModal
+export default CreateMapModal
 
 
 

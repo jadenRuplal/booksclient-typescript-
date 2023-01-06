@@ -11,6 +11,10 @@ const EditPayeeModal = (props:any) => {
     } = props
     const [payee, setPayee] = useState(props.payee)
 
+
+
+    console.log('payee in edit', payee)
+
     const handleChange = (e: { target: { value: string; name: any; type: string } }) => {
         setPayee((prevPayee: any) => {
             let updatedValue:any = e.target.value
@@ -34,20 +38,6 @@ const EditPayeeModal = (props:any) => {
         e.preventDefault()
         api.put(user, `payee/${payee.uuid}`, payee)
             .then(() => handleClose())
-            .then(() => {
-                msgAlert({
-                    heading: 'Oh Yeah!',
-                    message: updatePayeeSuccess,
-                    variant: 'success'
-                })
-            })
-            .catch(() =>
-                msgAlert({
-                    heading: 'Oh No!',
-                    message: updatePayeeFailure,
-                    variant: 'danger'
-                })
-            )
     }
 
 

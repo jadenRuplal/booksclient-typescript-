@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-
+import { useNavigate, useResolvedPath } from 'react-router-dom'
+import api from '../../api/payee'
 import { signIn } from '../../api/auth'
 import messages from '../shared/AutoDismissAlert/messages'
 import {addUser} from '../../features/userSlice'
@@ -8,6 +8,7 @@ import {addUser} from '../../features/userSlice'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { useDispatch } from 'react-redux'
+import { addOption } from '../../features/optionSlice'
 
 
 type Message = {
@@ -18,6 +19,7 @@ type Message = {
 
 interface componentInterface {
     setUser: any,
+	user: any,
 	msgAlert: (arg0: Message) => void
 }
 
@@ -27,19 +29,26 @@ const SignIn: React.FC<componentInterface> = (props) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const navigate = useNavigate()
+	const [user , setUser] = useState<any>(null)
 
 	const onSignIn = (event: any) => {
 		event.preventDefault()
-		const { msgAlert, setUser } = props
-		
+		const { msgAlert } = props
+		const userSet = async (res: any) => {
+			dispatch(addUser({
+				user: res.data.data
+			}))
+			const response = await api.get(res.data.data, `overviewoption`)
+			dispatch(addOption({
+			  options: response
+			}))
+		}
+
 
         const credentials = {email, password}
 
 		signIn(credentials)
-			.then((res) =>  
-			dispatch(addUser({
-				user: res.data.data
-			})))
+			.then((res) =>  userSet(res))
 			.then(() =>
 				msgAlert({
 					heading: 'Sign In Success',
@@ -48,15 +57,6 @@ const SignIn: React.FC<componentInterface> = (props) => {
 				})
 			)
 			.then(() => navigate('/'))
-			.catch((error) => {
-                setEmail('')
-                setPassword('')
-				msgAlert({
-					heading: 'Sign In Failed with error: ' + error.message,
-					message: messages.signInFailure,
-					variant: 'danger',
-				})
-			})
 	}
 
     return (

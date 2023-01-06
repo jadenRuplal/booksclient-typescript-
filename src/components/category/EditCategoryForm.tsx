@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react'
 import {
     Form,
@@ -5,7 +6,9 @@ import {
     Container
 } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import Select, { SelectInstance } from 'react-select'
+import { deletePayee } from '../../api/payee'
 
 
 interface componentInterface {
@@ -14,26 +17,33 @@ interface componentInterface {
         uuid: string,
         name: string
     },
-    categoryUpdate:string,
+    categoryUpdate:any,
     handleChange: any,
     handleSubmit: any,
     heading: string,
     createCategoryName: any,
     handleSelect: any,
-    selectedOptions: any
+    selectedOptions: any,
+    typeUpdate: any,
+    handleClose: any
     
     
 }
 
-const CategoryForm: React.FC<componentInterface> = (props) => {
-    const {  handleChange, handleSubmit, heading, categoryUpdate, createCategoryName, handleSelect, selectedOptions} = props
+const EditCategoryForm: React.FC<componentInterface> = (props) => {
+    const {  handleChange, handleSubmit, heading, categoryUpdate, handleSelect, category, typeUpdate, handleClose} = props
     const result:any = useSelector((state) => state)
+    const user = result.user.value[0].user
     const categoryOptions = result.option.value[0].options.data.category_type
     const optionType = () => {
         return( categoryOptions?.map((option:any) => (
            {value:`${option.name}`, label: `${option.display_name}`}
         )
     ))
+        }
+        const deleteTheCategory = () => {
+            deletePayee(user, `category/${category?.uuid}`)
+                .then(() => handleClose())
         }
 
     return (
@@ -42,10 +52,8 @@ const CategoryForm: React.FC<componentInterface> = (props) => {
             <Form onSubmit={handleSubmit}>
                 <Form.Label htmlFor="name">Name</Form.Label>
                 <Form.Control
-                    placeholder='Enter Name'
-                    name="name"
-                    id="name"
-                    value={createCategoryName}
+                    placeholder={category.name}
+                    value={categoryUpdate}
                     onChange={handleChange}
                 />
                 <Form.Label htmlFor="type">Type</Form.Label>
@@ -53,10 +61,13 @@ const CategoryForm: React.FC<componentInterface> = (props) => {
                 onChange={handleSelect}
                 placeholder='Select Type'
                 />
+                <Button onClick={() => deleteTheCategory()}
+                                    className="m-2"
+                                    variant="warning">Delete Category</Button>
                 <Button type="submit">Submit</Button>
             </Form>
         </Container>
     )
 }
 
-export default CategoryForm
+export default EditCategoryForm

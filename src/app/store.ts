@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit"
 import userReducer from "../features/userSlice"
+import optionReducer from '../features/optionSlice'
 
 
 
 export const store = configureStore({
     reducer: {
         user: userReducer,
+        option: optionReducer
     }
 })
 

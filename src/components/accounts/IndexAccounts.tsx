@@ -1,6 +1,5 @@
-import { useState, useEffect, JSXElementConstructor, ReactElement, ReactFragment, ReactPortal } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import messages from '../shared/AutoDismissAlert/messages'
 import Table from 'react-bootstrap/Table'
 import {Button, Col, Container, Row, Form} from 'react-bootstrap'
 import { useSelector } from 'react-redux'
@@ -8,6 +7,8 @@ import api from '../../api/payee'
 import React from 'react'
 import ReactPaginate from 'react-paginate'
 import CreateAccountModal from './CreateAccountModal'
+import EditAccountModal from './EditAccountModal'
+import Select from 'react-select'
 
 interface componentInterface {
  accounts: {
@@ -26,57 +27,62 @@ interface componentInterface {
 const IndexAccounts: React.FC<componentInterface> = (props) => {
     const [accounts, setAccounts] = useState<componentInterface["accounts"]>(null)
     const [error, setError] = useState(false)
-    const [account] = useState('')
+    const [account, setAccount] = useState(null)
     const [updated, setUpdated] = useState(false)
     const [id, setId] = useState(null)
+    const [typeSelected, setTypeSelected] = useState('')
     const [createModalShow, setCreateModalShow] = useState(false)
+    const [editModalShow, setEditModalShow] = useState(false)
     const [pageSelect, setPageSelected] = useState(1)
     const [page, setPage] = useState(3)
     const [currentPage, setCurrentPage] = useState(1)
     const [perPage, setPerPage] = useState<any>(50)
     const [search, setSearch ] = useState<any>('')
-    const result:any = useSelector((state) => state);
-    const user = result.user.value[0].user;
+    const result:any = useSelector((state) => state)
+    const user = result.user.value[0].user
+    const accountOptions = result.option.value[0].options.data.account_type
+    const getAccounts = async () => {
+      const response = await api.get(user, `account?filters[search]=${search}&filters[account_type.name]=${typeSelected}&orderby=name&sortby=asc&page=${pageSelect}&per_page=${perPage}&with[]=account_type`)
+      setAccounts(response.data?.results)
+      setPage(response.data.last_page)
+      setCurrentPage(response.data.current_page)
+     }
 
+      const allTypes = {value: '', label: 'All'}
       
-      
-      const handleChange = (e: { target: { value: string; name: any; type: string } }) => {
-        setSearch((prevAccount: any) => {
-            let updatedValue:any = e.target.value
-            const updatedName = e.target.name
-
-            if (e.target.type === 'number') {
-                updatedValue = parseInt(e.target.value)
-            }
-
-            const updatedAccount = {
-                [updatedName]: updatedValue
-            }
-            return {
-                ...prevAccount,
-                ...updatedAccount
-            }
-        })
+      const optionType = () => {
+        return(
+          accountOptions?.map((option:any) => (
+           {value:`${option.name}`, label: `${option.display_name}`}
+            )
+          )
+          )
     }
+      
+      function handleSelect(data:any) {
+        setTypeSelected(data.value)
+      }
+
+      const handleChange = (e:any) => {
+        setSearch(e.target.value)
+    }
+
     const handleSubmit = (e: {
      preventDefault: () => any }) => {
         e.preventDefault()
-        const getAccounts = async () => {
-            const response = await api.get(user, `account?filters[search]=${search.name}&orderby=name&sortby=asc`)
-            setAccounts(response.data?.results)
-           }
            getAccounts()
     }
-       
-      
+    const closing = () => {
+      setEditModalShow(false)
+      setAccount(null)
+    }
+
+    const setEdit = (acc:any) => { 
+      setAccount(acc)
+      setEditModalShow(true)
+    } 
 
     useEffect( () => {
-       const getAccounts = async () => {
-        const response = await api.get(user, `account?filters[search]=&orderby=name&sortby=asc&page=${pageSelect}&per_page=${perPage}`)
-        setAccounts(response.data?.results)
-        setPage(response.data.last_page)
-        setCurrentPage(response.data.current_page)
-       }
        getAccounts()
     }, [perPage, createModalShow, pageSelect])
 
@@ -87,13 +93,6 @@ const IndexAccounts: React.FC<componentInterface> = (props) => {
       const handlePageClick = (event:any) => {
         const pageSelected = event.selected + 1
         setPageSelected(pageSelected)
-        const getAccounts = async () => {
-        const response = await api.get(user, `account?filters[search]=&orderby=name&sortby=asc&page=${pageSelect}&per_page=${perPage}`)
-        setAccounts(response.data?.results)
-        setPage(response.data.last_page)
-        setCurrentPage(response.data.current_page)
-       }
-       getAccounts()
       }
 
     return (
@@ -110,11 +109,17 @@ const IndexAccounts: React.FC<componentInterface> = (props) => {
                           placeholder="Search Names"
                           name="name"
                           id="name"
-                          value={search.name}
+                          value={search}
                           onChange={handleChange}
                       />
                       </Col>
-                      
+                      <Col>
+                      <Select  options={optionType()}
+                          onChange={handleSelect}
+                          placeholder='Select Type'
+                          
+                      />
+                      </Col>
                       <Col><Button type="submit" variant='primary'>Submit</Button></Col>
                       <Col><Button onClick={() => setCreateModalShow(true)}
                                     className="m-2"
@@ -129,18 +134,18 @@ const IndexAccounts: React.FC<componentInterface> = (props) => {
           <tr>
             <th>Name</th>
             <th>Last4</th>
+            <th>Account Type</th>
           </tr>
         </thead>
         <tbody>
     {    accounts?.map((account:any) => (
                    
                    <tr>
-                    <td>
-                   <Link to={`/accounts/${account.uuid}`}> 
+                    <td onClick={() => setEdit(account)}> 
                         {account.name}
-                   </Link>
                    </td>
                    <td>{account.last4}</td>
+                   <td>{account.account_type.display_name}</td>
                     </tr> 
                     
                 )
@@ -195,6 +200,16 @@ const IndexAccounts: React.FC<componentInterface> = (props) => {
                 triggerRefresh={() => setUpdated(prev => !prev)}
                 handleClose={() => setCreateModalShow(false)}
             />
+
+{ account &&
+            <EditAccountModal
+                user={user}
+                account={account}
+                show={editModalShow}
+                triggerRefresh={() => setUpdated(prev => !prev)}
+                handleClose={() => closing()}
+            />
+          }
       </>  
     )
     

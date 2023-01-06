@@ -9,7 +9,8 @@ import './assets/scss/Theme.scss'
 import AutoDismissAlert from './components/shared/AutoDismissAlert/AutoDismissAlert'
 import RequireAuth from './components/shared/RequireAuth'
 import Home from './components/Home'
-// import SignUp from './components/auth/SignUp'
+import IndexMapping from './components/mapping/IndexMapping'
+import ShowMap from './components/mapping/ShowMap'
 import SignIn from './components/auth/SignIn'
 import SignOut from './components/auth/SignOut'
 import IndexPayees from './components/payees/IndexPayees'
@@ -142,6 +143,26 @@ const App: React.FC<componentInterface> = () => {
 						</RequireAuth>}
 					/>
 					<Route
+						path='/mapping'
+						element={<IndexMapping   
+							mapping={undefined} map={{
+								name: '',
+								uuid: '',
+								payee: {
+									name: ''
+								}
+							}}							 />}
+					/>
+					<Route
+						path='/mapping/:id'
+						element={
+							<RequireAuth result={result}>
+						<ShowMap msgAlert={msgAlert} updateMap={function (): void {
+									throw new Error('Function not implemented.')
+								} } map={null}   />
+						</RequireAuth>}
+					/>
+					<Route
 						path='/sign-out'
 						element={
 						<RequireAuth result={result}>
@@ -151,7 +172,7 @@ const App: React.FC<componentInterface> = () => {
 					/>
 					<Route
 						path='/sign-in'
-						element={<SignIn msgAlert={msgAlert} setUser={setUser} />}
+						element={<SignIn msgAlert={msgAlert} setUser={setUser} user={undefined} />}
 					/>
 				</Routes>
 				</div>
