@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import EditCategoryForm from './EditCategoryForm'
 import api from '../../api/payee'
+import { useDispatch } from 'react-redux'
+import { setSnackbar } from '../../features/snackSlice'
 
 
 const EditCategoryModal = (props:any) => {
@@ -11,6 +13,7 @@ const EditCategoryModal = (props:any) => {
     const [category, setCategory] = useState(props.category)
     const [typeUpdate, setTypeUpdate] = useState(null)
     const [categoryUpdate, setCategoryUpdate] = useState<any>('')
+    const dispatch = useDispatch()
 
 const updateObject = {
     name: categoryUpdate,
@@ -25,11 +28,27 @@ const updateObject = {
         setCategoryUpdate(e.target.value)
     }
 
-    const handleSubmit = (e: { preventDefault: () => void }) => {
+    const handleSubmit = async (e: { preventDefault: () => void }) => {
         e.preventDefault()
-        api.put(user, `category/${category.uuid}?with[]=category_type&with[]=parent_category`, updateObject)
-            .then(() => handleClose())
-            .catch()
+        try {
+        const response = await api.put(user, `category/${category.uuid}?with[]=category_type&with[]=parent_category`, updateObject)
+             handleClose()
+             dispatch(
+                setSnackbar(
+                  true,
+                  "success",
+                  response.message.messages[0]
+                )
+              )
+        } catch (error:any) {
+            dispatch(
+                setSnackbar(
+                  true,
+                  "error",
+                  error.response.data.message.messages
+                )
+              )
+        }
     }
 
 

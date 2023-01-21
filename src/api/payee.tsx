@@ -70,6 +70,18 @@ export default {
         return response.data
     },
 
+    async usePost (endpoint: string, data:any) {
+        const response = await axios({
+            url: apiUrl + '/api/' + endpoint,
+            method: 'post',
+            headers: {
+                'api-key': env.apiKey
+            },
+            data: data
+        })
+        return response.data
+    },
+
     async put (user: User["user"], endpoint: string, data: object = {}) {
         const response = await axios({
             url: apiUrl + '/api/' + endpoint,

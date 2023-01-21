@@ -8,54 +8,86 @@ import ReactPaginate from 'react-paginate'
 import './pagination.css'
 import CreateMappingModal from './CreateMappingModal'
 import React from 'react'
+import EditMapModal from './EditMapModal'
 
 interface componentInterface {
-  mapping: [{
+  transactions: [{
         uuid: string,
         name: string
   }] | any,
-  map: {
+  transaction: {
     name: string,
     uuid: string,
     payee: {
       name: string
     }
-  }
+  } | null
 }
 
 
-const IndexMapping: React.FC<componentInterface> = (props) => {
-    const [mapping, setMapping] = useState<componentInterface["mapping"]>(null)
-    const [map, setMap] = useState(props.map)
-    const [search, setSearch ] = useState<any>('')
+const IndexTransactions: React.FC<componentInterface> = (props) => {
+    const [transactions, setTransactions] = useState<componentInterface["mapping"]>(null)
+    const [map, setMap] = useState(null)
+    const [search, setSearch ] = useState<any>({
+      description: '',
+      payee: '',
+      category: ''
+  
+  })
     const [error, setError] = useState(false)
     const [createModalShow, setCreateModalShow] = useState(false)
     const [pageSelect, setPageSelected] = useState(1)
     const [updated, setUpdated] = useState(false)
     const [page, setPage] = useState(3)
+    const [editModalShow, setEditModalShow] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
     const [perPage, setPerPage] = useState<any>(50)
     const [id, setId] = useState(null)
     const result:any = useSelector((state) => state)
     const user = result.user.value[0].user
     const getMapping = async () => {
-      const response = await api.get(user, `mapping?with[]=payee&with[]=category&page=${pageSelect}&per_page=${perPage}`)
+      const response = await api.get(user, `transaction?with[]=payee&with[]=account&with[]=transaction_type&with[]=transaction_status`)
       setMapping(response.data?.results)
       setPage(response.data.last_page)
       setCurrentPage(response.data.current_page)
-      console.log(mapping)
      }
+ 
+     function handlePayeeSearch(e:any) {
+      setSearch({...search, payee: e.target.value})
+    }
+    function handleCategorySearch(e:any) {
+      setSearch({...search, category: e.target.value})
+    }
 
-const checkMapPayee = () => {
-  if(map.payee.name === null) {
-    return <td>No Payee</td>
-  } else {
-    return <td>{map?.payee.name}</td>
-  }
-}
+     const setEdit = (map:any) => { 
+      setMap(map)
+      setEditModalShow(true)
+      return ( 
+        setMap(map),
+        setEditModalShow(true)
+      )    
+    }
+    const closing = () => {
+      setEditModalShow(false)
+      setMap(null)
+    }
 
       const handleChange = (e:any) => {
-        setSearch(e.target.value)
+        setSearch((prevCar: any) => {
+          let updatedValue = e.target.value
+          const updatedName = e.target.name
+
+          if (e.target.type === 'number') {
+              updatedValue = parseInt(e.target.value)
+          }
+          const updatedCar = {
+              [updatedName]: updatedValue
+          }
+          return {
+              ...prevCar,
+              ...updatedCar
+          }
+      })
     }
     const handleSubmit = (e: {
      preventDefault: () => any }) => {
@@ -67,7 +99,7 @@ const checkMapPayee = () => {
 
     useEffect( () => {
        getMapping()
-    }, [perPage, createModalShow, pageSelect])
+    }, [perPage, createModalShow, pageSelect, editModalShow])
 
     if (error) {
         return <p>Error!</p>
@@ -76,7 +108,6 @@ const checkMapPayee = () => {
       const handlePageClick = (event:any) => {
         const pageSelected = event.selected + 1
         setPageSelected(pageSelected)
-       getMapping()
       }
     return (
         <>
@@ -89,10 +120,28 @@ const checkMapPayee = () => {
                     <Col>
                       <Form.Control
                           placeholder="Description"
-                          name="name"
-                          id="name"
-                          value={search.name}
+                          name="description"
+                          id="description"
+                          value={search.description}
                           onChange={handleChange}
+                      />
+                      </Col>
+                      <Col>
+                      <Form.Control
+                          placeholder="Payee"
+                          name="payee"
+                          id="payee"
+                          value={search.payee}
+                          onChange={handlePayeeSearch}
+                      />
+                      </Col>
+                      <Col>
+                      <Form.Control
+                          placeholder="Category"
+                          name="category"
+                          id="category"
+                          value={search.account}
+                          onChange={handleCategorySearch}
                       />
                       </Col>
                       
@@ -117,11 +166,9 @@ const checkMapPayee = () => {
         <tbody>
     {    mapping?.map((map:any) => (
                    
-                   <tr>
-                    <td>
-                   <Link to={`/payees/${map.uuid}`}> 
+                   <tr key={map.uuid}>
+                    <td onClick={() => setEdit(map)}>
                         {map.description}
-                   </Link>
                    </td>
                    <td>{map?.payee?.name}</td>
                    <td>{
@@ -175,6 +222,17 @@ const checkMapPayee = () => {
                 triggerRefresh={() => setUpdated(prev => !prev)}
                 handleClose={() => setCreateModalShow(false)}
             />
+
+{ map &&
+            <EditMapModal
+                user={user}
+                map={map}
+                closing={closing}
+                show={editModalShow}
+                triggerRefresh={() => setUpdated(prev => !prev)}
+                handleClose={() => closing()}
+            />
+          }
       </>  
     )
     
@@ -182,4 +240,4 @@ const checkMapPayee = () => {
 
 
 
-export default IndexMapping
+export default IndexTransactions

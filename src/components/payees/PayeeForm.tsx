@@ -4,6 +4,8 @@ import {
     Button,
     Container
 } from 'react-bootstrap'
+import { useSelector } from 'react-redux'
+import { deletePayee } from '../../api/payee'
 
 
 interface componentInterface {
@@ -13,12 +15,20 @@ interface componentInterface {
     },
     handleChange: any,
     handleSubmit: any,
-    heading: string
+    heading: string,
+    handleClose: any
     
 }
 
 const PayeeForm: React.FC<componentInterface> = (props) => {
-    const { payee, handleChange, handleSubmit, heading } = props
+    const { payee, handleChange, handleSubmit, heading, handleClose } = props
+    const result:any = useSelector((state) => state)
+    const user = result.user.value[0].user
+
+    const deleteThePayee = () => {
+        deletePayee(user, `payee/${payee?.uuid}`)
+            .then(() => handleClose())
+    }
 
     return (
         <Container className="justify-content-center">
@@ -32,6 +42,9 @@ const PayeeForm: React.FC<componentInterface> = (props) => {
                     value={payee.name}
                     onChange={handleChange}
                 />
+                 <Button onClick={() => deleteThePayee()}
+                                    className="m-2"
+                                    variant="warning">Delete Category</Button>
                 <Button type="submit">Submit</Button>
             </Form>
         </Container>

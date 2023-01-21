@@ -7,7 +7,7 @@ import {
 
 
 interface componentInterface {
-    map: {
+    payee: {
         uuid: string,
         name: string
     },
@@ -17,8 +17,8 @@ interface componentInterface {
     
 }
 
-const MapForm: React.FC<componentInterface> = (props) => {
-    const { map, handleChange, handleSubmit, heading } = props
+const PayeeForm: React.FC<componentInterface> = (props) => {
+    const { payee, handleChange, handleSubmit, heading } = props
 
     return (
         <Container className="justify-content-center">
@@ -26,10 +26,9 @@ const MapForm: React.FC<componentInterface> = (props) => {
             <Form onSubmit={handleSubmit}>
                 <Form.Label htmlFor="name">Name</Form.Label>
                 <Form.Control
-                    placeholder="Change name here"
+                    placeholder="Name"
                     name="name"
                     id="name"
-                    value={map.name}
                     onChange={handleChange}
                 />
                 <Button type="submit">Submit</Button>
@@ -38,4 +37,4 @@ const MapForm: React.FC<componentInterface> = (props) => {
     )
 }
 
-export default MapForm
+export default PayeeForm

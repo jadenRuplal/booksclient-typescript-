@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { Modal } from 'react-bootstrap'
-import AccountForm from './AccountForm'
+import AccountForm from './EditAccountForm'
 import api from '../../api/payee'
 import { updatePayeeSuccess, updatePayeeFailure } from '../shared/AutoDismissAlert/messages'
+import { useDispatch } from 'react-redux'
+import { setSnackbar } from '../../features/snackSlice'
 
 
 const EditAccountModal = (props:any) => {
@@ -10,33 +12,45 @@ const EditAccountModal = (props:any) => {
         user, show, handleClose, msgAlert
     } = props
     const [account, setAccount] = useState(props.account)
+    const [typeUpdate, setTypeUpdate] = useState('')
+    const [nameUpdate, setNameUpdate] = useState('')
+    const dispatch = useDispatch()
 
+    const handleChange = (e:any) => {
+        setNameUpdate(e.target.value)
+    }
+    const handleSelect = (data:any) => {
+        setTypeUpdate(data.value);
+      }
 
-    const handleChange = (e: { target: { value: string; name: any; type: string } }) => {
-        setAccount((prevAccount: any) => {
-            let updatedValue:any = e.target.value
-            const updatedName = e.target.name
-
-            if (e.target.type === 'number') {
-                updatedValue = parseInt(e.target.value)
-            }
-
-            const updatedAccount = {
-                [updatedName]: updatedValue
-            }
-            return {
-                ...prevAccount,
-                ...updatedAccount
-            }
-        })
+    const editAccount = {
+        name: nameUpdate,
+        account_type: typeUpdate
     }
 
-    const handleSubmit = (e: { preventDefault: () => void }) => {
+    const handleSubmit = async (e: { preventDefault: () => void }) => {
         e.preventDefault()
-        api.put(user, `account/${account.uuid}?with[]=account_type`, account)
-            .then(() => handleClose())
+      try {
+        const response = await api.put(user, `account/${account.uuid}?with[]=account_type`, editAccount)
+            handleClose()
+            dispatch(
+                setSnackbar(
+                  true,
+                  "success",
+                  response.message.messages[0]
+                )
+              )
+      } catch (error:any) {
+        dispatch(
+            setSnackbar(
+              true,
+              "error",
+              error.response.data.message.messages
+            )
+          )
+      }
     }
-
+   
 
     return (
         <Modal show={show} onHide={handleClose}>
@@ -46,6 +60,8 @@ const EditAccountModal = (props:any) => {
                     account={account}
                     handleChange={handleChange}
                     handleSubmit={handleSubmit}
+                    handleSelect={handleSelect}
+                    handleClose={handleClose}
                     heading="Update Account"
 
                 />

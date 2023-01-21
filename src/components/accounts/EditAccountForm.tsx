@@ -1,49 +1,46 @@
-
-import React, { useState } from 'react'
+import React from 'react'
 import {
     Form,
     Button,
     Container
 } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import Select, { SelectInstance } from 'react-select'
+import Select from 'react-select'
 import { deletePayee } from '../../api/payee'
 
 
 interface componentInterface {
-    category: {
-        category_type: any,
-        uuid: string,
-        name: string
+    account: {
+        account_type: {
+            display_name: string
+        },
+        last4: number,
+        name: string,
+        uuid:number
     },
-    categoryUpdate:any,
     handleChange: any,
     handleSubmit: any,
     heading: string,
-    createCategoryName: any,
     handleSelect: any,
-    selectedOptions: any,
-    typeUpdate: any,
     handleClose: any
-    
     
 }
 
-const EditCategoryForm: React.FC<componentInterface> = (props) => {
-    const {  handleChange, handleSubmit, heading, categoryUpdate, handleSelect, category, typeUpdate, handleClose} = props
+const AccountForm: React.FC<componentInterface> = (props) => {
+    const { account, handleChange, handleSubmit, heading, handleSelect, handleClose } = props
     const result:any = useSelector((state) => state)
     const user = result.user.value[0].user
-    const categoryOptions = result.option.value[0].options.data.category_type
+    const categoryOptions = result.option.value[0].options.data.account_type
     const optionType = () => {
         return( categoryOptions?.map((option:any) => (
            {value:`${option.name}`, label: `${option.display_name}`}
         )
     ))
         }
-        const deleteTheCategory = () => {
-            deletePayee(user, `category/${category?.uuid}`)
-             handleClose()
+
+        const deleteThePayee = () => {
+            deletePayee(user, `account/${account?.uuid}`)
+                .then(() => handleClose())
         }
 
     return (
@@ -52,17 +49,18 @@ const EditCategoryForm: React.FC<componentInterface> = (props) => {
             <Form onSubmit={handleSubmit}>
                 <Form.Label htmlFor="name">Name</Form.Label>
                 <Form.Control
-                    placeholder={category.name}
-                    value={categoryUpdate}
+                    placeholder={account.name}
+                    name="name"
+                    id="name"
                     onChange={handleChange}
                     required
                 />
-                <Form.Label htmlFor="type">Type</Form.Label>
+                 <Form.Label htmlFor="type">Type</Form.Label>
                 <Select  options={optionType()}
                 onChange={handleSelect}
-                placeholder={category.category_type.display_name}
+                placeholder={account.account_type.display_name}
                 />
-                <Button onClick={() => deleteTheCategory()}
+                 <Button onClick={() => deleteThePayee()}
                                     className="m-2"
                                     variant="warning">Delete Category</Button>
                 <Button type="submit">Submit</Button>
@@ -71,4 +69,4 @@ const EditCategoryForm: React.FC<componentInterface> = (props) => {
     )
 }
 
-export default EditCategoryForm
+export default AccountForm

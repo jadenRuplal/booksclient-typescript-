@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import {  Link } from 'react-router-dom'
 import Table from 'react-bootstrap/Table'
 import {Button, Container, Form, Col, Row} from 'react-bootstrap'
@@ -8,7 +8,8 @@ import ReactPaginate from 'react-paginate'
 import './pagination.css'
 import EditPayeeModal from './EditPayeeModal'
 import CreatePayeeModal from './CreatePayeeModal'
-import React from 'react'
+import { useDispatch } from "react-redux"
+import { setSnackbar } from "../../features/snackSlice"
 
 interface componentInterface {
   payees: [{
@@ -25,6 +26,7 @@ interface componentInterface {
 const IndexPayees: React.FC<componentInterface> = (props) => {
     const [payees, setPayees] = useState<componentInterface["payees"]>(null)
     const [payee, setPayee] = useState<any>(null)
+    const [message, setMessage] = useState<any>(null)
     const [search, setSearch ] = useState<any>('')
     const [editModalShow, setEditModalShow] = useState(false)
     const [error, setError] = useState(false)
@@ -37,11 +39,14 @@ const IndexPayees: React.FC<componentInterface> = (props) => {
     const [id, setId] = useState(null)
     const result:any = useSelector((state) => state)
     const user = result.user.value[0].user
+    const dispatch = useDispatch()
+
     const getPayees = async () => {
       const response = await api.get(user, `payee?filters[search]=${search}&orderby=name&sortby=asc&page=${pageSelect}&per_page=${perPage}`)
       setPayees(response.data?.results)
       setPage(response.data.last_page)
-      setCurrentPage(response.data.current_page)
+      setCurrentPage(response.data.current_page) 
+      setMessage(response.message)  
      }
 
 const setEdit = (pay:any) => { 
@@ -71,7 +76,7 @@ const closing = () => {
 
     useEffect( () => {
        getPayees()
-    }, [perPage, createModalShow, pageSelect, editModalShow])
+    }, [perPage, createModalShow, pageSelect, pageSelect, editModalShow])
 
     if (error) {
         return <p>Error!</p>
@@ -80,7 +85,6 @@ const closing = () => {
       const handlePageClick = (event:any) => {
         const pageSelected = event.selected + 1
         setPageSelected(pageSelected)
-       getPayees()
       }
     return (
         <>
@@ -108,7 +112,6 @@ const closing = () => {
                 </Form>
                 
         </Container>
-          
         </div>
         <Table striped bordered  >
         <thead>
@@ -119,7 +122,7 @@ const closing = () => {
         <tbody>
     {    payees?.map((payee:any) => (
                    
-                   <tr>
+                   <tr key={payee.uuid}>
                     <td onClick={() => setEdit(payee)}>
                         {payee.name}
                    </td>
@@ -177,6 +180,9 @@ const closing = () => {
             <EditPayeeModal
                 user={user}
                 payee={payee}
+                search={search}
+                pageSelect={pageSelect}
+                perPage={perPage}
                 show={editModalShow}
                 triggerRefresh={() => setUpdated(prev => !prev)}
                 handleClose={() => closing()}

@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { useNavigate, useResolvedPath } from 'react-router-dom'
 import api from '../../api/payee'
 import { signIn } from '../../api/auth'
-import messages from '../shared/AutoDismissAlert/messages'
 import {addUser} from '../../features/userSlice'
 
 import Form from 'react-bootstrap/Form'
@@ -29,12 +28,13 @@ const SignIn: React.FC<componentInterface> = (props) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const navigate = useNavigate()
-	const [user , setUser] = useState<any>(null)
 
 	const onSignIn = (event: any) => {
 		event.preventDefault()
-		const { msgAlert } = props
 		const userSet = async (res: any) => {
+			// const jsonUser = JSON.stringify(res.data.data)
+			// sessionStorage.setItem('user', jsonUser)
+			// const getUser:any = sessionStorage.getItem('user')
 			dispatch(addUser({
 				user: res.data.data
 			}))
@@ -46,16 +46,13 @@ const SignIn: React.FC<componentInterface> = (props) => {
 
 
         const credentials = {email, password}
-
+		const UserData = {
+			email: credentials.email,
+			password: credentials.password
+		}
+ 
 		signIn(credentials)
 			.then((res) =>  userSet(res))
-			.then(() =>
-				msgAlert({
-					heading: 'Sign In Success',
-					message: messages.signInSuccess,
-					variant: 'success',
-				})
-			)
 			.then(() => navigate('/'))
 	}
 

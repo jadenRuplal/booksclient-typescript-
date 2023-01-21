@@ -84,7 +84,7 @@ const IndexAccounts: React.FC<componentInterface> = (props) => {
 
     useEffect( () => {
        getAccounts()
-    }, [perPage, createModalShow, pageSelect])
+    }, [perPage, createModalShow, pageSelect, editModalShow])
 
     if (error) {
         return <p>Error!</p>
@@ -140,7 +140,7 @@ const IndexAccounts: React.FC<componentInterface> = (props) => {
         <tbody>
     {    accounts?.map((account:any) => (
                    
-                   <tr>
+                   <tr key={account.uuid}>
                     <td onClick={() => setEdit(account)}> 
                         {account.name}
                    </td>

@@ -3,17 +3,24 @@ import { Modal } from 'react-bootstrap'
 import PayeeForm from './PayeeForm'
 import api from '../../api/payee'
 import { updatePayeeSuccess, updatePayeeFailure } from '../shared/AutoDismissAlert/messages'
+import { useDispatch } from 'react-redux'
+import { setSnackbar } from "../../features/snackSlice"
 
 
 const EditPayeeModal = (props:any) => {
     const {
-        user, show, handleClose, msgAlert
+        user, show, handleClose, msgAlert, perPage, pageSelect, search
     } = props
     const [payee, setPayee] = useState(props.payee)
+    const [payees, setPayees] = useState(props.payees)
+    const dispatch = useDispatch()
+    const getPayees = async () => {
+        const response = await api.get(user, `payee?filters[search]=${search}&orderby=name&sortby=asc&page=${pageSelect}&per_page=${perPage}`)  
+       setPayees(response.data?.results)
+       }
 
 
-
-    console.log('payee in edit', payee)
+ 
 
     const handleChange = (e: { target: { value: string; name: any; type: string } }) => {
         setPayee((prevPayee: any) => {
@@ -34,12 +41,29 @@ const EditPayeeModal = (props:any) => {
         })
     }
 
-    const handleSubmit = (e: { preventDefault: () => void }) => {
+    const handleSubmit = async (e: { preventDefault: () => void }) => {
         e.preventDefault()
-        api.put(user, `payee/${payee.uuid}`, payee)
-            .then(() => handleClose())
+       
+       try {
+        const response = await api.put(user, `payee/${payee.uuid}`, payee)
+                dispatch(
+                    setSnackbar(
+                      true,
+                      "success",
+                      response.message.messages[0]
+                    )
+                  )
+                handleClose()
+    } catch (error:any) {
+        dispatch(
+                    setSnackbar(
+                      true,
+                      "error",
+                      error.response.data.message.messages
+                    )
+                  )
     }
-
+    } 
 
     return (
         <Modal show={show} onHide={handleClose}>
@@ -49,6 +73,7 @@ const EditPayeeModal = (props:any) => {
                     payee={payee}
                     handleChange={handleChange}
                     handleSubmit={handleSubmit}
+                    handleClose={handleClose}
                     heading="Update Payee"
 
                 />

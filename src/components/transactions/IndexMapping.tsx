@@ -6,88 +6,99 @@ import { useSelector } from 'react-redux'
 import api from '../../api/payee'
 import ReactPaginate from 'react-paginate'
 import './pagination.css'
-import CreateCategoryModal from './CreateCategoryModal'
+import CreateMappingModal from './CreateMappingModal'
 import React from 'react'
-import EditCategoryModal from './EditCategoryModal'
-import Select from 'react-select'
+import EditMapModal from './EditMapModal'
 
 interface componentInterface {
-  categories: [{
+  mapping: [{
         uuid: string,
         name: string
   }] | any,
-  category: {
+  map: {
     name: string,
-    uuid: string
-  }
+    uuid: string,
+    payee: {
+      name: string
+    }
+  } | null
 }
 
 
-const IndexCategories: React.FC<componentInterface> = (props) => {
-    const [categories, setCategories] = useState<componentInterface["categories"]>(null)
-    const [category, setCategory] = useState(null)
-    const [createCategory, setCreateCategory] = useState({
-      name: '',
-      type: ''
-    })
-    const [search, setSearch ] = useState<any>("")
-    const [type, setType] = useState('')
+const IndexMapping: React.FC<componentInterface> = (props) => {
+    const [mapping, setMapping] = useState<componentInterface["mapping"]>(null)
+    const [map, setMap] = useState(null)
+    const [search, setSearch ] = useState<any>({
+      description: '',
+      payee: '',
+      category: ''
+  
+  })
     const [error, setError] = useState(false)
-    const [editModalShow, setEditModalShow] = useState(false)
     const [createModalShow, setCreateModalShow] = useState(false)
     const [pageSelect, setPageSelected] = useState(1)
     const [updated, setUpdated] = useState(false)
     const [page, setPage] = useState(3)
+    const [editModalShow, setEditModalShow] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
     const [perPage, setPerPage] = useState<any>(50)
+    const [id, setId] = useState(null)
     const result:any = useSelector((state) => state)
     const user = result.user.value[0].user
-    const categoryOptions = result.option.value[0].options.data.category_type
-    const getCategories = async () => {
-      const response = await api.get(user, `category?filters[search]=${search}&filters[category_type.name]=${type}&orderby=name&sortby=asc&page=${pageSelect}&per_page=${perPage}&with[]=category_type&with[]=parent_category`)
-      setCategories(response.data?.results)
+    const getMapping = async () => {
+      const response = await api.get(user, `mapping?filters[description]=${search.description}&filters[payee.name]=${search.payee}&filters[category.name]=${search.category}&with[]=payee&with[]=category&page=${pageSelect}&per_page=${perPage}`)
+      setMapping(response.data?.results)
       setPage(response.data.last_page)
       setCurrentPage(response.data.current_page)
      }
-
-     const optionType = () => {
-      return(
-        categoryOptions?.map((option:any) => (
-         {value:`${option.name}`, label: `${option.display_name}`}
-          )
-        )
-        )
-  }
-
-     const closing = () => {
-      setEditModalShow(false)
-      setCategory(null)
+ 
+     function handlePayeeSearch(e:any) {
+      setSearch({...search, payee: e.target.value})
+    }
+    function handleCategorySearch(e:any) {
+      setSearch({...search, category: e.target.value})
     }
 
-    const setEdit = (cat:any) => { 
-      setCategory(cat)
+     const setEdit = (map:any) => { 
+      setMap(map)
       setEditModalShow(true)
-      return   ( 
-        setCategory(cat),
-        setEditModalShow(true)) 
-    } 
+      return ( 
+        setMap(map),
+        setEditModalShow(true)
+      )    
+    }
+    const closing = () => {
+      setEditModalShow(false)
+      setMap(null)
+    }
 
-    const handleChange = (e:any) => {
-      setSearch(e.target.value)
+      const handleChange = (e:any) => {
+        setSearch((prevCar: any) => {
+          let updatedValue = e.target.value
+          const updatedName = e.target.name
+
+          if (e.target.type === 'number') {
+              updatedValue = parseInt(e.target.value)
+          }
+          const updatedCar = {
+              [updatedName]: updatedValue
+          }
+          return {
+              ...prevCar,
+              ...updatedCar
+          }
+      })
     }
     const handleSubmit = (e: {
      preventDefault: () => any }) => {
         e.preventDefault()
-           getCategories()
+           getMapping()
     }
-    
-    function handleSelect(data:any) {
-      setType(data.value)
-    }
+       
       
 
     useEffect( () => {
-       getCategories()
+       getMapping()
     }, [perPage, createModalShow, pageSelect, editModalShow])
 
     if (error) {
@@ -108,22 +119,36 @@ const IndexCategories: React.FC<componentInterface> = (props) => {
                   <Row>
                     <Col>
                       <Form.Control
-                          placeholder="Search Names"
-                          id="name"
-                          value={search}
+                          placeholder="Description"
+                          name="description"
+                          id="description"
+                          value={search.description}
                           onChange={handleChange}
                       />
                       </Col>
                       <Col>
-                      <Select  options={optionType()}
-                          onChange={handleSelect}
-                          placeholder='Select Type'  
+                      <Form.Control
+                          placeholder="Payee"
+                          name="payee"
+                          id="payee"
+                          value={search.payee}
+                          onChange={handlePayeeSearch}
                       />
                       </Col>
+                      <Col>
+                      <Form.Control
+                          placeholder="Category"
+                          name="category"
+                          id="category"
+                          value={search.account}
+                          onChange={handleCategorySearch}
+                      />
+                      </Col>
+                      
                       <Col><Button type="submit" variant='primary'>Submit</Button></Col>
                       <Col><Button onClick={() => setCreateModalShow(true)}
                                     className="m-2"
-                                    variant="primary">Create Category</Button></Col>
+                                    variant="primary">Create Map</Button></Col>
                   </Row>
                 </Form>
                 
@@ -133,20 +158,21 @@ const IndexCategories: React.FC<componentInterface> = (props) => {
         <Table striped bordered  >
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Type</th>
+            <th>Description</th>
+            <th>Payee</th>
+            <th>Category</th>
           </tr>
         </thead>
         <tbody>
-    {    categories?.map((category:any) => (
+    {    mapping?.map((map:any) => (
                    
-                   <tr key={category.uuid}>
-                    <td onClick={() => setEdit(category)}>
-                        {category.name}
+                   <tr key={map.uuid}>
+                    <td onClick={() => setEdit(map)}>
+                        {map.description}
                    </td>
-                   <td style={{color:typeColor(category)}}>
-                    {category.category_type.display_name}
-                   </td>
+                   <td>{map?.payee?.name}</td>
+                   <td>{
+                   map?.category?.name}</td>
                     </tr> 
                 )
             )
@@ -189,18 +215,19 @@ const IndexCategories: React.FC<componentInterface> = (props) => {
         <option value="100">100</option>
       </select>
      
-      <CreateCategoryModal
+      <CreateMappingModal
                 user={user}
-                createCategory={createCategory}
+                map={map}
                 show={createModalShow}
                 triggerRefresh={() => setUpdated(prev => !prev)}
                 handleClose={() => setCreateModalShow(false)}
             />
 
-      { category &&
-            <EditCategoryModal
+{ map &&
+            <EditMapModal
                 user={user}
-                category={category}
+                map={map}
+                closing={closing}
                 show={editModalShow}
                 triggerRefresh={() => setUpdated(prev => !prev)}
                 handleClose={() => closing()}
@@ -211,14 +238,6 @@ const IndexCategories: React.FC<componentInterface> = (props) => {
     
 }
 
-const typeColor = (category:any) => {
-  if (category.category_type.name === 'expense') {
-    return "red"
-  } else if (category.category_type.name === 'income') {
-    return "green"
-  }
-
-}
 
 
-export default IndexCategories
+export default IndexMapping

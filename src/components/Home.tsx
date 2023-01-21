@@ -7,14 +7,14 @@ import api from '../api/payee'
 
 const Home = (props:any) => {
   const result:any = useSelector((state) => state)
-  const user:any = result.user.value[0].user
+  // const user:any = result.user.value[0].user
 
+console.log(result)
 
-  
   return (
     <>
       <h2>Home Page</h2>
-      <p>Hello {user?.first_name}</p>
+      <p>Hello </p>
     </>
   );
 };

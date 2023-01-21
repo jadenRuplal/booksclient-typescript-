@@ -20,6 +20,7 @@ import ShowAccount from './components/accounts/ShowAccount'
 import ShowCategory from './components/category/ShowCategory'
 import IndexCategories from './components/category/Indexcategories'
 import LeftSidebar from './sidebar/LeftSidebar'
+import Snackbars from './components/shared/SnackBar'
 const styles:any = {
 	float: 'left',
 	display: 'table-cell',
@@ -83,6 +84,7 @@ const App: React.FC<componentInterface> = () => {
 
 		return (
 			<>
+			<Snackbars/>
 				<div style={styles}>
 					<h2 style={{position:'fixed'}}>myBooks</h2>
 					<LeftSidebar />
