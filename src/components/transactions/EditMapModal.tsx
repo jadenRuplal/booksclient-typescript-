@@ -8,13 +8,13 @@ const EditMapModal = (props:any) => {
     const {
         user, show, handleClose, closing
     } = props
-    const [map, setMap] = useState(props.map)
+    const [transaction, setMap] = useState(props.transaction)
     const [payeeTypeUpdate, setPayeeTypeUpdate] = useState({})
     const [categoryTypeUpdate, setCategoryTypeUpdate] = useState(null)
     const [mapUpdate, setMapUpdate] = useState<any>({
-        description: map?.description,
-        payee: map?.payee?.uuid,
-        category: map?.category?.uuid
+        description: '',
+        payee: '',
+        category: ''
     })
 
     function handlePayeeSelect(data:any) {
@@ -46,7 +46,7 @@ const EditMapModal = (props:any) => {
 
     const handleSubmit = (e: { preventDefault: () => void }) => {
         e.preventDefault()
-        api.put(user, `mapping/${map.uuid}`, mapUpdate)
+        api.put(user, `transaction/${transaction.uuid}`, mapUpdate)
         handleClose()
           
     }
@@ -57,7 +57,7 @@ const EditMapModal = (props:any) => {
             <Modal.Header closeButton />
             <Modal.Body>
                 <EditMapForm
-                    map={map}
+                    map={transaction}
                     mapUpdate={mapUpdate}
                     handleClose={handleClose}
                     handleChange={handleChange}

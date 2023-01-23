@@ -3,11 +3,11 @@ import { useNavigate, useResolvedPath } from 'react-router-dom'
 import api from '../../api/payee'
 import { signIn } from '../../api/auth'
 import {addUser} from '../../features/userSlice'
-
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { useDispatch } from 'react-redux'
 import { addOption } from '../../features/optionSlice'
+import { setSnackbar } from '../../features/snackSlice'
 
 
 type Message = {
@@ -54,6 +54,14 @@ const SignIn: React.FC<componentInterface> = (props) => {
 		signIn(credentials)
 			.then((res) =>  userSet(res))
 			.then(() => navigate('/'))
+			.catch((error) =>  
+			dispatch(
+				setSnackbar(
+				  true,
+				  "error",
+				  error.response.data.message.messages
+				)
+			  ))
 	}
 
     return (

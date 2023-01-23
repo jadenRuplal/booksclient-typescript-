@@ -11,11 +11,11 @@ import React from 'react'
 import EditMapModal from './EditMapModal'
 
 interface componentInterface {
-  transactions: [{
+  mapping: [{
         uuid: string,
         name: string
   }] | any,
-  transaction: {
+  map: {
     name: string,
     uuid: string,
     payee: {
@@ -25,8 +25,8 @@ interface componentInterface {
 }
 
 
-const IndexTransactions: React.FC<componentInterface> = (props) => {
-    const [transactions, setTransactions] = useState<componentInterface["mapping"]>(null)
+const IndexMapping: React.FC<componentInterface> = (props) => {
+    const [mapping, setMapping] = useState<componentInterface["mapping"]>(null)
     const [map, setMap] = useState(null)
     const [search, setSearch ] = useState<any>({
       description: '',
@@ -46,7 +46,7 @@ const IndexTransactions: React.FC<componentInterface> = (props) => {
     const result:any = useSelector((state) => state)
     const user = result.user.value[0].user
     const getMapping = async () => {
-      const response = await api.get(user, `transaction?with[]=payee&with[]=account&with[]=transaction_type&with[]=transaction_status`)
+      const response = await api.get(user, `mapping?filters[description]=${search.description}&filters[payee.name]=${search.payee}&filters[category.name]=${search.category}&with[]=payee&with[]=category&page=${pageSelect}&per_page=${perPage}`)
       setMapping(response.data?.results)
       setPage(response.data.last_page)
       setCurrentPage(response.data.current_page)
@@ -57,6 +57,7 @@ const IndexTransactions: React.FC<componentInterface> = (props) => {
     }
     function handleCategorySearch(e:any) {
       setSearch({...search, category: e.target.value})
+      
     }
 
      const setEdit = (map:any) => { 
@@ -240,4 +241,4 @@ const IndexTransactions: React.FC<componentInterface> = (props) => {
 
 
 
-export default IndexTransactions
+export default IndexMapping

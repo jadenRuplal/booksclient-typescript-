@@ -5,22 +5,17 @@ import { v4 as uuid } from 'uuid'
 import { useSelector } from 'react-redux'
 import './index.css'
 import './assets/scss/Theme.scss'
-// import AuthenticatedRoute from './components/shared/AuthenticatedRoute'
-import AutoDismissAlert from './components/shared/AutoDismissAlert/AutoDismissAlert'
 import RequireAuth from './components/shared/RequireAuth'
 import Home from './components/Home'
 import IndexMapping from './components/mapping/IndexMapping'
-import ShowMap from './components/mapping/ShowMap'
 import SignIn from './components/auth/SignIn'
 import SignOut from './components/auth/SignOut'
 import IndexPayees from './components/payees/IndexPayees'
-import ShowPayee from './components/payees/ShowPayee'
 import IndexAccounts from './components/accounts/IndexAccounts'
-import ShowAccount from './components/accounts/ShowAccount'
-import ShowCategory from './components/category/ShowCategory'
 import IndexCategories from './components/category/Indexcategories'
 import LeftSidebar from './sidebar/LeftSidebar'
 import Snackbars from './components/shared/SnackBar'
+import IndexTransactions from './components/transactions/IndexTransactions'
 const styles:any = {
 	float: 'left',
 	display: 'table-cell',
@@ -103,30 +98,12 @@ const App: React.FC<componentInterface> = () => {
 						}}/>}
 					/>
 					<Route
-						path='/payees/:id'
-						element={
-							<RequireAuth result={result}>
-						<ShowPayee msgAlert={msgAlert}  updatePayee={function (): void {
-							throw new Error('Function not implemented.')
-						} } payee={null} />
-						</RequireAuth>}
-					/>
-					<Route
 						path='/accounts'
 						element={<IndexAccounts   accounts={null} account={{
 							name: '',
 							uuid: '',
 							last4: 0
 						}} />}
-					/>
-					<Route
-						path='/accounts/:id'
-						element={
-							<RequireAuth result={result}>
-						<ShowAccount msgAlert={msgAlert}  updateAccount={function (): void {
-							throw new Error('Function not implemented.')
-						} } payee={null} />
-						</RequireAuth>}
 					/>
 					<Route
 						path='/categories'
@@ -136,33 +113,12 @@ const App: React.FC<componentInterface> = () => {
 						}}/>}
 					/>
 					<Route
-						path='/categories/:id'
-						element={
-							<RequireAuth result={result}>
-						<ShowCategory msgAlert={msgAlert}  updatePayee={function (): void {
-							throw new Error('Function not implemented.')
-						} } category={null} />
-						</RequireAuth>}
-					/>
-					<Route
 						path='/mapping'
-						element={<IndexMapping   
-							mapping={undefined} map={{
-								name: '',
-								uuid: '',
-								payee: {
-									name: ''
-								}
-							}}							 />}
+						element={<IndexMapping mapping={undefined} map={null}		 />}
 					/>
 					<Route
-						path='/mapping/:id'
-						element={
-							<RequireAuth result={result}>
-						<ShowMap msgAlert={msgAlert} updateMap={function (): void {
-									throw new Error('Function not implemented.')
-								} } map={null}   />
-						</RequireAuth>}
+						path='/transactions'
+						element={<IndexTransactions transactions={undefined} transaction={null} 	 />}
 					/>
 					<Route
 						path='/sign-out'
@@ -178,16 +134,6 @@ const App: React.FC<componentInterface> = () => {
 					/>
 				</Routes>
 				</div>
-				{/* {msgAlerts.map((msgAlert:any) => (
-					<AutoDismissAlert
-						key={msgAlert.id}
-						heading={msgAlert.heading}
-						variant={msgAlert.variant}
-						message={msgAlert.message}
-						id={msgAlert.id}
-						deleteAlert={deleteAlert}
-					/>
-				))} */}
 			</>
 		)
 }

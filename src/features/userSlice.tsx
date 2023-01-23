@@ -26,10 +26,13 @@ export const userSlice = createSlice({
         addUser: (state, action: PayloadAction<User>) => {
             state.value.push(action.payload)
         },
+        clearUser: (state) => {
+            state.value = []
+        }
         
     }, 
 })
 
 
-export const { addUser } = userSlice.actions
+export const { addUser, clearUser } = userSlice.actions
 export default userSlice.reducer

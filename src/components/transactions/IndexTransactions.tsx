@@ -11,11 +11,11 @@ import React from 'react'
 import EditMapModal from './EditMapModal'
 
 interface componentInterface {
-  mapping: [{
+  transactions: [{
         uuid: string,
         name: string
   }] | any,
-  map: {
+  transaction: {
     name: string,
     uuid: string,
     payee: {
@@ -25,13 +25,13 @@ interface componentInterface {
 }
 
 
-const IndexMapping: React.FC<componentInterface> = (props) => {
-    const [mapping, setMapping] = useState<componentInterface["mapping"]>(null)
-    const [map, setMap] = useState(null)
+const IndexTransactions: React.FC<componentInterface> = (props) => {
+    const [transactions, setTransactions] = useState<componentInterface["transactions"]>(null)
+    const [transaction, setTransaction] = useState(null)
     const [search, setSearch ] = useState<any>({
-      description: '',
+      date: '',
       payee: '',
-      category: ''
+      account: ''
   
   })
     const [error, setError] = useState(false)
@@ -45,9 +45,9 @@ const IndexMapping: React.FC<componentInterface> = (props) => {
     const [id, setId] = useState(null)
     const result:any = useSelector((state) => state)
     const user = result.user.value[0].user
-    const getMapping = async () => {
-      const response = await api.get(user, `mapping?filters[description]=${search.description}&filters[payee.name]=${search.payee}&filters[category.name]=${search.category}&with[]=payee&with[]=category&page=${pageSelect}&per_page=${perPage}`)
-      setMapping(response.data?.results)
+    const getTransactions = async () => {
+      const response = await api.get(user, `transaction?with[]=payee&with[]=account&with[]=transaction_type&with[]=transaction_status&page=${pageSelect}&per_page=${perPage}`)
+      setTransactions(response.data?.results)
       setPage(response.data.last_page)
       setCurrentPage(response.data.current_page)
      }
@@ -55,21 +55,21 @@ const IndexMapping: React.FC<componentInterface> = (props) => {
      function handlePayeeSearch(e:any) {
       setSearch({...search, payee: e.target.value})
     }
-    function handleCategorySearch(e:any) {
-      setSearch({...search, category: e.target.value})
+    function handleAccountSearch(data:any) {
+      setSearch({...search, account: data.value})
     }
 
-     const setEdit = (map:any) => { 
-      setMap(map)
+     const setEdit = (transaction:any) => { 
+      setTransaction(transaction)
       setEditModalShow(true)
       return ( 
-        setMap(map),
+        setTransaction(transaction),
         setEditModalShow(true)
       )    
     }
     const closing = () => {
       setEditModalShow(false)
-      setMap(null)
+      setTransaction(null)
     }
 
       const handleChange = (e:any) => {
@@ -83,6 +83,7 @@ const IndexMapping: React.FC<componentInterface> = (props) => {
           const updatedCar = {
               [updatedName]: updatedValue
           }
+          console.log(search)
           return {
               ...prevCar,
               ...updatedCar
@@ -92,13 +93,13 @@ const IndexMapping: React.FC<componentInterface> = (props) => {
     const handleSubmit = (e: {
      preventDefault: () => any }) => {
         e.preventDefault()
-           getMapping()
+           getTransactions()
     }
        
       
 
     useEffect( () => {
-       getMapping()
+       getTransactions()
     }, [perPage, createModalShow, pageSelect, editModalShow])
 
     if (error) {
@@ -119,10 +120,10 @@ const IndexMapping: React.FC<componentInterface> = (props) => {
                   <Row>
                     <Col>
                       <Form.Control
-                          placeholder="Description"
-                          name="description"
-                          id="description"
-                          value={search.description}
+                          type='date'
+                          placeholder="Date"
+                          name="date"
+                          id="date"
                           onChange={handleChange}
                       />
                       </Col>
@@ -141,7 +142,7 @@ const IndexMapping: React.FC<componentInterface> = (props) => {
                           name="category"
                           id="category"
                           value={search.account}
-                          onChange={handleCategorySearch}
+                          onChange={handleAccountSearch}
                       />
                       </Col>
                       
@@ -158,21 +159,24 @@ const IndexMapping: React.FC<componentInterface> = (props) => {
         <Table striped bordered  >
         <thead>
           <tr>
-            <th>Description</th>
+            <th>Date</th>
+            <th>Amount</th>
             <th>Payee</th>
-            <th>Category</th>
+            <th>Type</th>
           </tr>
         </thead>
         <tbody>
-    {    mapping?.map((map:any) => (
+    {    transactions?.map((transaction:any) => (
                    
-                   <tr key={map.uuid}>
-                    <td onClick={() => setEdit(map)}>
-                        {map.description}
+                   <tr key={transaction.uuid}>
+                    <td onClick={() => setEdit(transaction)}>
+                        {transaction.transaction_date}
                    </td>
-                   <td>{map?.payee?.name}</td>
+                   <td>{transaction?.amount}</td>
                    <td>{
-                   map?.category?.name}</td>
+                   transaction?.payee?.name}</td>
+                   <td>{
+                   transaction?.transaction_type?.display_name}</td>
                     </tr> 
                 )
             )
@@ -217,16 +221,16 @@ const IndexMapping: React.FC<componentInterface> = (props) => {
      
       <CreateMappingModal
                 user={user}
-                map={map}
+                transaction={transaction}
                 show={createModalShow}
                 triggerRefresh={() => setUpdated(prev => !prev)}
                 handleClose={() => setCreateModalShow(false)}
             />
 
-{ map &&
+{ transaction &&
             <EditMapModal
                 user={user}
-                map={map}
+                transaction={transaction}
                 closing={closing}
                 show={editModalShow}
                 triggerRefresh={() => setUpdated(prev => !prev)}
@@ -240,4 +244,4 @@ const IndexMapping: React.FC<componentInterface> = (props) => {
 
 
 
-export default IndexMapping
+export default IndexTransactions

@@ -47,6 +47,15 @@ const MENU_ITEMS: MenuItemTypes[] = [
         badge: { variant: 'success', text: '' },
         url: '/mapping',
     },
+    {
+        key: 'transactions',
+        label: 'Transactions',
+        isTitle: false,
+        icon: 'mdi mdi-view-dashboard-outline',
+        badge: { variant: 'success', text: '' },
+        url: '/transactions',
+    },
+
 
     { key: 'apps', label: 'Apps', isTitle: true },
     {

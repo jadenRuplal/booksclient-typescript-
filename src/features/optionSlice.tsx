@@ -25,10 +25,13 @@ export const optionSlice = createSlice({
         addOption: (state, action: PayloadAction<Option>) => {
             state.value.push(action.payload)
         },
+        clearOption: (state) => {
+            state.value=[]
+        }
         
     }, 
 })
 
 
-export const { addOption } = optionSlice.actions
+export const { addOption, clearOption } = optionSlice.actions
 export default optionSlice.reducer
