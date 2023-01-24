@@ -16,6 +16,7 @@ import IndexCategories from './components/category/Indexcategories'
 import LeftSidebar from './sidebar/LeftSidebar'
 import Snackbars from './components/shared/SnackBar'
 import IndexTransactions from './components/transactions/IndexTransactions'
+import SideBar from './SidebarCollapse/SideBar'
 const styles:any = {
 	float: 'left',
 	display: 'table-cell',
@@ -80,45 +81,54 @@ const App: React.FC<componentInterface> = () => {
 		return (
 			<>
 			<Snackbars/>
-				<div style={styles}>
-					<h2 style={{position:'fixed'}}>myBooks</h2>
-					<LeftSidebar />
-				</div>
-				<div style={stylesRoutes}>
+				<>
 				<Routes>
 					<Route path='/' element={
 					<RequireAuth result={result}>
+					<SideBar/>
 					<Home msgAlert={msgAlert} user={user} />
 					</RequireAuth>} />
 					<Route
 						path='/payees'
-						element={<IndexPayees payees={null} payee={{
-							name: '',
-							uuid: ''
-						}}/>}
+						element={
+							<><SideBar /><IndexPayees payees={null} payee={{
+								name: '',
+								uuid: ''
+							}} /></>}
 					/>
 					<Route
 						path='/accounts'
-						element={<IndexAccounts   accounts={null} account={{
-							name: '',
-							uuid: '',
-							last4: 0
-						}} />}
+						element={
+							<>
+								<SideBar />
+								<IndexAccounts accounts={null} account={{
+								name: '',
+								uuid: '',
+								last4: 0
+							}} /></>}
 					/>
 					<Route
 						path='/categories'
-						element={<IndexCategories categories={null} category={{
-							name: '',
-							uuid: ''
-						}}/>}
+						element={
+							<>
+								<SideBar />
+								<IndexCategories categories={null} category={{
+								name: '',
+								uuid: ''
+							}} /></>}
 					/>
 					<Route
 						path='/mapping'
-						element={<IndexMapping mapping={undefined} map={null}		 />}
-					/>
+						element={
+							<>
+								<SideBar />
+								<IndexMapping mapping={undefined} map={null} /></>}
+							/>
 					<Route
 						path='/transactions'
-						element={<IndexTransactions transactions={undefined} transaction={null} 	 />}
+						element={<>
+						<SideBar />
+						<IndexTransactions transactions={undefined} transaction={null} /></>}
 					/>
 					<Route
 						path='/sign-out'
@@ -133,7 +143,7 @@ const App: React.FC<componentInterface> = () => {
 						element={<SignIn msgAlert={msgAlert} setUser={setUser} user={undefined} />}
 					/>
 				</Routes>
-				</div>
+				</>
 			</>
 		)
 }

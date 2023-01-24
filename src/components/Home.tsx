@@ -21,7 +21,7 @@ console.log(result)
     <>
       <h2>Home Page</h2>
       <p>Hello </p>
-      <button onClick={() => clearStore()}></button>
+      <button onClick={() => clearStore()}>Test redux</button>
     </>
   );
 };

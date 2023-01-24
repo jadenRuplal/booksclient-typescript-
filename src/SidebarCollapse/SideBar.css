@@ -1,0 +1,28 @@
+.sidebar {
+    position: fixed;
+    height:100%;
+    background-color: rgb(33, 39, 51);
+    width: 15vw
+}
+
+.sidebar-items {
+    display: flex;
+    flex-direction: column;
+}
+
+.item {
+    display: flex;
+    width: 100%;
+}
+
+.sidebar-items, .item {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.item:hover {
+    background-color: white;
+    color:rgb(33, 39, 51)
+}
