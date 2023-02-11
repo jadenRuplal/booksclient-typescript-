@@ -11,18 +11,25 @@ const EditMapModal = (props:any) => {
     const [transaction, setMap] = useState(props.transaction)
     const [payeeTypeUpdate, setPayeeTypeUpdate] = useState({})
     const [categoryTypeUpdate, setCategoryTypeUpdate] = useState(null)
-    const [mapUpdate, setMapUpdate] = useState<any>({
-        description: '',
-        payee: '',
-        category: ''
+    const [transactionUpdate, setMapUpdate] = useState<any>({
+        transaction_date: transaction?.transaction_date,
+        payee: transaction?.payee?.uuid,
+        account: transaction?.account?.uuid,
+        amount: transaction?.amount
     })
+    console.log(transactionUpdate)
 
     function handlePayeeSelect(data:any) {
-        setMapUpdate({...mapUpdate, payee: data.value})
+        setMapUpdate({...transactionUpdate, payee: data.value})
       }
 
-      function handleCategorySelect(data:any) {
-        setMapUpdate({...mapUpdate, category: data.value})
+      function handleAccountSelect(data:any) {
+        setMapUpdate({...transactionUpdate, account: data.value})
+      }
+
+      function handleDateChange(e:any) {
+        setMapUpdate({...transactionUpdate, date: e.target.value})
+        
       }
 
     const handleChange = (e:any) => {
@@ -46,7 +53,7 @@ const EditMapModal = (props:any) => {
 
     const handleSubmit = (e: { preventDefault: () => void }) => {
         e.preventDefault()
-        api.put(user, `transaction/${transaction.uuid}`, mapUpdate)
+        api.put(user, `transaction/${transaction.uuid}`, transactionUpdate)
         handleClose()
           
     }
@@ -57,14 +64,14 @@ const EditMapModal = (props:any) => {
             <Modal.Header closeButton />
             <Modal.Body>
                 <EditMapForm
-                    map={transaction}
-                    mapUpdate={mapUpdate}
+                    transaction={transaction}
+                    transactionUpdate={transactionUpdate}
                     handleClose={handleClose}
                     handleChange={handleChange}
                     handleSubmit={handleSubmit}
                     handlePayeeSelect={handlePayeeSelect}
-                    handleCategorySelect={handleCategorySelect}
-                    heading="Update Map"
+                    handleCategorySelect={handleDateChange}
+                    heading="Update transaction"
 
                 />
             </Modal.Body>

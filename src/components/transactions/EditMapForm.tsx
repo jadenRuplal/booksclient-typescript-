@@ -10,12 +10,16 @@ import { useSelector } from 'react-redux'
 
 
 interface componentInterface {
-    map: {
+    transaction: {
+        transaction_date: any
         payee: any
         description: string | number 
-        uuid: string,
+        uuid: string
         name: string
         category: {
+            name: string
+        }
+        account: {
             name: string
         }
     },
@@ -24,24 +28,23 @@ interface componentInterface {
     handlePayeeSelect: any,
     handleCategorySelect: any,
     heading: string,
-    mapUpdate: any,
+    transactionUpdate: any,
     handleClose: any
 }
 
-const EditMapForm: React.FC<componentInterface> = (props) => {
-    const { map, handleChange, handleClose, handleSubmit, heading, handlePayeeSelect, handleCategorySelect, mapUpdate } = props
-    const [category, setCategory] = useState<any>(null)
+const EditTransactionForm: React.FC<componentInterface> = (props) => {
+    const { transaction, handleChange, handleClose, handleSubmit, heading, handlePayeeSelect, handleCategorySelect, transactionUpdate } = props
+    const [account, setAccount] = useState<any>(null)
     const [payees, setPayees] = useState<any>(null)
     const [keyDown, setKeyDown] = useState('')
-    const [payeeSearch, setPayeeSearch] = useState<any>('')
-    const [categorySearch, setCategorySearch] = useState('')
+    const [payeeSearch, setPayeeSearch] = useState<any>(null)
+    const [accountSearch, setAccountSearch] = useState(null)
     const result:any = useSelector((state) => state)
     const user = result.user.value[0].user
-    
   
-    const getCategoryData = async () => {
-        const response = await api.get(user, `category?filters[search]=${categorySearch}&&orderby=name&sortby=asc&page=&per_page=&with[]=category_type&with[]=parent_category`)
-            setCategory(response.data?.results)
+    const getAccountData = async () => {
+        const response = await api.get(user, `account?filters[account.name]=${accountSearch}&with[]=account_type`)
+            setAccount(response.data?.results)
        }
 
     const getPayeeData = async () => {
@@ -65,8 +68,8 @@ const payeeKeyDown = (e:any) => {
 }
 
 const categoryKeyDown = (e:any) => {
-    setCategorySearch(e.target.value)
-    setKeyDown('category') 
+    setAccountSearch(e.target.value)
+    setKeyDown('account') 
 }
 
     const payeeOptionType = () => {
@@ -76,15 +79,15 @@ const categoryKeyDown = (e:any) => {
     ))
         }
         
-    const categoryOptionType = () => {
-            return( category?.map((option:any) => (
+    const accountOptionType = () => {
+            return( account?.map((option:any) => (
                {value:`${option.uuid}`, label: `${option.name}`}
             )
         ))
             }
 
-    const deleteTheMap = () => {
-            deletePayee(user, `mapping/${map?.uuid}`)
+    const deleteTheTransaction = () => {
+            deletePayee(user, `transaction/${transaction?.uuid}`)
              handleClose()
             }
 
@@ -92,7 +95,7 @@ const categoryKeyDown = (e:any) => {
            const delayDebounceFn = setTimeout(()=> {
             
             if (keyDown === 'payee') {
-            if (payeeSearch !== '') {
+            if (payeeSearch !== null) {
             getPayeeData()
             } else if (payeeSearch === '') {
                 setPayees(null)
@@ -100,17 +103,17 @@ const categoryKeyDown = (e:any) => {
         }
 
         if(keyDown === 'category') {
-            if (categorySearch != '') {
-                getCategoryData()
-            } else if (categorySearch === '') {
-                setCategory(null)
+            if (accountSearch != null) {
+                getAccountData()
+            } else if (accountSearch === '') {
+                setAccount(null)
             }
         }
 
            }, 1500)
 
            return () => clearTimeout(delayDebounceFn)
-         }, [payeeSearch, categorySearch])
+         }, [payeeSearch, accountSearch])
 
      
 
@@ -118,35 +121,42 @@ const categoryKeyDown = (e:any) => {
         <Container className="justify-content-center">
             <h3>{heading}</h3>
             <Form onSubmit={handleSubmit}>
-                <Form.Label htmlFor="name">Name</Form.Label>
+                <Form.Label htmlFor="date">Date</Form.Label>
                 <Form.Control
-                    placeholder="Change name here"
-                    name="name"
-                    id="name"
-                    defaultValue={map?.description}
-                    value={mapUpdate?.name}
+                    type='date'
+                    name="transaction_date"
+                    id="date"
+                    value={transactionUpdate?.transaction_date}
                     onChange={handleChange}
                 />
                 <Form.Label htmlFor="payee">Payee</Form.Label>
                  <Select  options={payeeOptionType()}
                           onChange={handlePayeeSelect}
-                          defaultInputValue={map?.payee?.name}
-                          value={mapUpdate.payee}
+                          defaultInputValue={transaction?.payee?.name}
+                          value={transactionUpdate.payee}
                           name='payee'
                           id='payee'
                           onKeyDown={(e:any) => payeeKeyDown(e)}
                           
                       />
-                <Form.Label htmlFor="category">Category</Form.Label>
-                <Select  options={categoryOptionType()}
+                <Form.Label htmlFor="category">Account</Form.Label>
+                <Select  options={accountOptionType()}
                           onChange={handleCategorySelect}
-                          defaultInputValue={map?.category?.name}
+                          defaultInputValue={transaction?.account?.name}
                           placeholder='Select Category'
                           onKeyDown={(e:any) => categoryKeyDown(e)}
                           
                       />
+                   <Form.Label htmlFor="amount">Ammount</Form.Label>
+                <Form.Control
+                    type='number'
+                    name="amount"
+                    id="amount"
+                    value={transactionUpdate?.amount}
+                    onChange={handleChange}
+                /> 
                 <Button type="submit">Submit</Button>
-                <Button onClick={() => deleteTheMap()}
+                <Button onClick={() => deleteTheTransaction()}
                         className="m-2"
                         variant="warning">Delete Map
                 </Button>
@@ -155,4 +165,4 @@ const categoryKeyDown = (e:any) => {
     )
 }
 
-export default EditMapForm
+export default EditTransactionForm

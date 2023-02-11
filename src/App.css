@@ -1,0 +1,31 @@
+.main-view {
+	float: left;
+	height: auto;
+	width: 85vw;
+	display: table-cell;
+    transition:  width .25s ease-in-out;
+    background-color: white;
+}
+
+.main-view-collapsed {
+	float: left;
+	height: auto;
+	width: 93vw;
+	display: table-cell;
+    transition:  width .5s ease-in-out;
+    background-color: white;
+}
+
+.div-sidebar {
+    width: 15vw;
+    float: left;
+	display: table-cell;
+	height: 100vh;
+}
+
+.div-sidebar-collapsed {
+    width: 7vw;
+    float: left;
+	display: table-cell;
+	height: 100vh;
+}

@@ -45,6 +45,7 @@ const IndexMapping: React.FC<componentInterface> = (props) => {
     const [id, setId] = useState(null)
     const result:any = useSelector((state) => state)
     const user = result.user.value[0].user
+    const open = result?.sideBar.open
     const getMapping = async () => {
       const response = await api.get(user, `mapping?filters[description]=${search.description}&filters[payee.name]=${search.payee}&filters[category.name]=${search.category}&with[]=payee&with[]=category&page=${pageSelect}&per_page=${perPage}`)
       setMapping(response.data?.results)
@@ -96,6 +97,13 @@ const IndexMapping: React.FC<componentInterface> = (props) => {
            getMapping()
     }
        
+    const checkOpen = (name:string) => {
+      if (open === true) {
+        return name
+      } else if (open === false) {
+        return(name + '-collapsed')
+      }
+    }
       
 
     useEffect( () => {
@@ -193,7 +201,7 @@ const IndexMapping: React.FC<componentInterface> = (props) => {
       <ReactPaginate
         activeClassName={'item active '}
         breakClassName={'item break-me '}
-        containerClassName={'pagination'}
+        containerClassName={checkOpen('pagination')}
         disabledClassName={'disabled-page'}
         breakLabel="..."
         nextClassName={"item next "}

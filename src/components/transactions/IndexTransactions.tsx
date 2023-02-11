@@ -1,14 +1,20 @@
 import { useState, useEffect } from 'react'
 import {  Link } from 'react-router-dom'
 import Table from 'react-bootstrap/Table'
-import {Button, Container, Form, Col, Row} from 'react-bootstrap'
+import { Container, Form, Col, Row} from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import api from '../../api/payee'
 import ReactPaginate from 'react-paginate'
-import './pagination.css'
+import '../css/pagination.css'
+import '../css/transaction.css'
 import CreateMappingModal from './CreateMappingModal'
 import React from 'react'
 import EditMapModal from './EditMapModal'
+import Button from '@mui/material-next/Button';
+import { lightBlue } from '@mui/material/colors'
+
+
+
 
 interface componentInterface {
   transactions: [{
@@ -45,6 +51,7 @@ const IndexTransactions: React.FC<componentInterface> = (props) => {
     const [id, setId] = useState(null)
     const result:any = useSelector((state) => state)
     const user = result.user.value[0].user
+    const open = result?.sideBar.open
     const getTransactions = async () => {
       const response = await api.get(user, `transaction?with[]=payee&with[]=account&with[]=transaction_type&with[]=transaction_status&page=${pageSelect}&per_page=${perPage}`)
       setTransactions(response.data?.results)
@@ -96,7 +103,13 @@ const IndexTransactions: React.FC<componentInterface> = (props) => {
            getTransactions()
     }
        
-      
+    const checkOpen = (name:string) => {
+      if (open === true) {
+        return name
+      } else if (open === false) {
+        return(name + '-collapsed')
+      }
+    }
 
     useEffect( () => {
        getTransactions()
@@ -112,6 +125,10 @@ const IndexTransactions: React.FC<componentInterface> = (props) => {
       }
     return (
         <>
+        <div className='header'>
+          <span className='header-text'>Transactions</span> 
+        <Button variant='outlined' className='header-button'>Add Transaction</Button> 
+        </div>
         <div style={{backgroundColor:'grey', borderRadius:'15px', marginBottom:'10px'}}>
         <Container className="justify-content-center" >
             <h3 style={{textAlign:"center"}}>Filters</h3>
@@ -146,22 +163,23 @@ const IndexTransactions: React.FC<componentInterface> = (props) => {
                       />
                       </Col>
                       
-                      <Col><Button type="submit" variant='primary'>Submit</Button></Col>
-                      <Col><Button onClick={() => setCreateModalShow(true)}
+                      <Col><Button type="submit" variant='filled' >Submit</Button></Col>
+                      {/* <Col><Button onClick={() => setCreateModalShow(true)}
                                     className="m-2"
-                                    variant="primary">Create Map</Button></Col>
+                                    variant="primary">Create Map</Button></Col> */}
                   </Row>
                 </Form>
                 
         </Container>
           
         </div>
-        <Table striped bordered  >
+        <Table striped bordered hover >
         <thead>
           <tr>
             <th>Date</th>
             <th>Amount</th>
             <th>Payee</th>
+            <th>Account</th>
             <th>Type</th>
           </tr>
         </thead>
@@ -175,6 +193,7 @@ const IndexTransactions: React.FC<componentInterface> = (props) => {
                    <td>{transaction?.amount}</td>
                    <td>{
                    transaction?.payee?.name}</td>
+                   <td>{transaction?.account?.name}</td>
                    <td>{
                    transaction?.transaction_type?.display_name}</td>
                     </tr> 
@@ -196,7 +215,7 @@ const IndexTransactions: React.FC<componentInterface> = (props) => {
       <ReactPaginate
         activeClassName={'item active '}
         breakClassName={'item break-me '}
-        containerClassName={'pagination'}
+        containerClassName={checkOpen('pagination')}
         disabledClassName={'disabled-page'}
         breakLabel="..."
         nextClassName={"item next "}

@@ -9,6 +9,7 @@ import ReactPaginate from 'react-paginate'
 import CreateAccountModal from './CreateAccountModal'
 import EditAccountModal from './EditAccountModal'
 import Select from 'react-select'
+import '../css/pagination.css'
 
 interface componentInterface {
  accounts: {
@@ -41,6 +42,7 @@ const IndexAccounts: React.FC<componentInterface> = (props) => {
     const result:any = useSelector((state) => state)
     const user = result.user.value[0].user
     const accountOptions = result.option.value[0].options.data.account_type
+    const open = result?.sideBar.open
     const getAccounts = async () => {
       const response = await api.get(user, `account?filters[search]=${search}&filters[account_type.name]=${typeSelected}&orderby=name&sortby=asc&page=${pageSelect}&per_page=${perPage}&with[]=account_type`)
       setAccounts(response.data?.results)
@@ -57,6 +59,14 @@ const IndexAccounts: React.FC<componentInterface> = (props) => {
             )
           )
           )
+    }
+
+    const checkOpen = (name:string) => {
+      if (open === true) {
+        return name
+      } else if (open === false) {
+        return(name + '-collapsed')
+      }
     }
       
       function handleSelect(data:any) {
@@ -170,7 +180,7 @@ const IndexAccounts: React.FC<componentInterface> = (props) => {
       <ReactPaginate
         activeClassName={'item active '}
         breakClassName={'item break-me '}
-        containerClassName={'pagination'}
+        containerClassName={checkOpen('pagination')}
         disabledClassName={'disabled-page'}
         breakLabel="..."
         nextClassName={"item next "}

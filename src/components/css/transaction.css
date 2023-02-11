@@ -1,0 +1,16 @@
+.header-text {
+    font-size: 40px;
+    font-weight: bold;
+    color: black;
+}
+
+.header-button {
+    float: right !important;
+}
+
+.header {
+    align-items: center;
+    display: flex;
+    
+}
+

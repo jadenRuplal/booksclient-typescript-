@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router-dom'
 import { v4 as uuid } from 'uuid'
 import { useSelector } from 'react-redux'
 import './index.css'
+import './App.css'
 import './assets/scss/Theme.scss'
 import RequireAuth from './components/shared/RequireAuth'
 import Home from './components/Home'
@@ -21,12 +22,13 @@ const styles:any = {
 	float: 'left',
 	display: 'table-cell',
 	height: '100vh',
-	width: '20vw'
+	width: '15vw'
 }
 const stylesRoutes:any = {
+	marginLeft:'10px',
 	float: 'left',
 	height: 'auto',
-	width: '70vw',
+	width: '80vw',
 	display: 'table-cell'
 }
 
@@ -54,8 +56,18 @@ const App: React.FC<componentInterface> = () => {
 
   const [user, setUser] = useState<componentInterface["user"]>(null)
   const [msgAlerts, setMsgAlerts] = useState<any>([])
-  const result:any = useSelector((state) => state);
+  const result:any = useSelector((state) => state)
+  const open = result?.sideBar.open
 
+
+
+const classConcat = (name:string) => {
+    if (open === true) {
+        return name
+    } else if (open === false) {
+        return( name + '-collapsed')
+    }
+}
 
   
   const clearUser = () => {
@@ -85,50 +97,62 @@ const App: React.FC<componentInterface> = () => {
 				<Routes>
 					<Route path='/' element={
 					<RequireAuth result={result}>
-					<SideBar/>
-					<Home msgAlert={msgAlert} user={user} />
+					<div className={classConcat('div-sidebar')}><SideBar/></div>
+					<div className={classConcat('main-view')} ><Home msgAlert={msgAlert} user={user} /></div>
 					</RequireAuth>} />
 					<Route
 						path='/payees'
 						element={
-							<><SideBar /><IndexPayees payees={null} payee={{
+							<>
+							<div className={classConcat('div-sidebar')}><SideBar /></div>
+							<div className={classConcat('main-view')}><IndexPayees payees={null} payee={{
 								name: '',
 								uuid: ''
-							}} /></>}
+							}} />
+							</div>
+							</>}
 					/>
 					<Route
 						path='/accounts'
 						element={
 							<>
-								<SideBar />
-								<IndexAccounts accounts={null} account={{
+								<div className={classConcat('div-sidebar')}><SideBar /></div>
+								<div className={classConcat('main-view')}><IndexAccounts accounts={null} account={{
 								name: '',
 								uuid: '',
 								last4: 0
-							}} /></>}
+							}} />
+							</div>
+							</>}
 					/>
 					<Route
 						path='/categories'
 						element={
 							<>
-								<SideBar />
-								<IndexCategories categories={null} category={{
+								<div className={classConcat('div-sidebar')}><SideBar /></div>
+								<div className={classConcat('main-view')}><IndexCategories categories={null} category={{
 								name: '',
 								uuid: ''
-							}} /></>}
+							}} />
+							</div>
+							</>}
 					/>
 					<Route
 						path='/mapping'
 						element={
 							<>
-								<SideBar />
-								<IndexMapping mapping={undefined} map={null} /></>}
+								<div className={classConcat('div-sidebar')}><SideBar /></div>
+								<div className={classConcat('main-view')}><IndexMapping mapping={undefined} map={null} />
+								</div>
+								</>}
 							/>
 					<Route
 						path='/transactions'
 						element={<>
-						<SideBar />
-						<IndexTransactions transactions={undefined} transaction={null} /></>}
+						<div className={classConcat('div-sidebar')}><SideBar /></div>
+						<div className={classConcat('main-view')}><IndexTransactions transactions={undefined} transaction={null} />
+						</div>
+						</>}
 					/>
 					<Route
 						path='/sign-out'
@@ -149,3 +173,5 @@ const App: React.FC<componentInterface> = () => {
 }
 
 export default App
+
+

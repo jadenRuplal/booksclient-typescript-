@@ -5,7 +5,7 @@ import {Button, Container, Form, Col, Row} from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import api from '../../api/payee'
 import ReactPaginate from 'react-paginate'
-import './pagination.css'
+import '../css/pagination.css'
 import EditPayeeModal from './EditPayeeModal'
 import CreatePayeeModal from './CreatePayeeModal'
 import { useDispatch } from "react-redux"
@@ -39,6 +39,7 @@ const IndexPayees: React.FC<componentInterface> = (props) => {
     const [id, setId] = useState(null)
     const result:any = useSelector((state) => state)
     const user = result.user.value[0].user
+    const open = result?.sideBar.open
     const dispatch = useDispatch()
 
     const getPayees = async () => {
@@ -56,6 +57,14 @@ const setEdit = (pay:any) => {
     setPayee(pay),
     setEditModalShow(true)
   )    
+}
+
+const checkOpen = (name:string) => {
+  if (open === true) {
+    return name
+  } else if (open === false) {
+    return(name + '-collapsed')
+  }
 }
 
 const closing = () => {
@@ -119,7 +128,7 @@ const closing = () => {
             <th>Name</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody >
     {    payees?.map((payee:any) => (
                    
                    <tr key={payee.uuid}>
@@ -145,7 +154,7 @@ const closing = () => {
       <ReactPaginate
         activeClassName={'item active '}
         breakClassName={'item break-me '}
-        containerClassName={'pagination'}
+        containerClassName={checkOpen('pagination')}
         disabledClassName={'disabled-page'}
         breakLabel="..."
         nextClassName={"item next "}

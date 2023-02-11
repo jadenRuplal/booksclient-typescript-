@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit"
 import userReducer from "../features/userSlice"
 import optionReducer from '../features/optionSlice'
 import snackbarReducer from '../features/snackSlice'
+import sideBarReducer from '../features/sideBarSlice'
 
 
 
@@ -9,7 +10,8 @@ export const store = configureStore({
     reducer: {
         user: userReducer,
         option: optionReducer,
-        snackbar: snackbarReducer
+        snackbar: snackbarReducer,
+        sideBar: sideBarReducer
     }
 })
 

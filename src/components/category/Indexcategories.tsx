@@ -5,7 +5,8 @@ import {Button, Container, Form, Col, Row} from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import api from '../../api/payee'
 import ReactPaginate from 'react-paginate'
-import './pagination.css'
+import '../css/pagination.css'
+import '../css/table.css'
 import CreateCategoryModal from './CreateCategoryModal'
 import React from 'react'
 import EditCategoryModal from './EditCategoryModal'
@@ -43,6 +44,7 @@ const IndexCategories: React.FC<componentInterface> = (props) => {
     const result:any = useSelector((state) => state)
     const user = result.user.value[0].user
     const categoryOptions = result.option.value[0].options.data.category_type
+    const open = result?.sideBar.open
     const getCategories = async () => {
       const response = await api.get(user, `category?filters[search]=${search}&filters[category_type.name]=${type}&orderby=name&sortby=asc&page=${pageSelect}&per_page=${perPage}&with[]=category_type&with[]=parent_category`)
       setCategories(response.data?.results)
@@ -83,6 +85,14 @@ const IndexCategories: React.FC<componentInterface> = (props) => {
     
     function handleSelect(data:any) {
       setType(data.value)
+    }
+
+    const checkOpen = (name:string) => {
+      if (open === true) {
+        return name
+      } else if (open === false) {
+        return(name + '-collapsed')
+      }
     }
       
 
@@ -130,14 +140,14 @@ const IndexCategories: React.FC<componentInterface> = (props) => {
         </Container>
           
         </div>
-        <Table striped bordered  >
+        <Table hover bordered  >
         <thead>
           <tr>
             <th>Name</th>
             <th>Type</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody >
     {    categories?.map((category:any) => (
                    
                    <tr key={category.uuid}>
@@ -166,7 +176,7 @@ const IndexCategories: React.FC<componentInterface> = (props) => {
       <ReactPaginate
         activeClassName={'item active '}
         breakClassName={'item break-me '}
-        containerClassName={'pagination'}
+        containerClassName={checkOpen('pagination')}
         disabledClassName={'disabled-page'}
         breakLabel="..."
         nextClassName={"item next "}
