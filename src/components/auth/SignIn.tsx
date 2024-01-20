@@ -19,7 +19,6 @@ type Message = {
 interface componentInterface {
     setUser: any,
 	user: any,
-	msgAlert: (arg0: Message) => void
 }
 
 
@@ -32,9 +31,6 @@ const SignIn: React.FC<componentInterface> = (props) => {
 	const onSignIn = (event: any) => {
 		event.preventDefault()
 		const userSet = async (res: any) => {
-			// const jsonUser = JSON.stringify(res.data.data)
-			// sessionStorage.setItem('user', jsonUser)
-			// const getUser:any = sessionStorage.getItem('user')
 			dispatch(addUser({
 				user: res.data.data
 			}))

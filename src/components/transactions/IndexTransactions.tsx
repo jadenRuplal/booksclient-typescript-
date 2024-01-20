@@ -1,18 +1,22 @@
-import { useState, useEffect } from 'react'
-import {  Link } from 'react-router-dom'
+import { useState, useEffect, Suspense } from 'react'
 import Table from 'react-bootstrap/Table'
-import { Container, Form, Col, Row} from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import api from '../../api/payee'
-import ReactPaginate from 'react-paginate'
 import '../css/pagination.css'
 import '../css/transaction.css'
-import CreateMappingModal from './CreateMappingModal'
+import CreateTransactionModal from './CreateTransactionModal'
+import FilterTransactionModal from './FilterTransactionModal'
 import React from 'react'
-import EditMapModal from './EditMapModal'
-import Button from '@mui/material-next/Button';
-import { lightBlue } from '@mui/material/colors'
-
+import EditTransactionModal from './EditTransactionModal'
+import {Button} from '@material-ui/core'
+import FilterListIcon from '@mui/icons-material/FilterList'
+import IconButton from '@mui/material/IconButton'
+import { Tooltip, Zoom } from "@mui/material"
+import { setSnackbar } from '../../features/snackSlice'
+import { useDispatch } from 'react-redux'
+import DeleteIcon from '@mui/icons-material/Delete'
+import EditIcon from '@mui/icons-material/Edit'
+import Pagination from '@mui/material/Pagination'
 
 
 
@@ -32,18 +36,21 @@ interface componentInterface {
 
 
 const IndexTransactions: React.FC<componentInterface> = (props) => {
+    const [render, setRender] = useState<number>(0)
     const [transactions, setTransactions] = useState<componentInterface["transactions"]>(null)
     const [transaction, setTransaction] = useState(null)
     const [search, setSearch ] = useState<any>({
-      date: '',
       payee: '',
       account: ''
   
   })
+    const [deleteAll, setDeleteAll] = useState<any>([])
     const [error, setError] = useState(false)
     const [createModalShow, setCreateModalShow] = useState(false)
+    const [filterModalShow, setFilterModalShow] = useState(false)
     const [pageSelect, setPageSelected] = useState(1)
     const [updated, setUpdated] = useState(false)
+    const [openActive, setOpenActive] = useState(false)
     const [page, setPage] = useState(3)
     const [editModalShow, setEditModalShow] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
@@ -52,19 +59,15 @@ const IndexTransactions: React.FC<componentInterface> = (props) => {
     const result:any = useSelector((state) => state)
     const user = result.user.value[0].user
     const open = result?.sideBar.open
+    const dispatch = useDispatch()
+
+
     const getTransactions = async () => {
       const response = await api.get(user, `transaction?with[]=payee&with[]=account&with[]=transaction_type&with[]=transaction_status&page=${pageSelect}&per_page=${perPage}`)
       setTransactions(response.data?.results)
       setPage(response.data.last_page)
       setCurrentPage(response.data.current_page)
      }
- 
-     function handlePayeeSearch(e:any) {
-      setSearch({...search, payee: e.target.value})
-    }
-    function handleAccountSearch(data:any) {
-      setSearch({...search, account: data.value})
-    }
 
      const setEdit = (transaction:any) => { 
       setTransaction(transaction)
@@ -74,29 +77,30 @@ const IndexTransactions: React.FC<componentInterface> = (props) => {
         setEditModalShow(true)
       )    
     }
+
+    const setCreate = () => { 
+      setCreateModalShow(true)  
+    }
+
     const closing = () => {
       setEditModalShow(false)
+      setFilterModalShow(false)
       setTransaction(null)
     }
 
-      const handleChange = (e:any) => {
-        setSearch((prevCar: any) => {
-          let updatedValue = e.target.value
-          const updatedName = e.target.name
-
-          if (e.target.type === 'number') {
-              updatedValue = parseInt(e.target.value)
-          }
-          const updatedCar = {
-              [updatedName]: updatedValue
-          }
-          console.log(search)
-          return {
-              ...prevCar,
-              ...updatedCar
-          }
-      })
+    const handleCheckChange = (e:any, transaction:any) => {
+      if (e.target.checked === true) {
+       deleteAll.push(transaction.uuid)
+       setRender(render + 1)
+       console.log(deleteAll.length)
+      } else if (e.target.checked === false) {
+        deleteAll.splice(deleteAll.indexOf(transaction.uuid), 1)
+        setRender(render + 1)
+        console.log(deleteAll.length)
+      }
     }
+
+
     const handleSubmit = (e: {
      preventDefault: () => any }) => {
         e.preventDefault()
@@ -111,83 +115,89 @@ const IndexTransactions: React.FC<componentInterface> = (props) => {
       }
     }
 
+    const deleteChecked = async () => {
+      try {const response = await api.deleteAll(user, 'transaction', deleteAll)
+      getTransactions()
+      setDeleteAll([])
+      dispatch(
+        setSnackbar(
+          true,
+          "success",
+          response.message.messages[0]
+        )
+      )  
+    } catch (error:any) {
+      dispatch(
+        setSnackbar(
+          true,
+          "error",
+          error.response.data.message.messages
+        )
+      )
+      }
+    }
+
+  const deleteTransaction = async (transaction:any) => {
+    const response = await api.delete(user, `transaction/${transaction.uuid}`, transaction)
+    getTransactions()
+  }
+
+  const handlePerPage = (e:any) => {
+    setPerPage(e.target.value)
+  }
+
     useEffect( () => {
        getTransactions()
-    }, [perPage, createModalShow, pageSelect, editModalShow])
+    }, [perPage, createModalShow, pageSelect, editModalShow, deleteAll])
 
     if (error) {
         return <p>Error!</p>
     }
 
-      const handlePageClick = (event:any) => {
-        const pageSelected = event.selected + 1
-        setPageSelected(pageSelected)
+      const handlePageClick = (event:any, value:number) => {
+        setPageSelected(value)
       }
     return (
         <>
+        <div className='main'>
         <div className='header'>
-          <span className='header-text'>Transactions</span> 
-        <Button variant='outlined' className='header-button'>Add Transaction</Button> 
-        </div>
-        <div style={{backgroundColor:'grey', borderRadius:'15px', marginBottom:'10px'}}>
-        <Container className="justify-content-center" >
-            <h3 style={{textAlign:"center"}}>Filters</h3>
-            
-                <Form onSubmit={handleSubmit} style={{marginBottom:'5%'}}>
-                  <Row>
-                    <Col>
-                      <Form.Control
-                          type='date'
-                          placeholder="Date"
-                          name="date"
-                          id="date"
-                          onChange={handleChange}
-                      />
-                      </Col>
-                      <Col>
-                      <Form.Control
-                          placeholder="Payee"
-                          name="payee"
-                          id="payee"
-                          value={search.payee}
-                          onChange={handlePayeeSearch}
-                      />
-                      </Col>
-                      <Col>
-                      <Form.Control
-                          placeholder="Category"
-                          name="category"
-                          id="category"
-                          value={search.account}
-                          onChange={handleAccountSearch}
-                      />
-                      </Col>
-                      
-                      <Col><Button type="submit" variant='filled' >Submit</Button></Col>
-                      {/* <Col><Button onClick={() => setCreateModalShow(true)}
-                                    className="m-2"
-                                    variant="primary">Create Map</Button></Col> */}
-                  </Row>
-                </Form>
-                
-        </Container>
+          <span className='header-text'>Transactions</span>
+           { (deleteAll.length > 0) ? (<IconButton  onClick={() => deleteChecked()}><DeleteIcon color='secondary'/></IconButton>) : <></>} 
+          <div className='header-button'><IconButton onClick={() => setFilterModalShow(true)} > 
+          <Tooltip title='Filter' TransitionComponent={Zoom} placement="bottom">
+            <FilterListIcon color='inherit'/> 
+          </Tooltip>
+            </IconButton> </div>
           
+        <div className='right-header'>
+        <Button variant='outlined' color='secondary' className='header-button'  onClick={() => setCreate()}>Add Transaction</Button>
+       </div>
         </div>
+
+        <div className='table'>
         <Table striped bordered hover >
-        <thead>
+        <thead >
           <tr>
+            <th>
+              {/* <Button onClick={() => deleteChecked()} disabled={boxesChecked()}>Delete Selected</Button> */}
+            </th>
             <th>Date</th>
             <th>Amount</th>
             <th>Payee</th>
             <th>Account</th>
             <th>Type</th>
+            <th>Status</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
     {    transactions?.map((transaction:any) => (
-                   
+                   <>
                    <tr key={transaction.uuid}>
-                    <td onClick={() => setEdit(transaction)}>
+                    <td>
+                        <input type='checkbox' onClick={(e) => handleCheckChange(e, transaction)}></input>
+                    </td>
+                    <td>
                         {transaction.transaction_date}
                    </td>
                    <td>{transaction?.amount}</td>
@@ -196,49 +206,42 @@ const IndexTransactions: React.FC<componentInterface> = (props) => {
                    <td>{transaction?.account?.name}</td>
                    <td>{
                    transaction?.transaction_type?.display_name}</td>
+                   <td>{transaction?.transaction_status?.display_name}</td>
+                   <td>
+                      <IconButton onClick={() => setEdit(transaction)}><EditIcon/></IconButton>
+                      <IconButton onClick = {() => deleteTransaction(transaction)}><DeleteIcon/></IconButton>
+                   </td>
                     </tr> 
+                    </>
                 )
             )
     }
         </tbody>
       </Table>
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        boxSizing: 'border-box',
-        width: '100%',
-        height: '100%',
-      }}>
-
-
-      <ReactPaginate
-        activeClassName={'item active '}
-        breakClassName={'item break-me '}
-        containerClassName={checkOpen('pagination')}
-        disabledClassName={'disabled-page'}
-        breakLabel="..."
-        nextClassName={"item next "}
-        nextLabel="next >"
-        onPageChange={handlePageClick}
-        pageRangeDisplayed={2}
-        pageCount={page}
-        previousLabel="< previous"
-        pageClassName={'item pagination-page '}
-        previousClassName={"item previous"}
-      />
       </div>
-      <label htmlFor="perPageSelect"></label>
+
+
+      <div className='pagination'>
+     <label htmlFor="perPage"></label>
       <select id="perPageSelect" onChange={e => setPerPage(e.target.value)}> 
-        <option value="">Choose an option</option>
+        <option value="">PerPage</option>
         <option value="5">5</option>
         <option value="10">10</option>
         <option value="23">25</option>
         <option value="50">50</option>
         <option value="100">100</option>
       </select>
+      <Pagination 
+        count={page} page={currentPage} onChange={handlePageClick} 
+        defaultPage={1} showFirstButton showLastButton
+        color='primary' size='large' shape="rounded"
+      />
+      </div>
+      </div>
+
+      
      
-      <CreateMappingModal
+      <CreateTransactionModal
                 user={user}
                 transaction={transaction}
                 show={createModalShow}
@@ -247,7 +250,7 @@ const IndexTransactions: React.FC<componentInterface> = (props) => {
             />
 
 { transaction &&
-            <EditMapModal
+            <EditTransactionModal
                 user={user}
                 transaction={transaction}
                 closing={closing}
@@ -256,6 +259,13 @@ const IndexTransactions: React.FC<componentInterface> = (props) => {
                 handleClose={() => closing()}
             />
           }
+          <FilterTransactionModal 
+          user={user}
+          show={filterModalShow}
+          closing={closing}
+          setTransactions={setTransactions}
+          handleClose={() => closing()}
+          />
       </>  
     )
     

@@ -3,9 +3,15 @@
     padding-top: 10px;
     display: table-cell;
     height:100%;
-    background-color: rgb(33, 39, 51);
-    width: 15vw !important;
+    /* background-color: rgb(33, 39, 51); */
+    background-image: linear-gradient(to top left, #4b6cb7, #182848);
+    width: 10vw !important;
     transition: width .25s, transform .25s;
+}
+
+.sidebar:hover {
+    box-shadow: 15px 15px 15px rgba(33,33,33,.2); 
+    transition: box-shadow 0.3s ease-in-out;
 }
 
 .sidebar-items {
@@ -44,9 +50,16 @@
     padding-top: 10px;
     display: table-cell;
     height:100%;
-    background-color: rgb(33, 39, 51);
-    width: 7vw !important;
+    /* background-color: rgb(33, 39, 51); */
+    background-image: linear-gradient(to top left, #4b6cb7, #182848);
+    width: 5vw !important;
     transition: width .5s, transform .5s;
+}
+
+.sidebar-collapsed:hover {
+    box-shadow: 15px 15px 15px rgba(33,33,33,.2); 
+    transition: box-shadow 0.3s ease-in-out;
+
 }
 
 .sidebar-text-collapsed {
@@ -57,16 +70,19 @@
     float: rigth !important;
     width: 100% !important;
     cursor: pointer;
+    color:white;
 }
 
 .collapse-icon-collapsed {
     display: none !important;
+    
 }
 
 .openicon {
     float:right !important;
-    width: 100% !important;
+    width: fill !important;
     cursor: pointer;
+    color: white;
 }
 
 .openicon-collapsed {

@@ -1,30 +1,30 @@
 .main-view {
 	float: left;
 	height: auto;
-	width: 85vw;
+	width: 90vw;
 	display: table-cell;
-    transition:  width .25s ease-in-out;
+    transition:  left width .25s ease-in-out;
     background-color: white;
 }
 
 .main-view-collapsed {
 	float: left;
 	height: auto;
-	width: 93vw;
+	width: 95vw;
 	display: table-cell;
-    transition:  width .5s ease-in-out;
+    transition:  right 300ms linear;
     background-color: white;
 }
 
 .div-sidebar {
-    width: 15vw;
+    width: 10vw;
     float: left;
 	display: table-cell;
 	height: 100vh;
 }
 
 .div-sidebar-collapsed {
-    width: 7vw;
+    width: 5vw;
     float: left;
 	display: table-cell;
 	height: 100vh;

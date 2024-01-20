@@ -1,0 +1,28 @@
+.details {
+    display:flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-top: 5%;
+}
+
+.detail {
+    margin-top: 4%;
+    border-radius: 10px;
+    padding: 10px;
+    width: strecth;
+    background-image: linear-gradient(to bottom right, #4b6cb7, #182848);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 3px 3px 3px 3px rgba(33,33,33,.2); 
+}
+
+.buttons {
+    display:flex;
+    justify-content: space-between;
+    margin-top: 5%;
+}
+
+.secondRow {
+    display: flex;
+    flex-direction: row;
+}

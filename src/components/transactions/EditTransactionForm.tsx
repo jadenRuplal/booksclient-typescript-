@@ -12,6 +12,8 @@ import { useSelector } from 'react-redux'
 interface componentInterface {
     transaction: {
         transaction_date: any
+        transaction_type: any
+        transaction_status: any
         payee: any
         description: string | number 
         uuid: string
@@ -29,17 +31,22 @@ interface componentInterface {
     handleCategorySelect: any,
     heading: string,
     transactionUpdate: any,
-    handleClose: any
+    handleClose: any,
+    handleTypeSelect: any,
+    handleAccountSelect: any,
+    handleStatusSelect: any
 }
 
 const EditTransactionForm: React.FC<componentInterface> = (props) => {
-    const { transaction, handleChange, handleClose, handleSubmit, heading, handlePayeeSelect, handleCategorySelect, transactionUpdate } = props
+    const { transaction, handleChange, handleClose, handleSubmit, heading, handlePayeeSelect, handleCategorySelect, transactionUpdate, handleTypeSelect, handleAccountSelect, handleStatusSelect } = props
     const [account, setAccount] = useState<any>(null)
     const [payees, setPayees] = useState<any>(null)
     const [keyDown, setKeyDown] = useState('')
     const [payeeSearch, setPayeeSearch] = useState<any>(null)
     const [accountSearch, setAccountSearch] = useState(null)
     const result:any = useSelector((state) => state)
+    const transactionTypes = result.option.value[0].options.data.transaction_type
+    const transactionStatus = result.option.value[0].options.data.transaction_status
     const user = result.user.value[0].user
   
     const getAccountData = async () => {
@@ -67,10 +74,23 @@ const payeeKeyDown = (e:any) => {
    
 }
 
-const categoryKeyDown = (e:any) => {
+const accountKeyDown = (e:any) => {
     setAccountSearch(e.target.value)
     setKeyDown('account') 
 }
+const transactionType = () => {
+    return( transactionTypes?.map((option:any) => (
+       {value:`${option.name}`, label: `${option.display_name}`}
+    )
+))
+    }
+
+    const transactionStat = () => {
+        return( transactionStatus?.map((option:any) => (
+           {value:`${option.name}`, label: `${option.display_name}`}
+        )
+    ))
+        }
 
     const payeeOptionType = () => {
         return( payees?.map((option:any) => (
@@ -102,7 +122,7 @@ const categoryKeyDown = (e:any) => {
             }
         }
 
-        if(keyDown === 'category') {
+        if(keyDown === 'account') {
             if (accountSearch != null) {
                 getAccountData()
             } else if (accountSearch === '') {
@@ -141,20 +161,34 @@ const categoryKeyDown = (e:any) => {
                       />
                 <Form.Label htmlFor="category">Account</Form.Label>
                 <Select  options={accountOptionType()}
-                          onChange={handleCategorySelect}
+                          onChange={handleAccountSelect}
                           defaultInputValue={transaction?.account?.name}
                           placeholder='Select Category'
-                          onKeyDown={(e:any) => categoryKeyDown(e)}
+                          onKeyDown={(e:any) => accountKeyDown(e)}
                           
                       />
-                   <Form.Label htmlFor="amount">Ammount</Form.Label>
+                <Form.Label htmlFor="amount">Amount</Form.Label>
                 <Form.Control
-                    type='number'
-                    name="amount"
-                    id="amount"
-                    value={transactionUpdate?.amount}
-                    onChange={handleChange}
-                /> 
+                        type='number'
+                        name="amount"
+                        id="amount"
+                        value={transactionUpdate?.amount}
+                        onChange={handleChange}
+                    /> 
+                 <Form.Label htmlFor="type">Type</Form.Label>
+                 <Select  options={transactionType()}
+                          onChange={handleTypeSelect}
+                          defaultInputValue={transaction?.transaction_type?.display_name}
+                          placeholder={transactionUpdate.transaction_type}
+                      />
+                <Form.Label htmlFor="status">Status</Form.Label>
+                <Select  options={transactionStat()}
+                          onChange={handleStatusSelect}
+                          defaultInputValue={transaction?.transaction_status?.display_name}
+                          placeholder={transactionUpdate.transaction_status}
+                         
+                          
+                      />
                 <Button type="submit">Submit</Button>
                 <Button onClick={() => deleteTheTransaction()}
                         className="m-2"

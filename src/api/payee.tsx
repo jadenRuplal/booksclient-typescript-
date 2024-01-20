@@ -25,7 +25,7 @@ export const deletePayee = async (user: User["user"], endpoint:string) => {
         method: 'DELETE',
         headers: {
             sid: `${user.sessions[0].id}`,
-			'api-key': `Ml29vjhslk2873!`,
+			'api-key': env.apiKey,
 		},
     })
 }
@@ -37,7 +37,7 @@ export const createPayee = (user: User["user"], newPayee:any) => {
         method: 'POST',
         headers: {
             sid: `${user.sessions[0].id}`,
-			'api-key': `Ml29vjhslk2873!`,
+			'api-key': env.apiKey,
         },
         data:  newPayee 
     })
@@ -108,5 +108,39 @@ export default {
             data: data
         })
         return response.data
+    },
+    
+    async deleteAll (user: User["user"], endpoint: string, data: [string]) {
+        const response = await axios({
+            url: apiUrl + '/api/' + endpoint,
+            method: 'delete',
+            headers: {
+                'Content-Type': 'application/json',
+                sid: `${user.sessions[0].id}`,
+                'api-key': env.apiKey
+            },
+            data: data
+        })
+        return response.data
+    },
+
+    async createDetail (user: User["user"], endpoint: string, data:any, uuid: string) {
+        const response = await axios({
+            url: apiUrl + '/api/' + endpoint,
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json',
+                sid: `${user.sessions[0].id}`,
+                'api-key': env.apiKey
+            },
+            data: {
+                data,
+                transaction: uuid,
+                category: data.category,
+                amount: data.amount
+            }
+        })
+        return response.data
     }
+
 }

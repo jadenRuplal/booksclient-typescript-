@@ -51,12 +51,12 @@ const setOpenFalse = () => {
     
     return(
         <div className={classSplicer('sidebar')}>
-            <div className={classSplicer('collapse-icon')} > myBooks <KeyboardDoubleArrowLeftIcon style={{float:'right'}} onClick={() => setOpenFalse()}/> </div>
-            <div className={iconArrow('openicon')}> MB <KeyboardDoubleArrowRightIcon onClick={() => setOpenTrue()}/> </div>
+            <div className={classSplicer('collapse-icon')} > myBooks <KeyboardDoubleArrowLeftIcon sx={{color:'white'}} style={{float:'right'}} onClick={() => setOpenFalse()}/> </div>
+            <div className={iconArrow('openicon')}> MB <KeyboardDoubleArrowRightIcon sx={{color:'white'}} onClick={() => setOpenTrue()}/> </div>
             <div className="sidebar-header">
             <Tooltip title='Dashboard' TransitionComponent={Zoom} placement="right">
                 <div onClick={() => navigate('/')} className='nav'>
-                    <DashboardIcon className={classSplicer('sidebar-icon')}/>
+                    <DashboardIcon sx={{color:'white'}} className={classSplicer('sidebar-icon')}/>
                     <span className={classSplicer('sidebar-text')}>Dashboard</span>
                 </div>
             </Tooltip>

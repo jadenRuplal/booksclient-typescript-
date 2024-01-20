@@ -17,11 +17,7 @@ root.render(
     <Provider store={store}>
     <ProSidebarProvider>
     <BrowserRouter>
-      <App msgAlert={function (message: { heading: any; message: any; variant: any; }): unknown {
-        throw new Error('Function not implemented.');
-      } } setMsgAlerts={function () {
-        throw new Error('Function not implemented.');
-      } } user={null} />
+      <App user={null} />
       </BrowserRouter>
       </ProSidebarProvider>
     </Provider>

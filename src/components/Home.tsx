@@ -4,6 +4,8 @@ import { Navigate } from "react-router-dom";
 import apiUrl from "../apiConfig";
 import { addOption } from '../features/optionSlice'
 import api from '../api/payee'
+import './css/pagination.css'
+import './css/transaction.css'
 import { clearOption } from "../features/optionSlice";
 import { falseOpen, trueOpen } from "../features/sideBarSlice";
 
@@ -30,11 +32,11 @@ console.log(result)
 
   return (
     <>
-      <h2>Home Page</h2>
-      <p>Hello </p>
-      <button onClick={() => clearStore()}>Test redux</button>
-      <button onClick={() => setOpenFalse()}>Test Open</button>
-      <button onClick={() => setOpenTrue()}>Test Open True</button>
+      <div className='header'>
+          <span className='header-text'>Home</span>
+        <div className='right-header'>
+       </div>
+        </div>
     </>
   );
 };

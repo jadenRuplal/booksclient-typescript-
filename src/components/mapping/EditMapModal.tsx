@@ -9,8 +9,6 @@ const EditMapModal = (props:any) => {
         user, show, handleClose, closing
     } = props
     const [map, setMap] = useState(props.map)
-    const [payeeTypeUpdate, setPayeeTypeUpdate] = useState({})
-    const [categoryTypeUpdate, setCategoryTypeUpdate] = useState(null)
     const [mapUpdate, setMapUpdate] = useState<any>({
         description: map?.description,
         payee: map?.payee?.uuid,

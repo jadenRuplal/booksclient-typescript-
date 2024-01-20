@@ -118,10 +118,10 @@ const categoryKeyDown = (e:any) => {
         <Container className="justify-content-center">
             <h3>{heading}</h3>
             <Form onSubmit={handleSubmit}>
-                <Form.Label htmlFor="name">Name</Form.Label>
+                <Form.Label htmlFor="description">Description</Form.Label>
                 <Form.Control
-                    placeholder="Change name here"
-                    name="name"
+                    placeholder="Change Description Here"
+                    name="description"
                     id="name"
                     defaultValue={map?.description}
                     value={mapUpdate?.name}

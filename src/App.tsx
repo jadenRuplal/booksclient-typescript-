@@ -14,23 +14,10 @@ import SignOut from './components/auth/SignOut'
 import IndexPayees from './components/payees/IndexPayees'
 import IndexAccounts from './components/accounts/IndexAccounts'
 import IndexCategories from './components/category/Indexcategories'
-import LeftSidebar from './sidebar/LeftSidebar'
 import Snackbars from './components/shared/SnackBar'
 import IndexTransactions from './components/transactions/IndexTransactions'
 import SideBar from './SidebarCollapse/SideBar'
-const styles:any = {
-	float: 'left',
-	display: 'table-cell',
-	height: '100vh',
-	width: '15vw'
-}
-const stylesRoutes:any = {
-	marginLeft:'10px',
-	float: 'left',
-	height: 'auto',
-	width: '80vw',
-	display: 'table-cell'
-}
+
 
 type Message = {
   heading: any,
@@ -39,8 +26,6 @@ type Message = {
 }
 
 interface componentInterface {
-  msgAlert: (message: Message) => unknown,
-  setMsgAlerts: () => any,
   user: {
 	sessions: [{
 		session_id: number,
@@ -55,7 +40,6 @@ interface componentInterface {
 const App: React.FC<componentInterface> = () => {
 
   const [user, setUser] = useState<componentInterface["user"]>(null)
-  const [msgAlerts, setMsgAlerts] = useState<any>([])
   const result:any = useSelector((state) => state)
   const open = result?.sideBar.open
 
@@ -71,24 +55,10 @@ const classConcat = (name:string) => {
 
   
   const clearUser = () => {
-    
     setUser(null)
   }
 
-	const deleteAlert = (id:any) => {
-		setMsgAlerts((prevState:any) => {
-			return (prevState.filter((msg:any)=> msg.id !== id) )
-		})
-	}
-
-	const msgAlert = ({ heading, message, variant }:any) => {
-		const id = uuid()
-		setMsgAlerts(():any => {
-			return (
-				[{ heading, message, variant, id }]
-      )
-		})
-	}
+	
 
 		return (
 			<>
@@ -97,8 +67,8 @@ const classConcat = (name:string) => {
 				<Routes>
 					<Route path='/' element={
 					<RequireAuth result={result}>
-					<div className={classConcat('div-sidebar')}><SideBar/></div>
-					<div className={classConcat('main-view')} ><Home msgAlert={msgAlert} user={user} /></div>
+						<div className={classConcat('div-sidebar')}><SideBar/></div>
+						<div className={classConcat('main-view')} ><Home user={user} /></div>
 					</RequireAuth>} />
 					<Route
 						path='/payees'
@@ -148,23 +118,23 @@ const classConcat = (name:string) => {
 							/>
 					<Route
 						path='/transactions'
-						element={<>
+						element={<div style={{display:'flex'}}>
 						<div className={classConcat('div-sidebar')}><SideBar /></div>
 						<div className={classConcat('main-view')}><IndexTransactions transactions={undefined} transaction={null} />
 						</div>
-						</>}
+						</div>}
 					/>
 					<Route
 						path='/sign-out'
 						element={
 						<RequireAuth result={result}>
-							<SignOut msgAlert={msgAlert} clearUser={clearUser} user={user}  />
+							<SignOut clearUser={clearUser} user={user}  />
 						</RequireAuth>
 						}
 					/>
 					<Route
 						path='/sign-in'
-						element={<SignIn msgAlert={msgAlert} setUser={setUser} user={undefined} />}
+						element={<SignIn setUser={setUser} user={undefined} />}
 					/>
 				</Routes>
 				</>

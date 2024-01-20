@@ -17,25 +17,17 @@ type Message = {
 }
 interface interfaceComponent {
     user: any
-    msgAlert: (message: Message) => void,
     clearUser: () => void
 }
 
 
 const SignOut: React.FC<interfaceComponent> = (props) => {
-	const { msgAlert, clearUser, user } = props
+	const { clearUser, user } = props
 
     const navigate = useNavigate()
 
     const onSignOut = () => {
 		signOut(user)
-			.finally(() =>
-				msgAlert({
-					heading: 'Signed Out Successfully',
-					message: messages.signOutSuccess,
-					variant: 'success',
-				})
-			)
 			.finally(() => navigate('/'))
 			.finally(() => clearUser())
     }

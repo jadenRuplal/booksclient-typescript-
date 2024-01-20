@@ -1,15 +1,23 @@
 import React, { useState, useEffect } from 'react'
-import {  Link } from 'react-router-dom'
 import Table from 'react-bootstrap/Table'
-import {Button, Container, Form, Col, Row} from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import api from '../../api/payee'
-import ReactPaginate from 'react-paginate'
 import '../css/pagination.css'
+import '../css/transaction.css'
 import EditPayeeModal from './EditPayeeModal'
 import CreatePayeeModal from './CreatePayeeModal'
 import { useDispatch } from "react-redux"
 import { setSnackbar } from "../../features/snackSlice"
+import FilterListIcon from '@mui/icons-material/FilterList'
+import IconButton from '@mui/material/IconButton'
+import { Tooltip, Zoom } from "@mui/material"
+import DeleteIcon from '@mui/icons-material/Delete'
+import EditIcon from '@mui/icons-material/Edit'
+import Pagination from '@mui/material/Pagination'
+import FilterPayeeModal from './FilterPayeeModal'
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import {Button} from '@material-ui/core'
+
 
 interface componentInterface {
   payees: [{
@@ -26,9 +34,11 @@ interface componentInterface {
 const IndexPayees: React.FC<componentInterface> = (props) => {
     const [payees, setPayees] = useState<componentInterface["payees"]>(null)
     const [payee, setPayee] = useState<any>(null)
+    const [render, setRender] = useState<number>(0)
     const [message, setMessage] = useState<any>(null)
     const [search, setSearch ] = useState<any>('')
     const [editModalShow, setEditModalShow] = useState(false)
+    const [filterModalShow, setFilterModalShow] = useState(false)
     const [error, setError] = useState(false)
     const [createModalShow, setCreateModalShow] = useState(false)
     const [pageSelect, setPageSelected] = useState(1)
@@ -36,7 +46,6 @@ const IndexPayees: React.FC<componentInterface> = (props) => {
     const [page, setPage] = useState(3)
     const [currentPage, setCurrentPage] = useState(1)
     const [perPage, setPerPage] = useState<any>(50)
-    const [id, setId] = useState(null)
     const result:any = useSelector((state) => state)
     const user = result.user.value[0].user
     const open = result?.sideBar.open
@@ -50,6 +59,11 @@ const IndexPayees: React.FC<componentInterface> = (props) => {
       setMessage(response.message)  
      }
 
+     const deletePayee = async (payee:any) => {
+      const response = await api.delete(user, `payee/${payee.uuid}`, payee)
+      getPayees()
+    }
+
 const setEdit = (pay:any) => { 
   setPayee(pay)
   setEditModalShow(true)
@@ -57,6 +71,10 @@ const setEdit = (pay:any) => {
     setPayee(pay),
     setEditModalShow(true)
   )    
+}
+
+const setCreate = () => { 
+  setCreateModalShow(true)  
 }
 
 const checkOpen = (name:string) => {
@@ -67,21 +85,26 @@ const checkOpen = (name:string) => {
   }
 }
 
+
 const closing = () => {
   setEditModalShow(false)
-  setPayee(null)
+  setFilterModalShow(false)
+  setPayee('')
 }
 
       const handleChange = (e:any) => {
         setSearch(e.target.value)
     }
+
+
     const handleSubmit = (e: {
      preventDefault: () => any }) => {
         e.preventDefault()
            getPayees()
     }
-       
-      
+
+    
+
 
     useEffect( () => {
        getPayees()
@@ -91,113 +114,102 @@ const closing = () => {
         return <p>Error!</p>
     }
 
-      const handlePageClick = (event:any) => {
-        const pageSelected = event.selected + 1
-        setPageSelected(pageSelected)
-      }
-    return (
-        <>
-        <div style={{backgroundColor:'grey', borderRadius:'15px', marginBottom:'10px'}}>
-        <Container className="justify-content-center" >
-            <h3 style={{textAlign:"center"}}>Filters</h3>
-            
-                <Form onSubmit={handleSubmit} style={{marginBottom:'5%'}}>
-                  <Row>
-                    <Col>
-                      <Form.Control
-                          placeholder="Search Names"
-                          name="name"
-                          id="name"
-                          value={search.name}
-                          onChange={handleChange}
-                      />
-                      </Col>
-                      
-                      <Col><Button type="submit" variant='primary'>Submit</Button></Col>
-                      <Col><Button onClick={() => setCreateModalShow(true)}
-                                    className="m-2"
-                                    variant="primary">Create Payee</Button></Col>
-                  </Row>
-                </Form>
-                
-        </Container>
-        </div>
-        <Table striped bordered  >
-        <thead>
-          <tr>
-            <th>Name</th>
-          </tr>
-        </thead>
-        <tbody >
-    {    payees?.map((payee:any) => (
-                   
-                   <tr key={payee.uuid}>
-                    <td onClick={() => setEdit(payee)}>
-                        {payee.name}
-                   </td>
-                    </tr> 
-                )
-            )
+    const handlePageClick = (event:any, value:number) => {
+      setPageSelected(value)
     }
-        </tbody>
-      </Table>
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        boxSizing: 'border-box',
-        width: '100%',
-        height: '100%',
-      }}>
+    
+    return (
+      <>
+      <div className='main'>
+      <div className='header'>
+        <span className='header-text'>Payees</span>
+        <div className='header-button'>
+        <IconButton color='inherit' onClick={() => setFilterModalShow(true)} > 
+          <Tooltip title='Filter' TransitionComponent={Zoom} placement="bottom">
+            <FilterListIcon/> 
+          </Tooltip>
+        </IconButton> 
 
-
-      <ReactPaginate
-        activeClassName={'item active '}
-        breakClassName={'item break-me '}
-        containerClassName={checkOpen('pagination')}
-        disabledClassName={'disabled-page'}
-        breakLabel="..."
-        nextClassName={"item next "}
-        nextLabel="next >"
-        onPageChange={handlePageClick}
-        pageRangeDisplayed={2}
-        pageCount={page}
-        previousLabel="< previous"
-        pageClassName={'item pagination-page '}
-        previousClassName={"item previous"}
-      />
+      <IconButton  onClick={() => setCreate()}> 
+       <Tooltip title='Add Payee' TransitionComponent={Zoom} placement='bottom'> 
+       <PersonAddIcon sx={{color:'white'}} />
+        </Tooltip>
+      </IconButton>
+    
+    </div>
       </div>
-      <label htmlFor="perPageSelect"></label>
-      <select id="perPageSelect" onChange={e => setPerPage(e.target.value)}> 
-        <option value="">Choose an option</option>
-        <option value="5">5</option>
-        <option value="10">10</option>
-        <option value="23">25</option>
-        <option value="50">50</option>
-        <option value="100">100</option>
-      </select>
-     
-      <CreatePayeeModal
-                user={user}
-                payee={payee}
-                show={createModalShow}
-                triggerRefresh={() => setUpdated(prev => !prev)}
-                handleClose={() => setCreateModalShow(false)}
-            />
 
-        { payee &&
-            <EditPayeeModal
-                user={user}
-                payee={payee}
-                search={search}
-                pageSelect={pageSelect}
-                perPage={perPage}
-                show={editModalShow}
-                triggerRefresh={() => setUpdated(prev => !prev)}
-                handleClose={() => closing()}
-            />
-          }
-      </>  
+      <div className='table'>
+      <Table striped bordered hover >
+      <thead >
+        <tr>
+          <th>Name</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+  {    payees?.map((payee:any) => (
+                 
+                 <tr key={payee.uuid}>
+                  <td>{payee.name}</td>
+                 <td>
+                    <IconButton onClick={() => setEdit(payee)}><EditIcon/></IconButton>
+                    <IconButton onClick = {() => deletePayee(payee)}><DeleteIcon/></IconButton>
+                 </td>
+                  </tr> 
+              )
+          )
+  }
+      </tbody>
+    </Table>
+    </div>
+
+
+    <div className='pagination'>
+   <label htmlFor="perPage"></label>
+    <select id="perPageSelect" onChange={e => setPerPage(e.target.value)}> 
+      <option value="">PerPage</option>
+      <option value="5">5</option>
+      <option value="10">10</option>
+      <option value="23">25</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+    </select>
+    <Pagination 
+      count={page} page={currentPage} onChange={handlePageClick} 
+      defaultPage={1} showFirstButton showLastButton
+      color='primary' size='large' shape="rounded" 
+    />
+    </div>
+    </div>
+   
+    <CreatePayeeModal
+              user={user}
+              payee={payee}
+              show={createModalShow}
+              triggerRefresh={() => setUpdated(prev => !prev)}
+              handleClose={() => setCreateModalShow(false)}
+          />
+
+{ payee &&
+          <EditPayeeModal
+              user={user}
+              payee={payee}
+              closing={closing}
+              show={editModalShow}
+              triggerRefresh={() => setUpdated(prev => !prev)}
+              handleClose={() => closing()}
+          />
+        }
+        <FilterPayeeModal 
+        user={user}
+        show={filterModalShow}
+        handleSubmit={handleSubmit}
+        closing={closing}
+        setPayees={setPayees}
+        handleClose={() => closing()}
+        />
+    </>  
     )
     
 }

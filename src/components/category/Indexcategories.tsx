@@ -1,16 +1,23 @@
 import { useState, useEffect } from 'react'
 import {  Link } from 'react-router-dom'
 import Table from 'react-bootstrap/Table'
-import {Button, Container, Form, Col, Row} from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import api from '../../api/payee'
-import ReactPaginate from 'react-paginate'
 import '../css/pagination.css'
 import '../css/table.css'
 import CreateCategoryModal from './CreateCategoryModal'
 import React from 'react'
 import EditCategoryModal from './EditCategoryModal'
 import Select from 'react-select'
+import {Button} from '@material-ui/core'
+import FilterListIcon from '@mui/icons-material/FilterList'
+import IconButton from '@mui/material/IconButton'
+import { Tooltip, Zoom } from "@mui/material"
+import { setSnackbar } from '../../features/snackSlice'
+import { useDispatch } from 'react-redux'
+import DeleteIcon from '@mui/icons-material/Delete'
+import EditIcon from '@mui/icons-material/Edit'
+import Pagination from '@mui/material/Pagination'
 
 interface componentInterface {
   categories: [{
@@ -36,6 +43,7 @@ const IndexCategories: React.FC<componentInterface> = (props) => {
     const [error, setError] = useState(false)
     const [editModalShow, setEditModalShow] = useState(false)
     const [createModalShow, setCreateModalShow] = useState(false)
+    const [filterModalShow, setFilterModalShow] = useState(false)
     const [pageSelect, setPageSelected] = useState(1)
     const [updated, setUpdated] = useState(false)
     const [page, setPage] = useState(3)
@@ -66,6 +74,10 @@ const IndexCategories: React.FC<componentInterface> = (props) => {
       setCategory(null)
     }
 
+    const setCreate = () => { 
+      setCreateModalShow(true)  
+    }
+    
     const setEdit = (cat:any) => { 
       setCategory(cat)
       setEditModalShow(true)
@@ -94,6 +106,10 @@ const IndexCategories: React.FC<componentInterface> = (props) => {
         return(name + '-collapsed')
       }
     }
+
+    const handlePageClick = (event:any, value:number) => {
+      setPageSelected(value)
+    }
       
 
     useEffect( () => {
@@ -104,42 +120,25 @@ const IndexCategories: React.FC<componentInterface> = (props) => {
         return <p>Error!</p>
     }
 
-      const handlePageClick = (event:any) => {
-        const pageSelected = event.selected + 1
-        setPageSelected(pageSelected)
-      }
+  
     return (
         <>
-        <div style={{backgroundColor:'grey', borderRadius:'15px', marginBottom:'10px'}}>
-        <Container className="justify-content-center" >
-            <h3 style={{textAlign:"center"}}>Filters</h3>
-            
-                <Form onSubmit={handleSubmit} style={{marginBottom:'5%'}}>
-                  <Row>
-                    <Col>
-                      <Form.Control
-                          placeholder="Search Names"
-                          id="name"
-                          value={search}
-                          onChange={handleChange}
-                      />
-                      </Col>
-                      <Col>
-                      <Select  options={optionType()}
-                          onChange={handleSelect}
-                          placeholder='Select Type'  
-                      />
-                      </Col>
-                      <Col><Button type="submit" variant='primary'>Submit</Button></Col>
-                      <Col><Button onClick={() => setCreateModalShow(true)}
-                                    className="m-2"
-                                    variant="primary">Create Category</Button></Col>
-                  </Row>
-                </Form>
-                
-        </Container>
+        <div className='main'>
+       
+        <div className='header'>
+          <span className='header-text'>Categories</span>
+          <div className='header-button'><IconButton onClick={() => setFilterModalShow(true)} > 
+          <Tooltip title='Filter' TransitionComponent={Zoom} placement="bottom">
+            <FilterListIcon color='inherit'/> 
+          </Tooltip>
+            </IconButton> </div>
           
+        <div className='right-header'>
+        <Button variant='outlined' color='secondary' className='header-button'  onClick={() => setCreate()}>Add Category</Button>
+       </div>
         </div>
+
+        <div className='table'>
         <Table hover bordered  >
         <thead>
           <tr>
@@ -163,41 +162,26 @@ const IndexCategories: React.FC<componentInterface> = (props) => {
     }
         </tbody>
       </Table>
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        boxSizing: 'border-box',
-        width: '100%',
-        height: '100%',
-      }}>
-
-
-      <ReactPaginate
-        activeClassName={'item active '}
-        breakClassName={'item break-me '}
-        containerClassName={checkOpen('pagination')}
-        disabledClassName={'disabled-page'}
-        breakLabel="..."
-        nextClassName={"item next "}
-        nextLabel="next >"
-        onPageChange={handlePageClick}
-        pageRangeDisplayed={2}
-        pageCount={page}
-        previousLabel="< previous"
-        pageClassName={'item pagination-page '}
-        previousClassName={"item previous"}
-      />
       </div>
-      <label htmlFor="perPageSelect"></label>
+
+
+      <div className='pagination'>
+     <label htmlFor="perPage"></label>
       <select id="perPageSelect" onChange={e => setPerPage(e.target.value)}> 
-        <option value="">Choose an option</option>
+        <option value="">PerPage</option>
         <option value="5">5</option>
         <option value="10">10</option>
         <option value="23">25</option>
         <option value="50">50</option>
         <option value="100">100</option>
       </select>
+      <Pagination 
+        count={page} page={currentPage} onChange={handlePageClick} 
+        defaultPage={1} showFirstButton showLastButton
+        color='primary' size='large' shape="rounded"
+      />
+      </div>
+      </div>
      
       <CreateCategoryModal
                 user={user}
