@@ -47,3 +47,7 @@
     width: stretch;
 }
 
+td {
+    vertical-align: middle !important;
+}
+

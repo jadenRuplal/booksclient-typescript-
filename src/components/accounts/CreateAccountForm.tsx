@@ -13,16 +13,15 @@ interface componentInterface {
         last4: number,
         name: string
     } | string,
-    handleChange: any,
-    handleSubmit: any,
+    handleChange: (e: { target: { value: string; name: any; type: string }}) => void ,
+    handleSubmit:  (e: { preventDefault: () => void }) => void,
     handleSelect: any,
     heading: string,
-    handleLast4: any
     
 }
 
 const AccountForm: React.FC<componentInterface> = (props) => {
-    const { accountName, handleChange, handleSubmit, heading, handleSelect, handleLast4 } = props
+    const { handleChange, handleSubmit, heading, handleSelect } = props
     const result:any = useSelector((state) => state)
     const categoryOptions = result.option.value[0].options.data.account_type
     const optionType = () => {

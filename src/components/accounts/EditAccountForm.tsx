@@ -18,11 +18,11 @@ interface componentInterface {
         name: string,
         uuid:number
     },
-    handleChange: any,
-    handleSubmit: any,
+    handleChange: (e:{target:{ value:string }}) => void,
+    handleSubmit: (e: { preventDefault: () => void }) => void,
     heading: string,
     handleSelect: any,
-    handleClose: any
+    handleClose: () => void
     
 }
 
@@ -31,6 +31,7 @@ const AccountForm: React.FC<componentInterface> = (props) => {
     const result:any = useSelector((state) => state)
     const user = result.user.value[0].user
     const categoryOptions = result.option.value[0].options.data.account_type
+    
     const optionType = () => {
         return( categoryOptions?.map((option:any) => (
            {value:`${option.name}`, label: `${option.display_name}`}
@@ -38,9 +39,9 @@ const AccountForm: React.FC<componentInterface> = (props) => {
     ))
         }
 
-        const deleteThePayee = () => {
-            deletePayee(user, `account/${account?.uuid}`)
-                .then(() => handleClose())
+        const deleteThePayee = async () => {
+        const response = await deletePayee(user, `account/${account?.uuid}`)
+            handleClose()
         }
 
     return (
@@ -55,14 +56,14 @@ const AccountForm: React.FC<componentInterface> = (props) => {
                     onChange={handleChange}
                     required
                 />
-                 <Form.Label htmlFor="type">Type</Form.Label>
+                <Form.Label htmlFor="type">Type</Form.Label>
                 <Select  options={optionType()}
                 onChange={handleSelect}
                 placeholder={account.account_type.display_name}
                 />
-                 <Button onClick={() => deleteThePayee()}
-                                    className="m-2"
-                                    variant="warning">Delete Category</Button>
+                <Button onClick={() => deleteThePayee()}
+                    className="m-2"
+                    variant="warning">Delete Category</Button>
                 <Button type="submit">Submit</Button>
             </Form>
         </Container>

@@ -1,7 +1,6 @@
 
 import React, { useState, Fragment } from 'react'
 import { Route, Routes } from 'react-router-dom'
-import { v4 as uuid } from 'uuid'
 import { useSelector } from 'react-redux'
 import './index.css'
 import './App.css'
@@ -19,12 +18,6 @@ import IndexTransactions from './components/transactions/IndexTransactions'
 import SideBar from './SidebarCollapse/SideBar'
 
 
-type Message = {
-  heading: any,
-  message: any,
-  variant: any
-}
-
 interface componentInterface {
   user: {
 	sessions: [{
@@ -32,9 +25,8 @@ interface componentInterface {
 		id: string,
 	}]
 	email: string,
-	
-
 } | null,
+
 }
 
 const App: React.FC<componentInterface> = () => {
@@ -42,6 +34,7 @@ const App: React.FC<componentInterface> = () => {
   const [user, setUser] = useState<componentInterface["user"]>(null)
   const result:any = useSelector((state) => state)
   const open = result?.sideBar.open
+
 
 
 
@@ -67,7 +60,7 @@ const classConcat = (name:string) => {
 				<Routes>
 					<Route path='/' element={
 					<RequireAuth result={result}>
-						<div className={classConcat('div-sidebar')}><SideBar/></div>
+						<div className={classConcat('div-sidebar')}><SideBar /></div>
 						<div className={classConcat('main-view')} ><Home user={user} /></div>
 					</RequireAuth>} />
 					<Route
@@ -75,10 +68,7 @@ const classConcat = (name:string) => {
 						element={
 							<>
 							<div className={classConcat('div-sidebar')}><SideBar /></div>
-							<div className={classConcat('main-view')}><IndexPayees payees={null} payee={{
-								name: '',
-								uuid: ''
-							}} />
+							<div className={classConcat('main-view')}><IndexPayees payees={null} payee={null} />
 							</div>
 							</>}
 					/>
@@ -88,11 +78,14 @@ const classConcat = (name:string) => {
 							<>
 								<div className={classConcat('div-sidebar')}><SideBar /></div>
 								<div className={classConcat('main-view')}><IndexAccounts accounts={null} account={{
-								name: '',
-								uuid: '',
-								last4: 0
-							}} />
-							</div>
+										name: '',
+										uuid: '',
+										last4: 0,
+										account_type: {
+											display_name: ''
+										}
+									}} />
+								</div>
 							</>}
 					/>
 					<Route
@@ -112,17 +105,17 @@ const classConcat = (name:string) => {
 						element={
 							<>
 								<div className={classConcat('div-sidebar')}><SideBar /></div>
-								<div className={classConcat('main-view')}><IndexMapping mapping={undefined} map={null} />
+								<div className={classConcat('main-view')}><IndexMapping mapping={null} map={null} />
 								</div>
 								</>}
 							/>
 					<Route
 						path='/transactions'
-						element={<div style={{display:'flex'}}>
+						element={<>
 						<div className={classConcat('div-sidebar')}><SideBar /></div>
-						<div className={classConcat('main-view')}><IndexTransactions transactions={undefined} transaction={null} />
+						<div className={classConcat('main-view')}><IndexTransactions transactions={null} transaction={null} />
 						</div>
-						</div>}
+						</>}
 					/>
 					<Route
 						path='/sign-out'
@@ -134,7 +127,7 @@ const classConcat = (name:string) => {
 					/>
 					<Route
 						path='/sign-in'
-						element={<SignIn setUser={setUser} user={undefined} />}
+						element={<SignIn setUser={setUser} user={null} />}
 					/>
 				</Routes>
 				</>

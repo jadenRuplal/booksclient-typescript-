@@ -3,18 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import {Button, ButtonGroup} from 'react-bootstrap'
 
 import { signOut } from '../../api/auth'
-import messages from '../shared/AutoDismissAlert/messages'
 import React from 'react'
 
 
 
 
-type Message = {
-    heading: any,
-    message: any,
-    variant: any
 
-}
 interface interfaceComponent {
     user: any
     clearUser: () => void

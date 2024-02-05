@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import PayeeForm from './PayeeForm'
 import api from '../../api/payee'
-import { updatePayeeSuccess, updatePayeeFailure } from '../shared/AutoDismissAlert/messages'
 import { useDispatch } from 'react-redux'
 import { setSnackbar } from "../../features/snackSlice"
 
@@ -22,7 +21,7 @@ const EditPayeeModal = (props:any) => {
 
  
 
-    const handleChange = (e: { target: { value: string; name: any; type: string } }) => {
+    const handleChange = (e: { target: { value: string; name: any; type: string } } | any) => {
         setPayee((prevPayee: any) => {
             let updatedValue:any = e.target.value
             const updatedName = e.target.name

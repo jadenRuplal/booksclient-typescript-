@@ -13,8 +13,8 @@ interface componentInterface {
         uuid: string,
         name: string
     },
-    handleChange: any,
-    handleSubmit: any,
+    handleChange: (e:{ preventDefault: () => void }) => void,
+    handleSubmit: (e:{ preventDefault: () => void }) => void,
     heading: string,
     handleClose: any
     

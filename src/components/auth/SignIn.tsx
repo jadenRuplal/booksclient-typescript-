@@ -10,15 +10,15 @@ import { addOption } from '../../features/optionSlice'
 import { setSnackbar } from '../../features/snackSlice'
 
 
-type Message = {
-    heading: any,
-    message: any,
-    variant: any
-}
-
 interface componentInterface {
     setUser: any,
-	user: any,
+	user: {
+		sessions: [{
+			session_id: number,
+			id: string,
+		}]
+		email: string,
+	} | null,
 }
 
 
@@ -42,10 +42,10 @@ const SignIn: React.FC<componentInterface> = (props) => {
 
 
         const credentials = {email, password}
-		const UserData = {
-			email: credentials.email,
-			password: credentials.password
-		}
+		// const UserData = {
+		// 	email: credentials.email,
+		// 	password: credentials.password
+		// }
  
 		signIn(credentials)
 			.then((res) =>  userSet(res))
@@ -66,9 +66,6 @@ const SignIn: React.FC<componentInterface> = (props) => {
 					<div className="news-image" style={{backgroundImage: 'url(https://i.imgur.com/aF6ra0M.png)'}}></div>
 					<div className="news-caption">
 						<h4 className="caption-title"> myBooks App</h4>
-						<p>
-							Download the Color Admin app for iPhone®, iPad®, and Android™. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-						</p>
 					</div>
 				</div>
 				<div className="right-content">

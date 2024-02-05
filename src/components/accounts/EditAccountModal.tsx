@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import AccountForm from './EditAccountForm'
 import api from '../../api/payee'
-import { updatePayeeSuccess, updatePayeeFailure } from '../shared/AutoDismissAlert/messages'
 import { useDispatch } from 'react-redux'
 import { setSnackbar } from '../../features/snackSlice'
 

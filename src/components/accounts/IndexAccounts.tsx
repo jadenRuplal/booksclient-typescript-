@@ -30,7 +30,10 @@ interface componentInterface {
  account: {
   name: string,
   uuid: string,
-  last4: number
+  last4: number,
+  account_type: {
+    display_name: string
+  } | null
  }
 }
 
@@ -40,7 +43,6 @@ const IndexAccounts: React.FC<componentInterface> = (props) => {
     const [error, setError] = useState(false)
     const [account, setAccount] = useState(null)
     const [updated, setUpdated] = useState(false)
-    const [id, setId] = useState(null)
     const [typeSelected, setTypeSelected] = useState('')
     const [createModalShow, setCreateModalShow] = useState(false)
     const [editModalShow, setEditModalShow] = useState(false)
@@ -84,14 +86,13 @@ const IndexAccounts: React.FC<componentInterface> = (props) => {
         setTypeSelected(data.value)
       }
 
-      const handleChange = (e:any) => {
+      const handleChange = (e: any) => {
         setSearch(e.target.value)
     }
 
-    const handleSubmit = (e: {
-     preventDefault: () => any }) => {
+    const handleSubmit = (e: { preventDefault: () => any }) => {
         e.preventDefault()
-           getAccounts()
+        getAccounts()
     }
     const closing = () => {
       setEditModalShow(false)
@@ -150,15 +151,15 @@ const IndexAccounts: React.FC<componentInterface> = (props) => {
           </tr>
         </thead>
         <tbody>
-    {    accounts?.map((account:any) => (
+    {    accounts?.map((account:componentInterface["account"]) => (
                    
-                   <tr key={account.uuid}>
+                  <tr key={account.uuid}>
                     <td onClick={() => setEdit(account)}> 
                         {account.name}
-                   </td>
-                   <td>{account.last4}</td>
-                   <td>{account.account_type.display_name}</td>
-                    </tr> 
+                    </td>
+                    <td>{account?.last4}</td>
+                    <td>{account?.account_type?.display_name}</td>
+                  </tr> 
                     
                 )
             )

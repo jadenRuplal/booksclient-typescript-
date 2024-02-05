@@ -11,6 +11,7 @@ import EditCategoryModal from './EditCategoryModal'
 import Select from 'react-select'
 import {Button} from '@material-ui/core'
 import FilterListIcon from '@mui/icons-material/FilterList'
+import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded'
 import IconButton from '@mui/material/IconButton'
 import { Tooltip, Zoom } from "@mui/material"
 import { setSnackbar } from '../../features/snackSlice'
@@ -129,13 +130,15 @@ const IndexCategories: React.FC<componentInterface> = (props) => {
           <span className='header-text'>Categories</span>
           <div className='header-button'><IconButton onClick={() => setFilterModalShow(true)} > 
           <Tooltip title='Filter' TransitionComponent={Zoom} placement="bottom">
-            <FilterListIcon color='inherit'/> 
+            <FilterListIcon sx={{color:'white'}}/> 
           </Tooltip>
-            </IconButton> </div>
-          
-        <div className='right-header'>
-        <Button variant='outlined' color='secondary' className='header-button'  onClick={() => setCreate()}>Add Category</Button>
-       </div>
+            </IconButton> 
+            <IconButton onClick={() => setCreate()} > 
+            <Tooltip title='Create Category' TransitionComponent={Zoom} placement='bottom' >
+              <AddCircleRoundedIcon sx={{color:'white'}}/> 
+            </Tooltip>
+        </IconButton>
+        </div>
         </div>
 
         <div className='table'>

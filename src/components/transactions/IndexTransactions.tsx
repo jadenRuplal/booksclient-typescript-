@@ -10,6 +10,7 @@ import React from 'react'
 import EditTransactionModal from './EditTransactionModal'
 import {Button} from '@material-ui/core'
 import FilterListIcon from '@mui/icons-material/FilterList'
+import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded'
 import IconButton from '@mui/material/IconButton'
 import { Tooltip, Zoom } from "@mui/material"
 import { setSnackbar } from '../../features/snackSlice'
@@ -24,7 +25,7 @@ interface componentInterface {
   transactions: [{
         uuid: string,
         name: string
-  }] | any,
+  }] | null,
   transaction: {
     name: string,
     uuid: string,
@@ -39,19 +40,18 @@ const IndexTransactions: React.FC<componentInterface> = (props) => {
     const [render, setRender] = useState<number>(0)
     const [transactions, setTransactions] = useState<componentInterface["transactions"]>(null)
     const [transaction, setTransaction] = useState(null)
-    const [search, setSearch ] = useState<any>({
+    const [search, setSearch ] = useState<{payee:string, account:string}>({
       payee: '',
       account: ''
   
   })
     const [deleteAll, setDeleteAll] = useState<any>([])
-    const [error, setError] = useState(false)
     const [createModalShow, setCreateModalShow] = useState(false)
     const [filterModalShow, setFilterModalShow] = useState(false)
     const [pageSelect, setPageSelected] = useState(1)
     const [updated, setUpdated] = useState(false)
     const [openActive, setOpenActive] = useState(false)
-    const [page, setPage] = useState(3)
+    const [page, setPage] = useState<number>(3)
     const [editModalShow, setEditModalShow] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
     const [perPage, setPerPage] = useState<any>(50)
@@ -60,6 +60,8 @@ const IndexTransactions: React.FC<componentInterface> = (props) => {
     const user = result.user.value[0].user
     const open = result?.sideBar.open
     const dispatch = useDispatch()
+
+    console.log(result)
 
 
     const getTransactions = async () => {
@@ -104,7 +106,7 @@ const IndexTransactions: React.FC<componentInterface> = (props) => {
     const handleSubmit = (e: {
      preventDefault: () => any }) => {
         e.preventDefault()
-           getTransactions()
+        getTransactions()
     }
        
     const checkOpen = (name:string) => {
@@ -150,9 +152,6 @@ const IndexTransactions: React.FC<componentInterface> = (props) => {
        getTransactions()
     }, [perPage, createModalShow, pageSelect, editModalShow, deleteAll])
 
-    if (error) {
-        return <p>Error!</p>
-    }
 
       const handlePageClick = (event:any, value:number) => {
         setPageSelected(value)
@@ -163,15 +162,18 @@ const IndexTransactions: React.FC<componentInterface> = (props) => {
         <div className='header'>
           <span className='header-text'>Transactions</span>
            { (deleteAll.length > 0) ? (<IconButton  onClick={() => deleteChecked()}><DeleteIcon color='secondary'/></IconButton>) : <></>} 
-          <div className='header-button'><IconButton onClick={() => setFilterModalShow(true)} > 
+          <div className='header-button'>
+            <IconButton onClick={() => setFilterModalShow(true)} > 
           <Tooltip title='Filter' TransitionComponent={Zoom} placement="bottom">
-            <FilterListIcon color='inherit'/> 
+            <FilterListIcon sx={{color:'white'}}/> 
           </Tooltip>
-            </IconButton> </div>
-          
-        <div className='right-header'>
-        <Button variant='outlined' color='secondary' className='header-button'  onClick={() => setCreate()}>Add Transaction</Button>
-       </div>
+            </IconButton> 
+            <IconButton onClick={() => setCreate()} > 
+            <Tooltip title='Create Transaction' TransitionComponent={Zoom} placement='bottom' >
+              <AddCircleRoundedIcon sx={{color:'white'}}/> 
+            </Tooltip>
+        </IconButton>
+            </div>
         </div>
 
         <div className='table'>
@@ -193,25 +195,25 @@ const IndexTransactions: React.FC<componentInterface> = (props) => {
         <tbody>
     {    transactions?.map((transaction:any) => (
                    <>
-                   <tr key={transaction.uuid}>
+                  <tr key={transaction.uuid}>
                     <td>
-                        <input type='checkbox' onClick={(e) => handleCheckChange(e, transaction)}></input>
+                          <input type='checkbox' onClick={(e) => handleCheckChange(e, transaction)}></input>
                     </td>
                     <td>
-                        {transaction.transaction_date}
-                   </td>
-                   <td>{transaction?.amount}</td>
-                   <td>{
-                   transaction?.payee?.name}</td>
-                   <td>{transaction?.account?.name}</td>
-                   <td>{
-                   transaction?.transaction_type?.display_name}</td>
-                   <td>{transaction?.transaction_status?.display_name}</td>
-                   <td>
-                      <IconButton onClick={() => setEdit(transaction)}><EditIcon/></IconButton>
-                      <IconButton onClick = {() => deleteTransaction(transaction)}><DeleteIcon/></IconButton>
-                   </td>
-                    </tr> 
+                          {transaction.transaction_date}
+                    </td>
+                    <td>{transaction?.amount}</td>
+                    <td>{
+                    transaction?.payee?.name}</td>
+                    <td>{transaction?.account?.name}</td>
+                    <td>{
+                    transaction?.transaction_type?.display_name}</td>
+                    <td>{transaction?.transaction_status?.display_name}</td>
+                    <td>
+                        <IconButton onClick={() => setEdit(transaction)} size="small"><EditIcon/></IconButton>
+                        <IconButton onClick = {() => deleteTransaction(transaction)} size="small"><DeleteIcon /></IconButton>
+                    </td>
+                  </tr> 
                     </>
                 )
             )

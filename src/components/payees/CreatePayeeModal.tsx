@@ -6,14 +6,22 @@ import { setSnackbar } from '../../features/snackSlice'
 import { useDispatch } from 'react-redux'
 
 
+
+
+interface componentInterface {
+  
+}
+
 const CreatePayeeModal = (props:any) => {
     const {
         user, show, handleClose,
     } = props
     const [payee, setPayee] = useState(props.payee)
-    const [payeeName, setPayeeName] = useState()
+    const [payeeName, setPayeeName] = useState(null)
     const dispatch = useDispatch()
-    const handleChange = (e: { target: { value: string; name: any; type: string } }) => {
+
+
+    const handleChange = (e:any) => {
         setPayeeName((prevPayee: any) => {
             let updatedValue:any = e.target.value
             const updatedName = e.target.name

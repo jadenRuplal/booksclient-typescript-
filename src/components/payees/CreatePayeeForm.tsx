@@ -11,14 +11,14 @@ interface componentInterface {
         uuid: string,
         name: string
     },
-    handleChange: any,
+    handleChange: (e:any) => void,
     handleSubmit: any,
     heading: string
     
 }
 
 const PayeeForm: React.FC<componentInterface> = (props) => {
-    const { payee, handleChange, handleSubmit, heading } = props
+    const { handleChange, handleSubmit, heading } = props
 
     return (
         <Container className="justify-content-center">

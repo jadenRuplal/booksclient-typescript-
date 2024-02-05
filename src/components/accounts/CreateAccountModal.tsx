@@ -18,13 +18,13 @@ const CreateAccountModal = (props:any) => {
     const handleChange = (e: { target: { value: string; name: any; type: string } }) => {
         setAccountName(e.target.value)
     }
+    
     const createAccount = {
         name: accountName,
         account_type: accountType
     }
 
     const handleSubmit = async (e: { preventDefault: () => void }) => {
-        // e equals the event
         e.preventDefault()
       try {
         const response = await api.post(user, 'account?with[]=account_type', createAccount)
@@ -46,11 +46,12 @@ const CreateAccountModal = (props:any) => {
           )
       }
     }
-    function handleSelect(data:any) {
-        setAccountType(data.value);
+
+    function handleSelect(data: {value: string}) {
+        setAccountType(data.value)
       }
       function handleLast4(e:any) {
-        setAccountLast4(e.target.value);
+        setAccountLast4(e.target.value)
       }
 
 
@@ -63,7 +64,6 @@ const CreateAccountModal = (props:any) => {
                     handleChange={handleChange}
                     handleSubmit={handleSubmit}
                     handleSelect={handleSelect}
-                    handleLast4={handleLast4}
                     heading="Create account"
 
                 />

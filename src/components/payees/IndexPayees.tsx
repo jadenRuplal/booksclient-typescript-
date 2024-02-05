@@ -23,20 +23,19 @@ interface componentInterface {
   payees: [{
         uuid: string,
         name: string
-  }] | any,
+  }] | null,
   payee: {
     name: string,
     uuid: string
-  }
+  } | null
 }
 
 
 const IndexPayees: React.FC<componentInterface> = (props) => {
     const [payees, setPayees] = useState<componentInterface["payees"]>(null)
-    const [payee, setPayee] = useState<any>(null)
+    const [payee, setPayee] = useState<componentInterface["payee"]>(null)
     const [render, setRender] = useState<number>(0)
-    const [message, setMessage] = useState<any>(null)
-    const [search, setSearch ] = useState<any>('')
+    const [search, setSearch ] = useState<string>('')
     const [editModalShow, setEditModalShow] = useState(false)
     const [filterModalShow, setFilterModalShow] = useState(false)
     const [error, setError] = useState(false)
@@ -45,7 +44,7 @@ const IndexPayees: React.FC<componentInterface> = (props) => {
     const [updated, setUpdated] = useState(false)
     const [page, setPage] = useState(3)
     const [currentPage, setCurrentPage] = useState(1)
-    const [perPage, setPerPage] = useState<any>(50)
+    const [perPage, setPerPage] = useState<number | string>(50)
     const result:any = useSelector((state) => state)
     const user = result.user.value[0].user
     const open = result?.sideBar.open
@@ -55,16 +54,15 @@ const IndexPayees: React.FC<componentInterface> = (props) => {
       const response = await api.get(user, `payee?filters[search]=${search}&orderby=name&sortby=asc&page=${pageSelect}&per_page=${perPage}`)
       setPayees(response.data?.results)
       setPage(response.data.last_page)
-      setCurrentPage(response.data.current_page) 
-      setMessage(response.message)  
+      setCurrentPage(response.data.current_page)   
      }
 
-     const deletePayee = async (payee:any) => {
-      const response = await api.delete(user, `payee/${payee.uuid}`, payee)
+     const deletePayee = async (payee: componentInterface["payee"]) => {
+      const response = await api.delete(user, `payee/${payee?.uuid}`, payee as object)
       getPayees()
     }
 
-const setEdit = (pay:any) => { 
+const setEdit = (pay:{ name: string; uuid: string } | null) => { 
   setPayee(pay)
   setEditModalShow(true)
   return ( 
@@ -89,10 +87,10 @@ const checkOpen = (name:string) => {
 const closing = () => {
   setEditModalShow(false)
   setFilterModalShow(false)
-  setPayee('')
+  setPayee(null)
 }
 
-      const handleChange = (e:any) => {
+      const handleChange = (e: {target: {value:string}}) => {
         setSearch(e.target.value)
     }
 
@@ -114,7 +112,7 @@ const closing = () => {
         return <p>Error!</p>
     }
 
-    const handlePageClick = (event:any, value:number) => {
+    const handlePageClick = (event:unknown, value:number) => {
       setPageSelected(value)
     }
     
@@ -148,13 +146,13 @@ const closing = () => {
         </tr>
       </thead>
       <tbody>
-  {    payees?.map((payee:any) => (
+  {    payees?.map((payee: componentInterface["payee"]) => (
                  
-                 <tr key={payee.uuid}>
-                  <td>{payee.name}</td>
+                 <tr key={payee?.uuid}>
+                  <td>{payee?.name}</td>
                  <td>
-                    <IconButton onClick={() => setEdit(payee)}><EditIcon/></IconButton>
-                    <IconButton onClick = {() => deletePayee(payee)}><DeleteIcon/></IconButton>
+                    <IconButton onClick={() => setEdit(payee)} size="small"><EditIcon/></IconButton>
+                    <IconButton onClick = {() => deletePayee(payee)} size="small"><DeleteIcon/></IconButton>
                  </td>
                   </tr> 
               )
