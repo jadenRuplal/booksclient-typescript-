@@ -5,6 +5,7 @@ import api from '../../api/payee'
 import React from 'react'
 import CreateAccountModal from './CreateAccountModal'
 import EditAccountModal from './EditAccountModal'
+import FilterAccountModal from './FilterAccountModal'
 import Select from 'react-select'
 import '../css/pagination.css'
 import '../css/transaction.css'
@@ -96,6 +97,7 @@ const IndexAccounts: React.FC<componentInterface> = (props) => {
     }
     const closing = () => {
       setEditModalShow(false)
+      setFilterModalShow(false)
       setAccount(null)
     }
 
@@ -188,6 +190,15 @@ const IndexAccounts: React.FC<componentInterface> = (props) => {
           />
       </div>
       </div>
+
+      <FilterAccountModal 
+        user={user}
+        show={filterModalShow}
+        handleSubmit={handleSubmit}
+        closing={closing}
+        setAccounts={setAccounts}
+        handleClose={() => closing()}
+        />
 
       <CreateAccountModal
                 user={user}

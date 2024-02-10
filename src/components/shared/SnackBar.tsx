@@ -27,6 +27,7 @@ const Snackbars = () => {
   const snackbarOpen:any = useSelector<any>(state => state.snackbar.snackbarOpen)
   const snackbarType:any = useSelector<Snack>(state => state.snackbar.snackbarType)
   const snackbarMessage:any = useSelector<any>(state => state.snackbar.snackbarMessage)
+  
   const handleClose = (event:any) => {
     dispatch(setSnackbar(false, snackbarType, snackbarMessage));
   };

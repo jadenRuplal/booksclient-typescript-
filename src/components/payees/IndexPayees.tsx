@@ -34,6 +34,7 @@ interface componentInterface {
 const IndexPayees: React.FC<componentInterface> = (props) => {
     const [payees, setPayees] = useState<componentInterface["payees"]>(null)
     const [payee, setPayee] = useState<componentInterface["payee"]>(null)
+    const [payeeFilter, setPayeeFilter] = useState<any>('')
     const [render, setRender] = useState<number>(0)
     const [search, setSearch ] = useState<string>('')
     const [editModalShow, setEditModalShow] = useState(false)
@@ -42,7 +43,7 @@ const IndexPayees: React.FC<componentInterface> = (props) => {
     const [createModalShow, setCreateModalShow] = useState(false)
     const [pageSelect, setPageSelected] = useState(1)
     const [updated, setUpdated] = useState(false)
-    const [page, setPage] = useState(3)
+    const [page, setPage] = useState(1)
     const [currentPage, setCurrentPage] = useState(1)
     const [perPage, setPerPage] = useState<number | string>(50)
     const result:any = useSelector((state) => state)
@@ -51,10 +52,11 @@ const IndexPayees: React.FC<componentInterface> = (props) => {
     const dispatch = useDispatch()
 
     const getPayees = async () => {
-      const response = await api.get(user, `payee?filters[search]=${search}&orderby=name&sortby=asc&page=${pageSelect}&per_page=${perPage}`)
+      const response = await api.get(user, `payee?filters[search]=${payeeFilter}&orderby=name&sortby=asc&page=${pageSelect}&per_page=${perPage}`)
       setPayees(response.data?.results)
       setPage(response.data.last_page)
-      setCurrentPage(response.data.current_page)   
+      setCurrentPage(response.data.current_page)  
+      console.log(response) 
      }
 
      const deletePayee = async (payee: componentInterface["payee"]) => {
@@ -112,8 +114,9 @@ const closing = () => {
         return <p>Error!</p>
     }
 
-    const handlePageClick = (event:unknown, value:number) => {
+    const handlePageClick = (_event:unknown, value:number) => {
       setPageSelected(value)
+      console.log(value)
     }
     
     return (
@@ -174,7 +177,7 @@ const closing = () => {
       <option value="100">100</option>
     </select>
     <Pagination 
-      count={page} page={currentPage} onChange={handlePageClick} 
+      count={page} page={currentPage} onChange={(e:any, value) => handlePageClick(e, value)} 
       defaultPage={1} showFirstButton showLastButton
       color='primary' size='large' shape="rounded" 
     />
@@ -202,6 +205,12 @@ const closing = () => {
         <FilterPayeeModal 
         user={user}
         show={filterModalShow}
+        payeeFilter={payeeFilter}
+        pageSelect={pageSelect}
+        perPage={perPage}
+        setPage={setPage}
+        setCurrentPage={setCurrentPage}
+        setPayeeFilter={setPayeeFilter}
         handleSubmit={handleSubmit}
         closing={closing}
         setPayees={setPayees}

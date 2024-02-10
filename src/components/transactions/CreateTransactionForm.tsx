@@ -27,12 +27,12 @@ interface componentInterface {
     heading: string,
     transactionCreate: {
         transaction_date: any,
-        payee: any,
-        account: any,
-        amount: any,
+        payee: string,
+        account: string,
+        amount: number,
         transaction_type: any,
         transaction_status: any,
-        descriptionAmount: any
+        descriptionAmount: number
     }
     
     

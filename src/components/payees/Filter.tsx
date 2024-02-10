@@ -13,9 +13,9 @@ interface componentInterface {
         uuid: string,
         name: string
     }],
-    handleChange: any,
-    handleSubmit: any,
-   
+    handleChange: (e: { target: { value: string; name: any; type: string } }) => void,
+    handleSubmit: (e: { preventDefault: () => any }) => void,
+    e: { target: { value: string; name: any; type: string } }
     
 }
 
@@ -26,8 +26,9 @@ const Filter: React.FC<componentInterface> = (props) => {
     const [payees, setPayees] = useState(props.payees)
     const result:any = useSelector((state) => state)
     const user = result.user.value[0].user
-    const handleChange = (e: { target: { value: string; name: any; type: string } }) => {
-        setSearch((prevPayee: any) => {
+    
+    const handleChange = (e: componentInterface["e"]) => {
+        setSearch((prevPayee: componentInterface["e"]) => {
             let updatedValue:any = e.target.value
             const updatedName = e.target.name
 
@@ -44,8 +45,7 @@ const Filter: React.FC<componentInterface> = (props) => {
             }
         })
     }
-    const handleSubmit = (e: {
-     preventDefault: () => any }) => {
+    const handleSubmit = (e: { preventDefault: () => any }) => {
         e.preventDefault()
         const getPayees = async () => {
             const response = await api.get(user, `payee?filters[search]=${search.name}&orderby=name&sortby=asc`)

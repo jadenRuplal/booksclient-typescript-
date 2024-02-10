@@ -9,16 +9,15 @@ type User = {
             session_id: number,
             id: string,
         }]
-        email: any,
+        email: string,
 		
-
     },
     
 }
 
 type Passwords = {
-	oldPassword: any,
-	newPassword: any
+	oldPassword: string,
+	newPassword: string
 	
 }
 
