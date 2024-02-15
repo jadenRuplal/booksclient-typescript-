@@ -6,18 +6,29 @@ import { useDispatch } from 'react-redux'
 import { setSnackbar } from '../../features/snackSlice'
 
 
-const FilterPayeeModal = (props:any) => {
+interface componentInterface {
+    user: any,
+    show:boolean,
+    closing: () => void,
+    setAccounts: any,
+    accountFilter: any,
+    setAccountFilter: any,
+    handleClose: () => void
+
+
+   }
+
+const FilterPayeeModal: React.FC<componentInterface> = (props:any) => {
     const {
-        user, show, handleClose, setAccounts
+        user, show, handleClose, setAccounts, accountFilter, setAccountFilter
     } = props
     const dispatch = useDispatch()
-    const [accountFilter, setAccountFilter] = useState<any>(
-       { 
-        account_type: null
-       }
-    )
+  
 
-    
+    function handleAccountFilter(data:{value:string}, name:any) {
+        setAccountFilter({...accountFilter, [name]: data.value})
+        console.log(data, name)
+      }
 
     
       const handleChange = (e:any) => {
@@ -69,7 +80,7 @@ const FilterPayeeModal = (props:any) => {
             <Modal.Body>
                 <FilterAccountForm
                     accountFilter={accountFilter}
-                    handleChange={handleChange}
+                    handleChange={handleAccountFilter}
                     setAccountFilter={setAccountFilter}
                     handleSubmit={handleSubmit}
                     heading="Filter Account"

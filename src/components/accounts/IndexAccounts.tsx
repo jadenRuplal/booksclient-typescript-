@@ -53,35 +53,47 @@ const IndexAccounts: React.FC<componentInterface> = (props) => {
     const [currentPage, setCurrentPage] = useState(1)
     const [perPage, setPerPage] = useState<any>(50)
     const [search, setSearch ] = useState<any>('')
+    const [accountFilter, setAccountFilter] = useState<any>(
+      { 
+       account_type: '',
+       name: '',
+       last4: ''
+      }
+   )
     const result:any = useSelector((state) => state)
     const user = result.user.value[0].user
     const accountOptions = result.option.value[0].options.data.account_type
     const open = result?.sideBar.open
+
+
     const getAccounts = async () => {
-      const response = await api.get(user, `account?filters[search]=${search}&filters[account_type.name]=${typeSelected}&orderby=name&sortby=asc&page=${pageSelect}&per_page=${perPage}&with[]=account_type`)
+      const response = await api.get(user, `account?filters[account.name]=${accountFilter.name}&filters[account_type.name]=${accountFilter.account_type}&filters[last4]=${accountFilter.last4}&orderby=name&sortby=asc&page=${pageSelect}&per_page=${perPage}&with[]=account_type`)
       setAccounts(response.data?.results)
       setPage(response.data.last_page)
       setCurrentPage(response.data.current_page)
      }
 
-      const allTypes = {value: '', label: 'All'}
+     const deleteAccount = async (account:any) => {
+      const response = await api.delete(user, `account/${account.uuid}`, account)
+      getAccounts()
+    }
       
-      const optionType = () => {
-        return(
-          accountOptions?.map((option:any) => (
-           {value:`${option.name}`, label: `${option.display_name}`}
-            )
-          )
-          )
-    }
+    //   const optionType = () => {
+    //     return(
+    //       accountOptions?.map((option:any) => (
+    //        {value:`${option.name}`, label: `${option.display_name}`}
+    //         )
+    //       )
+    //       )
+    // }
 
-    const checkOpen = (name:string) => {
-      if (open === true) {
-        return name
-      } else if (open === false) {
-        return(name + '-collapsed')
-      }
-    }
+    // const checkOpen = (name:string) => {
+    //   if (open === true) {
+    //     return name
+    //   } else if (open === false) {
+    //     return(name + '-collapsed')
+    //   }
+    // }
       
       function handleSelect(data:any) {
         setTypeSelected(data.value)
@@ -116,11 +128,7 @@ const IndexAccounts: React.FC<componentInterface> = (props) => {
 
     useEffect( () => {
        getAccounts()
-    }, [perPage, createModalShow, pageSelect, editModalShow])
-
-    if (error) {
-        return <p>Error!</p>
-    }
+    }, [perPage, createModalShow, pageSelect, editModalShow, filterModalShow])
 
 
 
@@ -150,6 +158,7 @@ const IndexAccounts: React.FC<componentInterface> = (props) => {
             <th>Name</th>
             <th>Last4</th>
             <th>Account Type</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -161,6 +170,10 @@ const IndexAccounts: React.FC<componentInterface> = (props) => {
                     </td>
                     <td>{account?.last4}</td>
                     <td>{account?.account_type?.display_name}</td>
+                    <td>
+                        <IconButton onClick={() => setEdit(account)} size="small"><EditIcon/></IconButton>
+                        <IconButton onClick = {() => deleteAccount(account)} size="small"><DeleteIcon /></IconButton>
+                    </td>
                   </tr> 
                     
                 )
@@ -194,7 +207,8 @@ const IndexAccounts: React.FC<componentInterface> = (props) => {
       <FilterAccountModal 
         user={user}
         show={filterModalShow}
-        handleSubmit={handleSubmit}
+        accountFilter={accountFilter}
+        setAccountFilter={setAccountFilter}
         closing={closing}
         setAccounts={setAccounts}
         handleClose={() => closing()}

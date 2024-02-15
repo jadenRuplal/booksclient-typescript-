@@ -31,12 +31,8 @@ const FilterTransactionForm: React.FC<componentInterface> = (props) => {
 
 
 
-    useEffect( () => {
-       
-      }, [])
-
-      function handleAccountSelect(data:any) {
-        setAccountFilter({...accountFilter, account_type: data.value})
+      function handleAccountSelect(data:any, name:any) {
+        setAccountFilter({...accountFilter, [name]: data.value})
         console.log(accountFilter)
       }
 
@@ -55,12 +51,26 @@ const FilterTransactionForm: React.FC<componentInterface> = (props) => {
             <Form onSubmit={handleSubmit}>
                 <Form.Label htmlFor="name">Account Type</Form.Label>
                 <Select  options={optionReturn(accountOptions)}
-                          onChange={handleAccountSelect}
+                          onChange={(value) => handleAccountSelect(value, 'account_type')}
                           placeholder="Select Account Type"
                           name='account_type'
                           required
                           id='account_type'
                       />
+                <Form.Label >Name</Form.Label>
+                <Form.Control
+                        type='input'
+                        placeholder='Enter Name'
+                        onChange={(data) => handleAccountSelect(data.target, 'name')}
+                    /> 
+                <Form.Label>Last4</Form.Label>
+                <Form.Control
+                        type='number'
+                        min='1000'
+                        max='9999'
+                        placeholder='Enter Last4'
+                        onChange={(value) => handleAccountSelect(value.target, 'last4')}
+                    /> 
                 <Button onClick={() => handleSubmit()}>Submit</Button>
             </Form>
             
