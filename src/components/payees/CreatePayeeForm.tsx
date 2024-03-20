@@ -7,12 +7,8 @@ import {
 
 
 interface componentInterface {
-    payee: {
-        uuid: string,
-        name: string
-    },
     handleChange: (e:any) => void,
-    handleSubmit: any,
+    handleSubmit: (e:{preventDefault: () => void}) => void,
     heading: string
     
 }

@@ -1,5 +1,5 @@
 
-import React, { useState, Fragment } from 'react'
+import React, { useState } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import './index.css'
@@ -34,9 +34,6 @@ const App: React.FC<componentInterface> = () => {
   const [user, setUser] = useState<componentInterface["user"]>(null)
   const result:any = useSelector((state) => state)
   const open = result?.sideBar.open
-
-
-
 
 const classConcat = (name:string) => {
     if (open === true) {

@@ -6,8 +6,6 @@ import '../css/pagination.css'
 import '../css/transaction.css'
 import EditPayeeModal from './EditPayeeModal'
 import CreatePayeeModal from './CreatePayeeModal'
-import { useDispatch } from "react-redux"
-import { setSnackbar } from "../../features/snackSlice"
 import FilterListIcon from '@mui/icons-material/FilterList'
 import IconButton from '@mui/material/IconButton'
 import { Tooltip, Zoom } from "@mui/material"
@@ -16,7 +14,6 @@ import EditIcon from '@mui/icons-material/Edit'
 import Pagination from '@mui/material/Pagination'
 import FilterPayeeModal from './FilterPayeeModal'
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import {Button} from '@material-ui/core'
 
 
 interface componentInterface {
@@ -36,10 +33,8 @@ const IndexPayees: React.FC<componentInterface> = (props) => {
     const [payee, setPayee] = useState<componentInterface["payee"]>(null)
     const [payeeFilter, setPayeeFilter] = useState<any>('')
     const [render, setRender] = useState<number>(0)
-    const [search, setSearch ] = useState<string>('')
     const [editModalShow, setEditModalShow] = useState(false)
     const [filterModalShow, setFilterModalShow] = useState(false)
-    const [error, setError] = useState(false)
     const [createModalShow, setCreateModalShow] = useState(false)
     const [pageSelect, setPageSelected] = useState(1)
     const [updated, setUpdated] = useState(false)
@@ -48,8 +43,7 @@ const IndexPayees: React.FC<componentInterface> = (props) => {
     const [perPage, setPerPage] = useState<number | string>(50)
     const result:any = useSelector((state) => state)
     const user = result.user.value[0].user
-    const open = result?.sideBar.open
-    const dispatch = useDispatch()
+
 
     const getPayees = async () => {
       const response = await api.get(user, `payee?filters[search]=${payeeFilter}&orderby=name&sortby=asc&page=${pageSelect}&per_page=${perPage}`)
@@ -77,13 +71,6 @@ const setCreate = () => {
   setCreateModalShow(true)  
 }
 
-const checkOpen = (name:string) => {
-  if (open === true) {
-    return name
-  } else if (open === false) {
-    return(name + '-collapsed')
-  }
-}
 
 
 const closing = () => {
@@ -92,31 +79,21 @@ const closing = () => {
   setPayee(null)
 }
 
-      const handleChange = (e: {target: {value:string}}) => {
-        setSearch(e.target.value)
-    }
-
-
-    const handleSubmit = (e: {
-     preventDefault: () => any }) => {
-        e.preventDefault()
-           getPayees()
-    }
-
-    
-
-
     useEffect( () => {
        getPayees()
-    }, [perPage, createModalShow, pageSelect, pageSelect, editModalShow])
+    }, [perPage, createModalShow, pageSelect, pageSelect, editModalShow, filterModalShow])
 
-    if (error) {
-        return <p>Error!</p>
-    }
+  
 
     const handlePageClick = (_event:unknown, value:number) => {
       setPageSelected(value)
-      console.log(value)
+      window.scrollTo(0,0)
+    }
+
+    const handlePerPageClick = (e:{target:{value:string}}) => {
+      setPerPage(e.target.value)
+      setCurrentPage(1)
+      setRender(render + 1)
     }
     
     return (
@@ -168,7 +145,7 @@ const closing = () => {
 
     <div className='pagination'>
    <label htmlFor="perPage"></label>
-    <select id="perPageSelect" onChange={e => setPerPage(e.target.value)}> 
+    <select id="perPageSelect" onChange={(e) => handlePerPageClick(e)}> 
       <option value="">PerPage</option>
       <option value="5">5</option>
       <option value="10">10</option>
@@ -177,7 +154,7 @@ const closing = () => {
       <option value="100">100</option>
     </select>
     <Pagination 
-      count={page} page={currentPage} onChange={(e:any, value) => handlePageClick(e, value)} 
+      count={page} page={currentPage} onChange={(e, value) => handlePageClick(e, value)} 
       defaultPage={1} showFirstButton showLastButton
       color='primary' size='large' shape="rounded" 
     />
@@ -202,20 +179,15 @@ const closing = () => {
               handleClose={() => closing()}
           />
         }
-        <FilterPayeeModal 
-        user={user}
-        show={filterModalShow}
-        payeeFilter={payeeFilter}
-        pageSelect={pageSelect}
-        perPage={perPage}
-        setPage={setPage}
-        setCurrentPage={setCurrentPage}
-        setPayeeFilter={setPayeeFilter}
-        handleSubmit={handleSubmit}
-        closing={closing}
-        setPayees={setPayees}
-        handleClose={() => closing()}
-        />
+       <FilterPayeeModal 
+          user={user}
+          show={filterModalShow}
+          payeeFilter={payeeFilter}
+          setPayeeFilter={setPayeeFilter}
+          closing={closing}
+          handleClose={() => closing()}
+          />
+        
     </>  
     )
     

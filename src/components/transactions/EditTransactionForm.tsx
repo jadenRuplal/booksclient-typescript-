@@ -1,5 +1,5 @@
 import  Select  from 'react-select'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     Form,
     Button,
@@ -38,7 +38,7 @@ interface componentInterface {
 }
 
 const EditTransactionForm: React.FC<componentInterface> = (props) => {
-    const { transaction, handleChange, handleClose, handleSubmit, heading, handlePayeeSelect, handleCategorySelect, transactionUpdate, handleTypeSelect, handleAccountSelect, handleStatusSelect } = props
+    const { transaction, handleChange, handleClose, handleSubmit, heading, handlePayeeSelect, transactionUpdate, handleTypeSelect, handleAccountSelect, handleStatusSelect } = props
     const [account, setAccount] = useState<any>(null)
     const [payees, setPayees] = useState<any>(null)
     const [keyDown, setKeyDown] = useState('')
@@ -60,12 +60,6 @@ const EditTransactionForm: React.FC<componentInterface> = (props) => {
       console.log('worked')
      }
     
-const getPayee = (e:any) => {
-    setPayeeSearch(e.target.value)
-    setTimeout(getPayeeData, 1500)
-}
-
-
 
 const payeeKeyDown = (e:any) => {
    return( 

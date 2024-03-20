@@ -16,8 +16,7 @@ interface componentInterface {
     handleChange: (e:{ preventDefault: () => void }) => void,
     handleSubmit: (e:{ preventDefault: () => void }) => void,
     heading: string,
-    handleClose: any
-    
+    handleClose: () => void
 }
 
 const PayeeForm: React.FC<componentInterface> = (props) => {
@@ -27,7 +26,7 @@ const PayeeForm: React.FC<componentInterface> = (props) => {
 
     const deleteThePayee = () => {
         deletePayee(user, `payee/${payee?.uuid}`)
-            .then(() => handleClose())
+        handleClose()
     }
 
     return (
@@ -42,9 +41,10 @@ const PayeeForm: React.FC<componentInterface> = (props) => {
                     value={payee.name}
                     onChange={handleChange}
                 />
-                 <Button onClick={() => deleteThePayee()}
-                                    className="m-2"
-                                    variant="warning">Delete Category</Button>
+                <Button onClick={() => deleteThePayee()}
+                        className="m-2"
+                        variant="warning">Delete Category
+                </Button>
                 <Button type="submit">Submit</Button>
             </Form>
         </Container>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import PayeeForm from './PayeeForm'
 import api from '../../api/payee'
@@ -8,15 +8,11 @@ import { setSnackbar } from "../../features/snackSlice"
 
 const EditPayeeModal = (props:any) => {
     const {
-        user, show, handleClose, msgAlert, perPage, pageSelect, search
+        user, show, handleClose
     } = props
     const [payee, setPayee] = useState(props.payee)
-    const [payees, setPayees] = useState(props.payees)
     const dispatch = useDispatch()
-    const getPayees = async () => {
-        const response = await api.get(user, `payee?filters[search]=${search}&orderby=name&sortby=asc&page=${pageSelect}&per_page=${perPage}`)  
-       setPayees(response.data?.results)
-       }
+    
 
 
  

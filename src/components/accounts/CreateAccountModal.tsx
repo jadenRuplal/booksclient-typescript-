@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import CreateAccountForm from './CreateAccountForm'
 import api from '../../api/payee'
@@ -18,7 +18,7 @@ const CreateAccountModal = (props:any) => {
     const handleChange = (e: { target: { value: string; name: any; type: string } }) => {
         setAccountName(e.target.value)
     }
-    
+
     const createAccount = {
         name: accountName,
         account_type: accountType

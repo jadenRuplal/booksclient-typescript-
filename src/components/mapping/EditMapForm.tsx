@@ -1,5 +1,5 @@
 import  Select  from 'react-select'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     Form,
     Button,
@@ -49,11 +49,6 @@ const EditMapForm: React.FC<componentInterface> = (props) => {
       setPayees(response.data?.results)
       console.log('worked')
      }
-    
-const getPayee = (e:any) => {
-    setPayeeSearch(e.target.value)
-    setTimeout(getPayeeData, 1500)
-}
 
 
 

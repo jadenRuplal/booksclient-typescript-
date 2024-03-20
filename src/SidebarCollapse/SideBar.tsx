@@ -1,8 +1,5 @@
-import React, {useState} from "react"
-import { Nav } from "react-bootstrap"
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import './SideBar.css'
-import { Navigate } from "react-router-dom"
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft'
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight'
 import Groups2Icon from '@mui/icons-material/Groups2';
@@ -17,7 +14,6 @@ import { falseOpen, trueOpen } from "../features/sideBarSlice"
 
 
 const SideBar = () => {
-const [isOpen, setIsOpen] = useState<boolean>(false)
 const navigate = useNavigate()
 const result:any = useSelector((state) => state)
 const open = result?.sideBar.open

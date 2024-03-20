@@ -1,13 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Modal } from 'react-bootstrap'
 import FilterAccountForm from './FilterAccountForm'
-import api from '../../api/payee'
-import { useDispatch } from 'react-redux'
-import { setSnackbar } from '../../features/snackSlice'
 
 
 interface componentInterface {
-    user: any,
     show:boolean,
     closing: () => void,
     setAccounts: any,
@@ -20,9 +16,8 @@ interface componentInterface {
 
 const FilterPayeeModal: React.FC<componentInterface> = (props:any) => {
     const {
-        user, show, handleClose, setAccounts, accountFilter, setAccountFilter
+         show, handleClose, accountFilter, setAccountFilter
     } = props
-    const dispatch = useDispatch()
   
 
     function handleAccountFilter(data:{value:string}, name:any) {
@@ -30,48 +25,11 @@ const FilterPayeeModal: React.FC<componentInterface> = (props:any) => {
         console.log(data, name)
       }
 
+    const handleSubmit = (e: { preventDefault: () => void }) => {
+        e.preventDefault()
+        handleClose()
+    }
     
-      const handleChange = (e:any) => {
-        setAccountFilter((prevCar:any) => {
-            let updatedValue = e.target.value
-            const updatedName = e.target.name
-
-            if (e.target.type === 'number') {
-                updatedValue = parseInt(e.target.value)
-            }
-
-            const updatedCar = {
-                [updatedName]: updatedValue
-            }
-            return {
-                ...prevCar,
-                ...updatedCar
-            }
-        })
-    }
-
-    const handleSubmit = async () => {
-        try {
-        const response = await api.get(user, `account?filters[account_type.name]=${accountFilter.account_type}`)
-          setAccounts(response.data?.results)
-          handleClose()
-           dispatch(
-            setSnackbar(
-              true,
-              "success",
-              response.message.messages[0]
-            )
-          )  
-        } catch (error:any) {
-            dispatch(
-                setSnackbar(
-                  true,
-                  "error",
-                  error.response.data.message.messages
-                )
-              )
-        }
-    }
 
 
     return (

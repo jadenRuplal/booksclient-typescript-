@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import {  Link } from 'react-router-dom'
 import Table from 'react-bootstrap/Table'
 import { useSelector } from 'react-redux'
 import api from '../../api/payee'
@@ -8,14 +7,11 @@ import '../css/table.css'
 import CreateCategoryModal from './CreateCategoryModal'
 import React from 'react'
 import EditCategoryModal from './EditCategoryModal'
-import Select from 'react-select'
-import {Button} from '@material-ui/core'
+import FilterCategoryModal from './FilterCategoryModal'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded'
 import IconButton from '@mui/material/IconButton'
 import { Tooltip, Zoom } from "@mui/material"
-import { setSnackbar } from '../../features/snackSlice'
-import { useDispatch } from 'react-redux'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import Pagination from '@mui/material/Pagination'
@@ -39,9 +35,10 @@ const IndexCategories: React.FC<componentInterface> = (props) => {
       name: '',
       type: ''
     })
-    const [search, setSearch ] = useState<any>("")
-    const [type, setType] = useState('')
-    const [error, setError] = useState(false)
+    const [categoryFilter, setCategoryFilter] = useState<any>({
+      name: '',
+      category_type: ''
+    })
     const [editModalShow, setEditModalShow] = useState(false)
     const [createModalShow, setCreateModalShow] = useState(false)
     const [filterModalShow, setFilterModalShow] = useState(false)
@@ -52,25 +49,24 @@ const IndexCategories: React.FC<componentInterface> = (props) => {
     const [perPage, setPerPage] = useState<any>(50)
     const result:any = useSelector((state) => state)
     const user = result.user.value[0].user
-    const categoryOptions = result.option.value[0].options.data.category_type
-    const open = result?.sideBar.open
+
+
+
     const getCategories = async () => {
-      const response = await api.get(user, `category?filters[search]=${search}&filters[category_type.name]=${type}&orderby=name&sortby=asc&page=${pageSelect}&per_page=${perPage}&with[]=category_type&with[]=parent_category`)
+      const response = await api.get(user, `category?filters[search]=${categoryFilter.name}&filters[category_type.name]=${categoryFilter.category_type}&orderby=name&sortby=asc&page=${pageSelect}&per_page=${perPage}&with[]=category_type&with[]=parent_category`)
       setCategories(response.data?.results)
       setPage(response.data.last_page)
       setCurrentPage(response.data.current_page)
      }
 
-     const optionType = () => {
-      return(
-        categoryOptions?.map((option:any) => (
-         {value:`${option.name}`, label: `${option.display_name}`}
-          )
-        )
-        )
-  }
+     const deleteCategory = async (category:any) => {
+      const response = await api.delete(user, `category/${category.uuid}`, category)
+      getCategories()
+    }
+
 
      const closing = () => {
+      setFilterModalShow(false)
       setEditModalShow(false)
       setCategory(null)
     }
@@ -82,64 +78,40 @@ const IndexCategories: React.FC<componentInterface> = (props) => {
     const setEdit = (cat:any) => { 
       setCategory(cat)
       setEditModalShow(true)
-      return   ( 
-        setCategory(cat),
-        setEditModalShow(true)) 
     } 
-
-    const handleChange = (e:any) => {
-      setSearch(e.target.value)
-    }
-    const handleSubmit = (e: {
-     preventDefault: () => any }) => {
-        e.preventDefault()
-           getCategories()
-    }
     
-    function handleSelect(data:any) {
-      setType(data.value)
-    }
-
-    const checkOpen = (name:string) => {
-      if (open === true) {
-        return name
-      } else if (open === false) {
-        return(name + '-collapsed')
-      }
-    }
 
     const handlePageClick = (event:any, value:number) => {
       setPageSelected(value)
+      window.scrollTo(0,0)
     }
       
 
     useEffect( () => {
        getCategories()
-    }, [perPage, createModalShow, pageSelect, editModalShow])
+    }, [perPage, createModalShow, pageSelect, editModalShow, filterModalShow])
 
-    if (error) {
-        return <p>Error!</p>
-    }
-
+    
   
     return (
         <>
         <div className='main'>
-       
-        <div className='header'>
-          <span className='header-text'>Categories</span>
-          <div className='header-button'><IconButton onClick={() => setFilterModalShow(true)} > 
-          <Tooltip title='Filter' TransitionComponent={Zoom} placement="bottom">
-            <FilterListIcon sx={{color:'white'}}/> 
-          </Tooltip>
-            </IconButton> 
-            <IconButton onClick={() => setCreate()} > 
-            <Tooltip title='Create Category' TransitionComponent={Zoom} placement='bottom' >
-              <AddCircleRoundedIcon sx={{color:'white'}}/> 
-            </Tooltip>
-        </IconButton>
-        </div>
-        </div>
+
+          <div className='header'>
+            <span className='header-text'>Categories</span>
+            <div className='header-button'>
+              <IconButton onClick={() => setFilterModalShow(true)} > 
+                <Tooltip title='Filter' TransitionComponent={Zoom} placement="bottom">
+                  <FilterListIcon sx={{color:'white'}}/> 
+                </Tooltip>
+              </IconButton> 
+              <IconButton onClick={() => setCreate()} > 
+                <Tooltip title='Create Category' TransitionComponent={Zoom} placement='bottom' >
+                  <AddCircleRoundedIcon sx={{color:'white'}}/> 
+                </Tooltip>
+              </IconButton>
+            </div>
+          </div>
 
         <div className='table'>
         <Table hover bordered  >
@@ -147,18 +119,23 @@ const IndexCategories: React.FC<componentInterface> = (props) => {
           <tr>
             <th>Name</th>
             <th>Type</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody >
     {    categories?.map((category:any) => (
                    
                    <tr key={category.uuid}>
-                    <td onClick={() => setEdit(category)}>
+                    <td>
                         {category.name}
                    </td>
                    <td style={{color:typeColor(category)}}>
                     {category.category_type.display_name}
                    </td>
+                   <td>
+                        <IconButton onClick={() => setEdit(category)} size="small"><EditIcon/></IconButton>
+                        <IconButton onClick = {() => deleteCategory(category)} size="small"><DeleteIcon /></IconButton>
+                    </td>
                     </tr> 
                 )
             )
@@ -193,6 +170,16 @@ const IndexCategories: React.FC<componentInterface> = (props) => {
                 triggerRefresh={() => setUpdated(prev => !prev)}
                 handleClose={() => setCreateModalShow(false)}
             />
+
+      <FilterCategoryModal 
+          user={user}
+          show={filterModalShow}
+          categoryFilter={categoryFilter}
+          setCategoryFilter={setCategoryFilter}
+          closing={closing}
+          setTransactions={setCategories}
+          handleClose={() => closing()}
+          />
 
       { category &&
             <EditCategoryModal

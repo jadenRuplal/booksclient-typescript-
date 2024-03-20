@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import CreatePayeeForm from './CreatePayeeForm'
 import api from '../../api/payee'
@@ -16,7 +16,6 @@ const CreatePayeeModal = (props:any) => {
     const {
         user, show, handleClose,
     } = props
-    const [payee, setPayee] = useState(props.payee)
     const [payeeName, setPayeeName] = useState(null)
     const dispatch = useDispatch()
 
@@ -41,8 +40,7 @@ const CreatePayeeModal = (props:any) => {
     }
 
     const handleSubmit = async (e: { preventDefault: () => void }) => {
-        e.preventDefault()
-        
+        e.preventDefault() 
         try {
        const response = await api.post(user, 'payee?&with[]=created_by&with[]=updated_by' ,payeeName)
            handleClose()
@@ -70,7 +68,6 @@ const CreatePayeeModal = (props:any) => {
             <Modal.Header closeButton />
             <Modal.Body>
                 <CreatePayeeForm
-                    payee={payee}
                     handleChange={handleChange}
                     handleSubmit={handleSubmit}
                     heading="Create Payee"

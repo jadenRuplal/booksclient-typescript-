@@ -10,10 +10,6 @@ import api from '../../api/payee'
 
 
 interface componentInterface {
-    map: {
-        uuid: string,
-        name: string
-    },
     handleChange: any,
     handleSubmit: any,
     handleCategorySelect: any,
@@ -25,8 +21,8 @@ interface componentInterface {
 
 
 
-const MapForm: React.FC<componentInterface> = (props) => {
-    const { map, handleChange, handleSubmit, heading, mapCreate, handleCategorySelect, handlePayeeSelect } = props
+const CreateMapForm: React.FC<componentInterface> = (props) => {
+    const { handleChange, handleSubmit, heading, handleCategorySelect, handlePayeeSelect } = props
     const [categorySearch, setCategorySearch] = useState('')
     const [category, setCategory] = useState<any>(null)
     const [payees, setPayees] = useState<any>(null)
@@ -43,7 +39,6 @@ const MapForm: React.FC<componentInterface> = (props) => {
     const getPayeeData = async () => {
         const response = await api.get(user, `payee?filters[search]=${payeeSearch}&orderby=name&sortby=asc`)
       setPayees(response.data?.results)
-      console.log('worked')
      }
 
      const payeeKeyDown = (e:any) => {
@@ -101,9 +96,6 @@ const MapForm: React.FC<componentInterface> = (props) => {
 
 
 
-console.log(mapCreate)
-
-
     return (
         <Container className="justify-content-center">
             <h3>{heading}</h3>
@@ -136,4 +128,4 @@ console.log(mapCreate)
     )
 }
 
-export default MapForm
+export default CreateMapForm

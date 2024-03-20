@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import FilterTransactionForm from './FilterTransactionForm'
 import api from '../../api/payee'
@@ -14,12 +14,12 @@ const FilterTransactionModal = (props:any) => {
     } = props
     const dispatch = useDispatch()
     const [transactionFilter, setTransactionFilter] = useState<any>({
-        transaction_date: null,
-        payee: null,
-        account: null,
-        amount: null,
-        transaction_type: null,
-        transaction_status: undefined
+        transaction_date: '',
+        payee: '',
+        account: '',
+        amount: '',
+        transaction_type: '',
+        transaction_status: ''
     })
 
 
@@ -65,7 +65,7 @@ const FilterTransactionModal = (props:any) => {
     const handleSubmit = async (e: { preventDefault: () => void }) => {
         e.preventDefault()
         try {
-        const response = await api.get(user, `transaction?filters[account.uuid]=${transactionFilter.account}&with[]=payee&with[]=account&with[]=transaction_type&with[]=transaction_status`)
+        const response = await api.get(user, `transaction?filters[account.uuid]=${transactionFilter.account}&filters[transaction_date]=${transactionFilter.transaction_date}&with[]=payee&with[]=account&with[]=transaction_type&with[]=transaction_status`)
           setTransactions(response.data?.results)
           handleClose()
            dispatch(

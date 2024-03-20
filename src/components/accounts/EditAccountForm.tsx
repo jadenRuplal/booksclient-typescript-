@@ -22,12 +22,13 @@ interface componentInterface {
     handleSubmit: (e: { preventDefault: () => void }) => void,
     heading: string,
     handleSelect: any,
-    handleClose: () => void
+    handleClose: () => void,
+    nameUpdate: string
     
 }
 
 const AccountForm: React.FC<componentInterface> = (props) => {
-    const { account, handleChange, handleSubmit, heading, handleSelect, handleClose } = props
+    const { account, handleChange, handleSubmit, heading, handleSelect, handleClose, nameUpdate } = props
     const result:any = useSelector((state) => state)
     const user = result.user.value[0].user
     const categoryOptions = result.option.value[0].options.data.account_type
@@ -50,9 +51,7 @@ const AccountForm: React.FC<componentInterface> = (props) => {
             <Form onSubmit={handleSubmit}>
                 <Form.Label htmlFor="name">Name</Form.Label>
                 <Form.Control
-                    placeholder={account.name}
-                    name="name"
-                    id="name"
+                    value={nameUpdate}
                     onChange={handleChange}
                     required
                 />

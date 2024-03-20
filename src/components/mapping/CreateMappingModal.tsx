@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Modal } from 'react-bootstrap'
-import MapForm from './CreateMapForm'
+import CreateMapForm from './CreateMapForm'
 import api from '../../api/payee'
 
 
@@ -8,32 +8,13 @@ const CreateMapModal = (props:any) => {
     const {
         user, show, handleClose,
     } = props
-    const [map, setMap] = useState(props.map)
     const [mapCreate, setMapCreate] = useState<any>({
         description: null,
         payee: null,
         category: null
     })
 
-    // const handleChange = (e: { target: { value: string; name: any; type: string } }) => {
-    //     setMap((prevPayee: any) => {
-    //         let updatedValue:any = e.target.value
-    //         const updatedName = e.target.name
-
-    //         if (e.target.type === 'number') {
-    //             updatedValue = parseInt(e.target.value)
-    //         }
-
-    //         const updatedPayee = {
-    //             [updatedName]: updatedValue
-    //         }
-    //         return {
-    //             ...prevPayee,
-    //             ...updatedPayee
-    //         }
-    //     })
-    // }
-
+    
     function handlePayeeSelect(data:any) {
         setMapCreate({...mapCreate, payee: data.value})
       }
@@ -56,8 +37,7 @@ const CreateMapModal = (props:any) => {
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton />
             <Modal.Body>
-                <MapForm
-                    map={map}
+                <CreateMapForm
                     mapCreate={mapCreate}
                     handleChange={handleChange}
                     handleSubmit={handleSubmit}

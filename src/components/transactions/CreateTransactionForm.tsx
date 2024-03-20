@@ -65,13 +65,11 @@ const TransactionForm: React.FC<componentInterface> = (props:any) => {
     const getPayeeData = async () => {
         const response = await api.get(user, `payee?filters[search]=${payeeSearch}&orderby=name&sortby=asc`)
       setPayees(response.data?.results)
-      console.log('worked')
      }
 
     const getCategoryData = async () => {
         const response = await api.get(user, `category?filters[search]=${categorySearch}&orderby=name&sortby=asc`)
       setCategory(response.data?.results)
-      console.log('worked')
      }
 
      const payeeKeyDown = (e:any) => {

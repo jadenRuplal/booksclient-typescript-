@@ -1,4 +1,4 @@
-import { useState, useEffect, Suspense } from 'react'
+import { useState, useEffect } from 'react'
 import Table from 'react-bootstrap/Table'
 import { useSelector } from 'react-redux'
 import api from '../../api/payee'
@@ -8,7 +8,6 @@ import CreateTransactionModal from './CreateTransactionModal'
 import FilterTransactionModal from './FilterTransactionModal'
 import React from 'react'
 import EditTransactionModal from './EditTransactionModal'
-import {Button} from '@material-ui/core'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded'
 import IconButton from '@mui/material/IconButton'
@@ -36,32 +35,21 @@ interface componentInterface {
 }
 
 
-const IndexTransactions: React.FC<componentInterface> = (props) => {
+const IndexTransactions: React.FC<componentInterface> = () => {
     const [render, setRender] = useState<number>(0)
     const [transactions, setTransactions] = useState<componentInterface["transactions"]>(null)
     const [transaction, setTransaction] = useState(null)
-    const [search, setSearch ] = useState<{payee:string, account:string}>({
-      payee: '',
-      account: ''
-  
-  })
     const [deleteAll, setDeleteAll] = useState<any>([])
     const [createModalShow, setCreateModalShow] = useState(false)
     const [filterModalShow, setFilterModalShow] = useState(false)
     const [pageSelect, setPageSelected] = useState(1)
-    const [updated, setUpdated] = useState(false)
-    const [openActive, setOpenActive] = useState(false)
     const [page, setPage] = useState<number>(3)
     const [editModalShow, setEditModalShow] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
     const [perPage, setPerPage] = useState<any>(50)
-    const [id, setId] = useState(null)
     const result:any = useSelector((state) => state)
     const user = result.user.value[0].user
-    const open = result?.sideBar.open
     const dispatch = useDispatch()
-
-    console.log(result)
 
 
     const getTransactions = async () => {
@@ -103,20 +91,6 @@ const IndexTransactions: React.FC<componentInterface> = (props) => {
     }
 
 
-    const handleSubmit = (e: {
-     preventDefault: () => any }) => {
-        e.preventDefault()
-        getTransactions()
-    }
-       
-    const checkOpen = (name:string) => {
-      if (open === true) {
-        return name
-      } else if (open === false) {
-        return(name + '-collapsed')
-      }
-    }
-
     const deleteChecked = async () => {
       try {const response = await api.deleteAll(user, 'transaction', deleteAll)
       getTransactions()
@@ -144,10 +118,6 @@ const IndexTransactions: React.FC<componentInterface> = (props) => {
     getTransactions()
   }
 
-  const handlePerPage = (e:any) => {
-    setPerPage(e.target.value)
-  }
-
     useEffect( () => {
        getTransactions()
     }, [perPage, createModalShow, pageSelect, editModalShow, deleteAll])
@@ -155,6 +125,7 @@ const IndexTransactions: React.FC<componentInterface> = (props) => {
 
       const handlePageClick = (event:any, value:number) => {
         setPageSelected(value)
+        window.scrollTo(0,0)
       }
     return (
         <>
@@ -247,7 +218,6 @@ const IndexTransactions: React.FC<componentInterface> = (props) => {
                 user={user}
                 transaction={transaction}
                 show={createModalShow}
-                triggerRefresh={() => setUpdated(prev => !prev)}
                 handleClose={() => setCreateModalShow(false)}
             />
 
@@ -257,7 +227,6 @@ const IndexTransactions: React.FC<componentInterface> = (props) => {
                 transaction={transaction}
                 closing={closing}
                 show={editModalShow}
-                triggerRefresh={() => setUpdated(prev => !prev)}
                 handleClose={() => closing()}
             />
           }

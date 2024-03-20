@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import TransactionForm from './CreateTransactionForm'
 import api from '../../api/payee'
@@ -43,7 +43,6 @@ const CreateTransactionModal = (props:any) => {
       }
 
       function handleTypeSelect(data:any) {
-        console.log(data)
         setTransactionCreate({...transactionCreate, transaction_type: data.value})
       }
 

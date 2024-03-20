@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import EditMapForm from './EditMapForm'
 import api from '../../api/payee'
@@ -6,7 +6,7 @@ import api from '../../api/payee'
 
 const EditMapModal = (props:any) => {
     const {
-        user, show, handleClose, closing
+        user, show, handleClose
     } = props
     const [map, setMap] = useState(props.map)
     const [mapUpdate, setMapUpdate] = useState<any>({

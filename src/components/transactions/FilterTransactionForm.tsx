@@ -34,7 +34,6 @@ const FilterTransactionForm: React.FC<componentInterface> = (props) => {
     const { handleChange, handleSubmit, heading, transactionFilter, handleAccountSelect, handlePayeeSelect, handleStatusSelect, handleTypeSelect } = props
     const [accountSearch, setAccountSearch] = useState(null)
     const [account, setAccount] = useState<any>(null)
-    const [category, setCategory] = useState<any>(null)
     const [payees, setPayees] = useState<any>(null)
     const [keyDown, setKeyDown] = useState('')
     const [payeeSearch, setPayeeSearch] = useState<any>(null)
@@ -84,7 +83,7 @@ const FilterTransactionForm: React.FC<componentInterface> = (props) => {
 
 
     useEffect( () => {
-        const delayDebounceFn = setTimeout(()=> {
+        const delayDebounce = setTimeout(()=> {
          
          if (keyDown === 'payee') {
          if (payeeSearch !== null) {
@@ -104,7 +103,7 @@ const FilterTransactionForm: React.FC<componentInterface> = (props) => {
 
         }, 1500)
 
-        return () => clearTimeout(delayDebounceFn)
+        return () => clearTimeout(delayDebounce)
       }, [payeeSearch, accountSearch])
 
 

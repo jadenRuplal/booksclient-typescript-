@@ -1,55 +1,34 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import {
     Form,
     Button,
     Container
 } from 'react-bootstrap'
-import { useSelector } from 'react-redux'
-import api from '../../api/payee'
 
 
 interface componentInterface {
-    handleChange: any,
     handleSubmit: any,
     heading: string,
-    payeeFilter: any,
-    setPayeeFilter: any
+    payeeFilter: string
+    
+    handlePayeeUpdate: any
     
 }
 
 
 
-const FilterTransactionForm: React.FC<componentInterface> = (props) => {
-    const { handleChange, handleSubmit, heading, payeeFilter, setPayeeFilter } = props
-    const [keyDown, setKeyDown] = useState('')
-    const [payeeSearch, setPayeeSearch] = useState<any>(null)
-    const result:any = useSelector((state) => state)
-    const user = result.user.value[0].user
-
-
-
-
-    useEffect( () => {
-       
-      }, [])
-
-
-
-
-
-
+const FilterPayeeForm: React.FC<componentInterface> = (props) => {
+    const { handleSubmit, heading, payeeFilter, handlePayeeUpdate } = props
 
     return (
         <Container className="justify-content-center">
             <h3>{heading}</h3>
             <Form onSubmit={handleSubmit}>
-                <Form.Label htmlFor="name">Name</Form.Label>
+            <Form.Label htmlFor="name">Name</Form.Label>
                 <Form.Control
-                    placeholder="Change name here"
-                    name="name"
-                    id="name"
-                    value={payeeFilter.payee}
-                    onChange={(e) => setPayeeFilter(e.target.value)}
+                    placeholder="Enter Name"
+                    value={payeeFilter}
+                    onChange={(e) => handlePayeeUpdate(e.target.value, 'name')}
                 />
                 <Button type="submit">Submit</Button>
             </Form>
@@ -58,4 +37,4 @@ const FilterTransactionForm: React.FC<componentInterface> = (props) => {
     )
 }
 
-export default FilterTransactionForm
+export default FilterPayeeForm

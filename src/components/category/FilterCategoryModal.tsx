@@ -1,15 +1,17 @@
+import React, { useState } from 'react'
 import { Modal } from 'react-bootstrap'
-import FilterCategoryForm from './FilterPayeeForm'
+import FilterCategoryForm from './FilterCategoryForm'
 
 
 const FilterCategoryModal = (props:any) => {
     const {
-         show, handleClose, payeeFilter, setPayeeFilter
+       show, handleClose, categoryFilter, setCategoryFilter
     } = props
 
 
-    function handlePayeeUpdate(data:string) {
-        setPayeeFilter(data)
+
+    function handleCategoryUpdate(data:any, name:string) {
+        setCategoryFilter({...categoryFilter, [name]: data})
       }
 
 
@@ -24,9 +26,9 @@ const FilterCategoryModal = (props:any) => {
             <Modal.Header closeButton />
             <Modal.Body>
                 <FilterCategoryForm
-            payeeFilter={payeeFilter}
+            categoryFilter={categoryFilter}
             handleSubmit={handleSubmit}
-            handlePayeeUpdate={handlePayeeUpdate}
+            handleCategoryUpdate={handleCategoryUpdate}
             heading="Filter Transactions"              />
             </Modal.Body>
         </Modal>

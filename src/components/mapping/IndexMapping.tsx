@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
 import Table from 'react-bootstrap/Table'
-import {Button} from '@material-ui/core'
 import { useSelector } from 'react-redux'
 import api from '../../api/payee'
 import '../css/pagination.css'
 import '../css/transaction.css'
 import CreateMappingModal from './CreateMappingModal'
+import FilterMappingModal from './FilterMappingModal'
 import React from 'react'
 import EditMapModal from './EditMapModal'
 import IconButton from '@mui/material/IconButton'
@@ -14,8 +14,7 @@ import FilterListIcon from '@mui/icons-material/FilterList'
 import AddIcon from '@mui/icons-material/Add'
 import MapIcon from '@mui/icons-material/Map'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { setSnackbar } from '../../features/snackSlice'
-import { useDispatch } from 'react-redux'
+import EditIcon from '@mui/icons-material/Edit'
 import Pagination from '@mui/material/Pagination'
 
 interface componentInterface {
@@ -33,53 +32,41 @@ interface componentInterface {
 }
 
 
-const IndexMapping: React.FC<componentInterface> = (props) => {
+const IndexMapping: React.FC<componentInterface> = () => {
     const [mapping, setMapping] = useState<componentInterface["mapping"]>(null)
-    const [deleteAll, setDeleteAll] = useState<any>([])
-    const [map, setMap] = useState(null)
-    const [search, setSearch ] = useState<any>({
+    const [mapFilter, setMapFilter] = useState<any>({
       description: '',
       payee: '',
       category: ''
-  })
-    const [error, setError] = useState(false)
+    })
+    const [map, setMap] = useState(null)
     const [createModalShow, setCreateModalShow] = useState(false)
     const [pageSelect, setPageSelected] = useState(1)
-    const [updated, setUpdated] = useState(false)
     const [page, setPage] = useState(3)
     const [editModalShow, setEditModalShow] = useState(false)
     const [filterModalShow, setFilterModalShow] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
     const [perPage, setPerPage] = useState<any>(50)
-    const [id, setId] = useState(null)
     const result:any = useSelector((state) => state)
     const user = result.user.value[0].user
-    const open = result?.sideBar.open
-    const dispatch = useDispatch()
 
 
     const getMapping = async () => {
-      const response = await api.get(user, `mapping?filters[description]=${search.description}&filters[payee.name]=${search.payee}&filters[category.name]=${search.category}&with[]=payee&with[]=category&page=${pageSelect}&per_page=${perPage}`)
+      const response = await api.get(user, `mapping?filters[description]=${mapFilter.description}&filters[payee.name]=${mapFilter.payee}&filters[category.name]=${mapFilter.category}&with[]=payee&with[]=category&page=${pageSelect}&per_page=${perPage}`)
       setMapping(response.data?.results)
       setPage(response.data.last_page)
       setCurrentPage(response.data.current_page)
      }
+
+     const deleteMap = async (map:any) => {
+      const response = await api.delete(user, `mapping/${map.uuid}`, map)
+      getMapping()
+    }
  
-     function handlePayeeSearch(e:any) {
-      setSearch({...search, payee: e.target.value})
-    }
-    function handleCategorySearch(e:any) {
-      setSearch({...search, category: e.target.value})
-      
-    }
 
      const setEdit = (map:any) => { 
       setMap(map)
-      setEditModalShow(true)
-      return ( 
-        setMap(map),
-        setEditModalShow(true)
-      )    
+      setEditModalShow(true)   
     }
 
     const setCreate = () => { 
@@ -91,54 +78,16 @@ const IndexMapping: React.FC<componentInterface> = (props) => {
       setMap(null)
     }
 
-    
-    const handleSubmit = (e: {
-     preventDefault: () => any }) => {
-        e.preventDefault()
-           getMapping()
-    }
-       
-    const checkOpen = (name:string) => {
-      if (open === true) {
-        return name
-      } else if (open === false) {
-        return(name + '-collapsed')
-      }
-    }
-      
-    const deleteChecked = async () => {
-      try {const response = await api.deleteAll(user, 'transaction', deleteAll)
-      getMapping()
-      setDeleteAll([])
-      dispatch(
-        setSnackbar(
-          true,
-          "success",
-          response.message.messages[0]
-        )
-      )  
-    } catch (error:any) {
-      dispatch(
-        setSnackbar(
-          true,
-          "error",
-          error.response.data.message.messages
-        )
-      )
-      }
-    }
+
 
     const handlePageClick = (event:any, value:number) => {
       setPageSelected(value)
+      window.scrollTo(0,0)
     }
 
     useEffect( () => {
        getMapping()
     }, [perPage, createModalShow, pageSelect, editModalShow])
-
-    if (error) {
-        return <p>Error!</p>
-    }
 
    
     return (
@@ -165,6 +114,7 @@ const IndexMapping: React.FC<componentInterface> = (props) => {
             <th>Description</th>
             <th>Payee</th>
             <th>Category</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -177,6 +127,10 @@ const IndexMapping: React.FC<componentInterface> = (props) => {
                    <td>{map?.payee?.name}</td>
                    <td>{
                    map?.category?.name}</td>
+                    <td>
+                        <IconButton onClick={() => setEdit(map)} size="small"><EditIcon/></IconButton>
+                        <IconButton onClick = {() => deleteMap(map)} size="small"><DeleteIcon /></IconButton>
+                    </td>
                     </tr> 
                 )
             )
@@ -203,11 +157,20 @@ const IndexMapping: React.FC<componentInterface> = (props) => {
       </div>
       </div>
      
+
+      <FilterMappingModal
+                user={user}
+                mapFilter={mapFilter}
+                setMapFilter={setMapFilter}
+                closing={closing}
+                show={filterModalShow}
+                handleClose={() => setFilterModalShow(false)}
+            />
+
       <CreateMappingModal
                 user={user}
                 map={map}
                 show={createModalShow}
-                triggerRefresh={() => setUpdated(prev => !prev)}
                 handleClose={() => setCreateModalShow(false)}
             />
 
@@ -217,7 +180,6 @@ const IndexMapping: React.FC<componentInterface> = (props) => {
                 map={map}
                 closing={closing}
                 show={editModalShow}
-                triggerRefresh={() => setUpdated(prev => !prev)}
                 handleClose={() => closing()}
             />
           }

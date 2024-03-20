@@ -6,19 +6,14 @@ import React from 'react'
 import CreateAccountModal from './CreateAccountModal'
 import EditAccountModal from './EditAccountModal'
 import FilterAccountModal from './FilterAccountModal'
-import Select from 'react-select'
 import '../css/pagination.css'
 import '../css/transaction.css'
-import {Button} from '@material-ui/core'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import IconButton from '@mui/material/IconButton'
 import { Tooltip, Zoom } from "@mui/material"
-import { setSnackbar } from '../../features/snackSlice'
-import { useDispatch } from 'react-redux'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
-import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
+import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded'
 import Pagination from '@mui/material/Pagination'
 
 
@@ -41,10 +36,8 @@ interface componentInterface {
 
 const IndexAccounts: React.FC<componentInterface> = (props) => {
     const [accounts, setAccounts] = useState<componentInterface["accounts"]>(null)
-    const [error, setError] = useState(false)
     const [account, setAccount] = useState(null)
     const [updated, setUpdated] = useState(false)
-    const [typeSelected, setTypeSelected] = useState('')
     const [createModalShow, setCreateModalShow] = useState(false)
     const [editModalShow, setEditModalShow] = useState(false)
     const [filterModalShow, setFilterModalShow] = useState(false)
@@ -52,7 +45,6 @@ const IndexAccounts: React.FC<componentInterface> = (props) => {
     const [page, setPage] = useState(3)
     const [currentPage, setCurrentPage] = useState(1)
     const [perPage, setPerPage] = useState<any>(50)
-    const [search, setSearch ] = useState<any>('')
     const [accountFilter, setAccountFilter] = useState<any>(
       { 
        account_type: '',
@@ -62,8 +54,6 @@ const IndexAccounts: React.FC<componentInterface> = (props) => {
    )
     const result:any = useSelector((state) => state)
     const user = result.user.value[0].user
-    const accountOptions = result.option.value[0].options.data.account_type
-    const open = result?.sideBar.open
 
 
     const getAccounts = async () => {
@@ -78,35 +68,7 @@ const IndexAccounts: React.FC<componentInterface> = (props) => {
       getAccounts()
     }
       
-    //   const optionType = () => {
-    //     return(
-    //       accountOptions?.map((option:any) => (
-    //        {value:`${option.name}`, label: `${option.display_name}`}
-    //         )
-    //       )
-    //       )
-    // }
 
-    // const checkOpen = (name:string) => {
-    //   if (open === true) {
-    //     return name
-    //   } else if (open === false) {
-    //     return(name + '-collapsed')
-    //   }
-    // }
-      
-      function handleSelect(data:any) {
-        setTypeSelected(data.value)
-      }
-
-      const handleChange = (e: any) => {
-        setSearch(e.target.value)
-    }
-
-    const handleSubmit = (e: { preventDefault: () => any }) => {
-        e.preventDefault()
-        getAccounts()
-    }
     const closing = () => {
       setEditModalShow(false)
       setFilterModalShow(false)
@@ -124,6 +86,7 @@ const IndexAccounts: React.FC<componentInterface> = (props) => {
 
     const handlePageClick = (event:any, value:number) => {
       setPageSelected(value)
+      window.scrollTo(0,0)
     }
 
     useEffect( () => {
@@ -165,7 +128,7 @@ const IndexAccounts: React.FC<componentInterface> = (props) => {
     {    accounts?.map((account:componentInterface["account"]) => (
                    
                   <tr key={account.uuid}>
-                    <td onClick={() => setEdit(account)}> 
+                    <td> 
                         {account.name}
                     </td>
                     <td>{account?.last4}</td>
@@ -205,7 +168,6 @@ const IndexAccounts: React.FC<componentInterface> = (props) => {
       </div>
 
       <FilterAccountModal 
-        user={user}
         show={filterModalShow}
         accountFilter={accountFilter}
         setAccountFilter={setAccountFilter}

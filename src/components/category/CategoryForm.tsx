@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {
     Form,
     Button,
     Container
 } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
-import Select, { SelectInstance } from 'react-select'
+import Select from 'react-select'
 
 
 interface componentInterface {
@@ -26,7 +26,7 @@ interface componentInterface {
 }
 
 const CategoryForm: React.FC<componentInterface> = (props) => {
-    const {  handleChange, handleSubmit, heading, categoryUpdate, createCategoryName, handleSelect, selectedOptions} = props
+    const {  handleChange, handleSubmit, heading, createCategoryName, handleSelect} = props
     const result:any = useSelector((state) => state)
     const categoryOptions = result.option.value[0].options.data.category_type
     const optionType = () => {

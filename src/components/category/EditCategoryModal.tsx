@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import EditCategoryForm from './EditCategoryForm'
 import api from '../../api/payee'
@@ -10,28 +10,26 @@ const EditCategoryModal = (props:any) => {
     const {
         user, show, handleClose,
     } = props
-    const [category, setCategory] = useState(props.category)
-    const [typeUpdate, setTypeUpdate] = useState(null)
-    const [categoryUpdate, setCategoryUpdate] = useState<any>('')
+    const [category] = useState(props.category)
+    const [categoryEdit, setCategoryEdit] = useState<any>({
+        name: category.name,
+        category_type: category.category_type.name
+    })
     const dispatch = useDispatch()
 
-const updateObject = {
-    name: categoryUpdate,
-    category_type: typeUpdate
+const updateCategory = (e:any, name:string) => {
+    setCategoryEdit({...categoryEdit, [name]: e.target.value})
 }
 
-    function handleSelect(data:any) {
-        setTypeUpdate(data.value);
+    function handleSelect(data:any, name:string) {
+        setCategoryEdit({...categoryEdit, [name]: data.value})
       }
 
-    const handleChange = (e: { target: { value: string; name: any; type: string } }) => {
-        setCategoryUpdate(e.target.value)
-    }
 
     const handleSubmit = async (e: { preventDefault: () => void }) => {
         e.preventDefault()
         try {
-        const response = await api.put(user, `category/${category.uuid}?with[]=category_type&with[]=parent_category`, updateObject)
+        const response = await api.put(user, `category/${category.uuid}?with[]=category_type&with[]=parent_category`, categoryEdit)
              handleClose()
              dispatch(
                 setSnackbar(
@@ -58,10 +56,11 @@ const updateObject = {
             <Modal.Body>
                 <EditCategoryForm
                     category={category}
-                    handleChange={handleChange}
                     handleSubmit={handleSubmit}
+                    updateCategory={updateCategory}
+                    categoryEdit={categoryEdit}
                     handleClose={handleClose}
-                    heading="Update category" categoryUpdate={categoryUpdate} createCategoryName={undefined} handleSelect={handleSelect} selectedOptions={''} typeUpdate={undefined}                                  />
+                    heading="Update category" handleSelect={handleSelect} selectedOptions={''}                                  />
             </Modal.Body>
         </Modal>
     )

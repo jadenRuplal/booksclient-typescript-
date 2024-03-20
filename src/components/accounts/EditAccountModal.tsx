@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import AccountForm from './EditAccountForm'
 import api from '../../api/payee'
@@ -8,17 +8,16 @@ import { setSnackbar } from '../../features/snackSlice'
 
 const EditAccountModal = (props:any) => {
     const {
-        user, show, handleClose, msgAlert
+        user, show, handleClose, account
     } = props
-    const [account, setAccount] = useState(props.account)
-    const [typeUpdate, setTypeUpdate] = useState('')
-    const [nameUpdate, setNameUpdate] = useState('')
+    const [typeUpdate, setTypeUpdate] = useState(props.account.account_type.name)
+    const [nameUpdate, setNameUpdate] = useState(props.account.name)
     const dispatch = useDispatch()
 
-    const handleChange = (e:any) => {
+    const handleChange = (e:{target:{ value:string }}) => {
         setNameUpdate(e.target.value)
     }
-    const handleSelect = (data:any) => {
+    const handleSelect = (data:{ value:string }) => {
         setTypeUpdate(data.value);
       }
 
@@ -59,6 +58,7 @@ const EditAccountModal = (props:any) => {
             <Modal.Body>
                 <AccountForm
                     account={account}
+                    nameUpdate={nameUpdate}
                     handleChange={handleChange}
                     handleSubmit={handleSubmit}
                     handleSelect={handleSelect}

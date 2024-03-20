@@ -3,8 +3,7 @@
     padding-top: 10px;
     display: table-cell;
     height:100%;
-    /* background-color: rgb(33, 39, 51); */
-    background-image: linear-gradient(to top left, #4b6cb7, #182848);
+    background-image: linear-gradient(to top left, #4b6cb7, #182848) !important;
     width: 10vw !important;
     transition: width .25s, transform .25s;
 }

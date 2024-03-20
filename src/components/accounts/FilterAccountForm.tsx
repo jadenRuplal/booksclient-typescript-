@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import {
     Form,
     Container
@@ -6,7 +6,6 @@ import {
 import {Button} from '@material-ui/core'
 import { useSelector } from 'react-redux'
 import Select from 'react-select'
-import api from '../../api/payee'
 
 
 interface componentInterface {
@@ -21,14 +20,9 @@ interface componentInterface {
 
 
 const FilterTransactionForm: React.FC<componentInterface> = (props) => {
-    const { handleChange, handleSubmit, heading, accountFilter, setAccountFilter } = props
-    const [keyDown, setKeyDown] = useState('')
-    const [accountSearch, setAccountSearch] = useState<any>(null)
+    const { handleSubmit, heading, accountFilter, setAccountFilter } = props
     const result:any = useSelector((state) => state)
-    const user = result.user.value[0].user
     const accountOptions = result.option.value[0].options.data.account_type
-
-
 
 
       function handleAccountSelect(data:any, name:any) {
@@ -54,7 +48,6 @@ const FilterTransactionForm: React.FC<componentInterface> = (props) => {
                           onChange={(value) => handleAccountSelect(value, 'account_type')}
                           placeholder="Select Account Type"
                           name='account_type'
-                          required
                           id='account_type'
                       />
                 <Form.Label >Name</Form.Label>
@@ -71,7 +64,7 @@ const FilterTransactionForm: React.FC<componentInterface> = (props) => {
                         placeholder='Enter Last4'
                         onChange={(value) => handleAccountSelect(value.target, 'last4')}
                     /> 
-                <Button onClick={() => handleSubmit()}>Submit</Button>
+                 <Button type="submit">Submit</Button>
             </Form>
             
         </Container>

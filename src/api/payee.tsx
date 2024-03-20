@@ -11,11 +11,9 @@ type User = {
         email: string,
 
     },
-    payeeId: any,
+    payeeId: string,
     
 }
-// let apiUrl: any
-
 
 
 

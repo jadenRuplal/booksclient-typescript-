@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import EditTransactionForm from './EditTransactionForm'
 import api from '../../api/payee'
@@ -9,11 +9,9 @@ import { setSnackbar } from '../../features/snackSlice'
 
 const EditTransactionModal = (props:any) => {
     const {
-        user, show, handleClose, closing
+        user, show, handleClose
     } = props
-    const [transaction, setMap] = useState(props.transaction)
-    const [payeeTypeUpdate, setPayeeTypeUpdate] = useState({})
-    const [categoryTypeUpdate, setCategoryTypeUpdate] = useState(null)
+    const [transaction] = useState(props.transaction)
     const [transactionUpdate, setMapUpdate] = useState<any>({
         transaction_date: transaction?.transaction_date,
         payee: transaction?.payee?.uuid,

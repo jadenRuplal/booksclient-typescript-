@@ -1,13 +1,12 @@
 
-import React, { useState } from 'react'
+import React from 'react'
 import {
     Form,
     Button,
     Container
 } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import Select, { SelectInstance } from 'react-select'
+import Select from 'react-select'
 import { deletePayee } from '../../api/payee'
 
 
@@ -17,21 +16,25 @@ interface componentInterface {
         uuid: string,
         name: string
     },
-    categoryUpdate:any,
-    handleChange: any,
+    categoryEdit: {
+        name: string,
+        category_type: {
+            name: string,
+            display_name: string
+        }
+    },
     handleSubmit: any,
     heading: string,
-    createCategoryName: any,
     handleSelect: any,
     selectedOptions: any,
-    typeUpdate: any,
-    handleClose: any
+    handleClose: any,
+    updateCategory: any
     
     
 }
 
 const EditCategoryForm: React.FC<componentInterface> = (props) => {
-    const {  handleChange, handleSubmit, heading, categoryUpdate, handleSelect, category, typeUpdate, handleClose} = props
+    const { handleSubmit, heading, handleSelect, category, handleClose, updateCategory, categoryEdit} = props
     const result:any = useSelector((state) => state)
     const user = result.user.value[0].user
     const categoryOptions = result.option.value[0].options.data.category_type
@@ -41,7 +44,7 @@ const EditCategoryForm: React.FC<componentInterface> = (props) => {
         )
     ))
         }
-        const deleteTheCategory = () => {
+    const deleteTheCategory = () => {
             deletePayee(user, `category/${category?.uuid}`)
              handleClose()
         }
@@ -53,14 +56,14 @@ const EditCategoryForm: React.FC<componentInterface> = (props) => {
                 <Form.Label htmlFor="name">Name</Form.Label>
                 <Form.Control
                     placeholder={category.name}
-                    value={categoryUpdate}
-                    onChange={handleChange}
+                    value={categoryEdit.name}
+                    onChange={(e) => updateCategory(e, 'name')}
                     required
                 />
                 <Form.Label htmlFor="type">Type</Form.Label>
                 <Select  options={optionType()}
-                onChange={handleSelect}
-                placeholder={category.category_type.display_name}
+                onChange={(e) => handleSelect(e, 'category_type')}
+                defaultInputValue={categoryEdit.category_type.name}
                 />
                 <Button onClick={() => deleteTheCategory()}
                                     className="m-2"
